@@ -6,20 +6,29 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".StartActivity" >
+    tools:context=".StartActivity" android:background="#4b50ff">
 
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Best Pacman ever!" android:layout_centerHorizontal="true" android:layout_alignParentTop="true"
-        android:layout_marginTop="61dp"/>
+        android:text="Best Pacman ever!"
+        android:textStyle="bold" android:textColor="#fff864"
+        android:layout_centerHorizontal="true" android:layout_below="@+id/imageView"/>
 
     <Button
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Start"
-        android:layout_centerHorizontal="true" android:layout_alignParentTop="true" android:layout_marginTop="217dp"/>
+        android:layout_centerHorizontal="true" android:layout_alignParentTop="true" android:layout_marginTop="217dp"
+        android:width="150dp"/>
+    <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView"
+            android:contentDescription='"@drawable/pacman_startpage.png"'
+            android:src="@drawable/pacman_startpage" android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true" android:layout_marginTop="62dp"/>
 
 </RelativeLayout>
