@@ -12,16 +12,14 @@
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_pacman" />
+        android:text="Best Pacman ever!" android:layout_centerHorizontal="true" android:layout_alignParentTop="true"
+        android:layout_marginTop="61dp"/>
 
     <Button
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView1"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="26dp"
-        android:layout_marginLeft="29dp"
-        android:text="Press Me!" />
+        android:text="Start"
+        android:layout_centerHorizontal="true" android:layout_alignParentTop="true" android:layout_marginTop="217dp"/>
 
 </RelativeLayout>

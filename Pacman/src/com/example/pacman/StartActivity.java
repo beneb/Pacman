@@ -7,7 +7,8 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 public class StartActivity extends Activity {
-	int count = 0; 
+	int count = 0;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
