@@ -8,6 +8,14 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".StartActivity" android:background="#4b50ff">
 
+    <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView"
+            android:contentDescription='"@drawable/pacman_startpage.png"'
+            android:src="@drawable/pacman_startpage" android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true" android:layout_marginTop="62dp"/>
+
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
@@ -17,18 +25,12 @@
         android:layout_centerHorizontal="true" android:layout_below="@+id/imageView"/>
 
     <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Start"
-        android:layout_centerHorizontal="true" android:layout_alignParentTop="true" android:layout_marginTop="217dp"
-        android:width="150dp"/>
-    <ImageView
+            android:id="@+id/StartButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/imageView"
-            android:contentDescription='"@drawable/pacman_startpage.png"'
-            android:src="@drawable/pacman_startpage" android:layout_centerHorizontal="true"
-            android:layout_alignParentTop="true" android:layout_marginTop="62dp"/>
+            android:text="Start"
+            android:layout_centerHorizontal="true" android:layout_alignParentTop="true" android:layout_marginTop="217dp"
+            android:width="150dp"
+            android:onClick="startGame"/>
 
 </RelativeLayout>
