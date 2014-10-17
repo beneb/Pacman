@@ -78,4 +78,10 @@ public class Labyrinth {
             }
         }
     }
+
+    /*
+        TODO Stub for the future
+        Redraw given rectangle
+     */
+    public void invalidate(RectF bounds) {}
 }
