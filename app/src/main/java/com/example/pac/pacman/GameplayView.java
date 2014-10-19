@@ -2,14 +2,12 @@ package com.example.pac.pacman;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.RectF;
 import android.view.View;
 
 public class GameplayView extends View {
 
     private final Labyrinth _labyrinth;
-    private Paint _shadowPaint;
     private RectF _bounds;
 
 

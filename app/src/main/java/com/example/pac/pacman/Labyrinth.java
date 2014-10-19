@@ -1,5 +1,6 @@
 package com.example.pac.pacman;
 
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -9,6 +10,7 @@ public class Labyrinth {
 
     private final int _width = 20;
     private final int _height = 20;
+    private final Resources _resources;
 
     private enum LayoutType {
         Space,
@@ -24,7 +26,8 @@ public class Labyrinth {
     private Paint _backgroundPaint;
     private Paint _wallPaint;
 
-    public Labyrinth() {
+    public Labyrinth(Resources resources) {
+        _resources = resources;
         init();
     }
 
@@ -33,10 +36,11 @@ public class Labyrinth {
 
         _backgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         _backgroundPaint.setStyle(Paint.Style.FILL);
-        _backgroundPaint.setColor(Color.BLACK);
+
+        _backgroundPaint.setColor(_resources.getColor(R.color.background));
 
         _wallPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        _wallPaint.setColor(Color.BLUE);
+        _wallPaint.setColor(_resources.getColor(R.color.walls));
         _wallPaint.setStrokeWidth(5);
     }
 
