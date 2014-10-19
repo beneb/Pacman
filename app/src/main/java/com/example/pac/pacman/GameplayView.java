@@ -4,23 +4,18 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.util.AttributeSet;
 import android.view.View;
 
 public class GameplayView extends View {
 
+    private final Labyrinth _labyrinth;
     private Paint _shadowPaint;
     private RectF _bounds;
-    private Labyrinth _labyrinth;
 
 
-    public GameplayView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
-    }
-
-    private void init() {
-        _labyrinth = new Labyrinth();
+    public GameplayView(Context context, Labyrinth labyrinth) {
+        super(context);
+        _labyrinth = labyrinth;
     }
 
     @Override

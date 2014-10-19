@@ -10,10 +10,12 @@ import android.view.View;
 
 public class PacmanActivity extends ActionBarActivity {
 
+    private Labyrinth _labyrinth = new Labyrinth(); // TODO deserialize from res
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pacman);
+        GameplayView view = new GameplayView(this, _labyrinth);
+        setContentView(view);
     }
 
 
