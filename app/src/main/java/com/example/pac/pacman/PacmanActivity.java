@@ -1,25 +1,44 @@
 package com.example.pac.pacman;
 
-import android.content.Context;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+
+import java.util.Date;
 
 
 public class PacmanActivity extends ActionBarActivity {
 
     private Labyrinth _labyrinth;
+    private Handler _handler = new Handler();
+    private GameplayView _view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         _labyrinth = new Labyrinth(getResources()); // TODO deserialize lab from res
-        GameplayView view = new GameplayView(this, _labyrinth);
-        setContentView(view);
+        _view = new GameplayView(this, _labyrinth);
+        setContentView(_view);
+        _handler.postDelayed(_updateView, 1000);
     }
 
+    private Runnable _updateView = new Runnable() {
+        public void run() {
+            Log.d("MainLoop", "handler:" + new Date());
+            _view.drawCircle();
+            _handler.removeCallbacks(_updateView);
+            _handler.postDelayed(this, 30);
+        }
+    };
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        _handler.removeCallbacks(_updateView);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
