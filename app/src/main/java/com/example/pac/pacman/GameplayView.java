@@ -7,6 +7,12 @@ import android.graphics.RectF;
 import android.os.Handler;
 import android.view.View;
 
+/*
+*   TODO: Maybe it should be a SurfaceView
+*   see  http://android-journey.blogspot.co.il/2010/02/android-2d-simple-example.html
+*   http://pierrchen.blogspot.de/2014/03/anroid-graphics-surfaceview-all-you.html
+*   http://source.android.com/devices/graphics/architecture.html
+* */
 public class GameplayView extends View {
 
     private final Labyrinth _labyrinth;
