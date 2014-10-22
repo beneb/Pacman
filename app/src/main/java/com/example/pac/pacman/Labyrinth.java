@@ -36,7 +36,6 @@ public class Labyrinth {
 
         _backgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         _backgroundPaint.setStyle(Paint.Style.FILL);
-
         _backgroundPaint.setColor(_resources.getColor(R.color.background));
 
         _wallPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -82,10 +81,4 @@ public class Labyrinth {
             }
         }
     }
-
-    /*
-        TODO Stub for the future
-        Redraw given rectangle
-     */
-    public void invalidate(RectF bounds) {}
 }

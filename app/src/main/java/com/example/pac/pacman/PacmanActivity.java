@@ -13,6 +13,7 @@ import java.util.Date;
 public class PacmanActivity extends ActionBarActivity {
 
     private Labyrinth _labyrinth;
+    private PacMan _pacman;
     private Handler _handler = new Handler();
     private GameplayView _view;
 
@@ -20,7 +21,8 @@ public class PacmanActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         _labyrinth = new Labyrinth(getResources()); // TODO deserialize lab from res
-        _view = new GameplayView(this, _labyrinth);
+        _pacman = new PacMan(getResources());
+        _view = new GameplayView(this, _labyrinth, _pacman);
         setContentView(_view);
         _handler.postDelayed(_updateView, 1000);
     }
@@ -28,7 +30,8 @@ public class PacmanActivity extends ActionBarActivity {
     private Runnable _updateView = new Runnable() {
         public void run() {
             Log.d("MainLoop", "handler:" + new Date());
-            _view.drawCircle();
+            _pacman.move();
+            _view.invalidate(_pacman.getInvalidateRect());
             _handler.removeCallbacks(_updateView);
             _handler.postDelayed(this, 30);
         }
