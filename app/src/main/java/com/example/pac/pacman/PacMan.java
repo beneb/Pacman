@@ -15,13 +15,14 @@ public class PacMan {
     private static final int VERTICAL_UP = 3;
     private static final int VERTICAL_DOWN = 4;
 
+  
     private int _move = STOPPED;
 
     private Paint _paint;
-    private Rect _bounds;
+    private RectF _bounds;
 
-    private int _x, _y;
-    private int _direction = 1;
+    private float _x, _y;
+    private float _direction = 1;
     private Rect _invalidateRect;
 
     public PacMan(Resources resources) {
@@ -34,8 +35,8 @@ public class PacMan {
         return _invalidateRect;
     }
 
-    public void setBounds(Rect bounds) {
-        _bounds = new Rect(bounds.left+ RADIUS, bounds.top+ RADIUS, bounds.right- RADIUS, bounds.bottom- RADIUS);
+    public void setBounds(RectF bounds) {
+        _bounds = new RectF(bounds.left+RADIUS, bounds.top+RADIUS, bounds.right-RADIUS, bounds.bottom-RADIUS);
         _x = _bounds.centerX();
         _y = _bounds.centerY();
     }
@@ -58,8 +59,8 @@ public class PacMan {
     }*/
 
     public void move() {
-        int newX = _x;
-        int newY = _y;
+        float newX = _x + 2 * _direction;
+        float newY = _y + 2 * _direction;
         if (_move == STOPPED){
             newInvalidateRect(newX, newY);
             return;

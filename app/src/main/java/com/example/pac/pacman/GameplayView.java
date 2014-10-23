@@ -3,7 +3,7 @@ package com.example.pac.pacman;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Rect;
+import android.graphics.RectF;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
@@ -18,24 +18,24 @@ public class GameplayView extends View {
 
     private final Labyrinth _labyrinth;
     private final PacMan _pacman;
-    private final Paint _tmpPaint2;
-    private Rect _bounds;
+    private final Paint _paintBackground;
+    private RectF _bounds;
 
     public GameplayView(Context context, Labyrinth labyrinth, PacMan pacman) {
         super(context);
         _labyrinth = labyrinth;
         _pacman = pacman;
 
-        _tmpPaint2 = new Paint(Paint.ANTI_ALIAS_FLAG);
-        _tmpPaint2.setStyle(Paint.Style.STROKE);
-        _tmpPaint2.setStrokeWidth(2);
-        _tmpPaint2.setColor(getResources().getColor(R.color.walls));
+        _paintBackground = new Paint(Paint.ANTI_ALIAS_FLAG);
+        _paintBackground.setStyle(Paint.Style.FILL);
+        _paintBackground.setColor(getResources().getColor(R.color.background));
 
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        canvas.drawPaint(_paintBackground);
         _labyrinth.draw(canvas);
         _pacman.draw(canvas);
     }
@@ -65,9 +65,9 @@ public class GameplayView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         final int margin = 10;
-        _bounds = new Rect(margin, margin, w-margin, h-margin);
-        _labyrinth.setBounds(_bounds);
-        _pacman.setBounds(_bounds);
+        _bounds = new RectF(margin, margin, w-margin, h-margin);
+        _labyrinth.init(_bounds);
+        _pacman.setBounds(_labyrinth.getBounds());
     }
 }
 
