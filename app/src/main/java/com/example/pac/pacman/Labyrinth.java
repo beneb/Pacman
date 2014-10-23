@@ -8,39 +8,30 @@ import android.graphics.RectF;
 
 public class Labyrinth {
 
-    private final int _width = 20;
-    private final int _height = 20;
-    private final Resources _resources;
+    private int _width;
+    private int _height;
     private Paint _debugPaint;
 
     public RectF getBounds() {
         return _bounds;
     }
 
-    private enum LayoutType {
-        Space,
-        WallHorizontal,
-        WallVertical,
-    }
+    final int WALL_HORIZONTAL = 1;
+    final int WALL_VERTICAL = 2;
 
-    private LayoutType layout[][] = new LayoutType[_width][_height];
+    private int layout[][];
 
     private RectF _bounds;
     private float _cellSize;
 
-    private Paint _backgroundPaint;
     private Paint _wallPaint;
 
     public Labyrinth(Resources resources) {
-        _resources = resources;
-        initTestLabyrinth();
-
-        _backgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        _backgroundPaint.setStyle(Paint.Style.FILL);
-        _backgroundPaint.setColor(_resources.getColor(R.color.background));
+        String levelResource = resources.getString(R.string.level_00);
+        initFromResource(levelResource);
 
         _wallPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        _wallPaint.setColor(_resources.getColor(R.color.walls));
+        _wallPaint.setColor(resources.getColor(R.color.walls));
         _wallPaint.setStrokeWidth(5);
 
         _debugPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -48,14 +39,15 @@ public class Labyrinth {
         _debugPaint.setColor(Color.RED);
     }
 
-    private void initTestLabyrinth() {
-        for (int i = 0; i < _width; i++) {
-            layout[i][0] = LayoutType.WallHorizontal;
-            layout[i][_height - 1] = LayoutType.WallHorizontal;
-        }
-        for (int i = 0; i < _height; i++) {
-            layout[0][i] = LayoutType.WallVertical;
-            layout[_width - 1][i] = LayoutType.WallVertical;
+    private void initFromResource(String levelResource) {
+        String[] rows = levelResource.trim().split(" ");
+        _width = rows[0].length();
+        _height = rows.length;
+        layout = new int[_width][_height];
+        for (int w = 0; w < _width; w++) {
+            for (int h = 0; h < _height; h++) {
+                layout[w][h] = Integer.parseInt(rows[h].substring(w, w + 1));
+            }
         }
     }
 
@@ -72,23 +64,23 @@ public class Labyrinth {
     public void draw(Canvas canvas) {
         for (int i = 0; i < _width; i++) {
             for (int j = 0; j < _height; j++) {
-                if (layout[i][j] == LayoutType.WallVertical) {
+                if (layout[i][j] == WALL_VERTICAL) {
                     float startX = _cellSize * i + _cellSize / 2 + _bounds.left;
                     float startY = _cellSize * j + _bounds.top;
-                    float stopX = startX;
                     float stopY = _cellSize * (j + 1) + _bounds.top;
-                    canvas.drawLine(startX, startY, stopX, stopY, _wallPaint);
-                } else if (layout[i][j] == LayoutType.WallHorizontal) {
+                    canvas.drawLine(startX, startY, startX, stopY, _wallPaint);
+                } else if (layout[i][j] == WALL_HORIZONTAL) {
                     float startX = _cellSize * i + _bounds.left;
                     float startY = _cellSize * j + _cellSize / 2 + _bounds.top;
                     float stopX = _cellSize * (i + 1) + _bounds.left;
-                    float stopY = startY;
-                    canvas.drawLine(startX, startY, stopX, stopY, _wallPaint);
+                    canvas.drawLine(startX, startY, stopX, startY, _wallPaint);
                 }
 
+                /*
                 float l = i * _cellSize + _bounds.left;
                 float t = j * _cellSize + _bounds.top;
                 canvas.drawRect(l, t, l + _cellSize, t + _cellSize, _debugPaint);
+                */
             }
         }
     }
