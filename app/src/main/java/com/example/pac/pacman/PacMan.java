@@ -7,7 +7,16 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 
 public class PacMan {
-    private final int _radius = 10;
+    private static final int RADIUS = 10;
+
+    private static final int STOPPED = 0;
+    private static final int HORIZONTAL_LEFT = 1;
+    private static final int HORIZONTAL_RIGHT = 2;
+    private static final int VERTICAL_UP = 3;
+    private static final int VERTICAL_DOWN = 4;
+
+    private int _move = STOPPED;
+
     private Paint _paint;
     private Rect _bounds;
 
@@ -26,17 +35,17 @@ public class PacMan {
     }
 
     public void setBounds(Rect bounds) {
-        _bounds = new Rect(bounds.left+_radius, bounds.top+_radius, bounds.right-_radius, bounds.bottom-_radius);
+        _bounds = new Rect(bounds.left+ RADIUS, bounds.top+ RADIUS, bounds.right- RADIUS, bounds.bottom- RADIUS);
         _x = _bounds.centerX();
         _y = _bounds.centerY();
     }
 
     public void draw(Canvas canvas) {
-        RectF r = new RectF(_x-_radius, _y-_radius, _x+2*_radius, _y+2*_radius);
+        RectF r = new RectF(_x- RADIUS, _y- RADIUS, _x+2* RADIUS, _y+2* RADIUS);
         canvas.drawArc(r, 30, 300, true, _paint);
     }
 
-    public void move() {
+    /*public void move() {
         int newX = _x + 2 * _direction;
         int newY = _y + 2 * _direction;
         if (_bounds.contains(newX, newY)) {
@@ -46,13 +55,79 @@ public class PacMan {
         } else {
             _direction = - _direction;
         }
+    }*/
+
+    public void move() {
+        int newX = _x;
+        int newY = _y;
+        if (_move == STOPPED){
+            newInvalidateRect(newX, newY);
+            return;
+        }
+        if (_move == HORIZONTAL_LEFT){
+            newX = _x - 2;
+        }
+        if (_move == HORIZONTAL_RIGHT){
+            newX = _x + 2;
+        }
+        if (_move == VERTICAL_UP){
+            newY = _y - 2;
+        }
+        if (_move == VERTICAL_DOWN){
+            newY  = _y + 2;
+        }
+
+        if (_bounds.contains(newX, newY)) {
+            newInvalidateRect(newX, newY);
+            _x = newX;
+            _y = newY;
+        } else {
+            _direction = - _direction;
+        }
+
     }
 
     private void newInvalidateRect(float newX, float newY) {
-        int l = (int)Math.min(_x, newX)-2*_radius;
-        int t = (int)Math.min(_y, newY)-2*_radius;
-        int r = (int)Math.max(_x, newX)+2*_radius+1;
-        int b = (int)Math.max(_y, newY)+2*_radius+1;
+        int l = (int)Math.min(_x, newX)-2* RADIUS;
+        int t = (int)Math.min(_y, newY)-2* RADIUS;
+        int r = (int)Math.max(_x, newX)+2* RADIUS +1;
+        int b = (int)Math.max(_y, newY)+2* RADIUS +1;
         _invalidateRect = new Rect(l, t, r, b);
+    }
+
+    public void go(float x_touched, float y_touched) {
+        if (isHorizontal(x_touched, y_touched)){ // horizontal move
+            if (x_touched < _x){
+                goLeft();
+            }else{
+                goRight();
+            }
+        }else { // vertical move
+            if (y_touched < _y){
+                goUp();
+            }else {
+                goDown();
+            }
+        }
+    }
+
+    private void goDown() {
+        _move = VERTICAL_DOWN;
+    }
+
+    private void goUp() {
+        _move = VERTICAL_UP;
+    }
+
+    private void goRight() {
+        _move = HORIZONTAL_RIGHT;
+    }
+
+    private void goLeft() {
+        _move = HORIZONTAL_LEFT;
+    }
+
+    private boolean isHorizontal(float x_touched, float y_touched) {
+        return  Math.abs(x_touched -_x) < Math.abs(y_touched - _y);
     }
 }
