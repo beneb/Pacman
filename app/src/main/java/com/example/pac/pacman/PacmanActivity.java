@@ -21,7 +21,7 @@ public class PacmanActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         _labyrinth = new Labyrinth(getResources()); // TODO deserialize lab from res
-        _pacman = new PacMan(getResources());
+        _pacman = new PacMan(getResources(), _labyrinth);
         _view = new GameplayView(this, _labyrinth, _pacman);
         setContentView(_view);
         _handler.postDelayed(_updateView, 1000);

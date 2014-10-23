@@ -18,6 +18,7 @@ public class Labyrinth {
 
     final int WALL_HORIZONTAL = 1;
     final int WALL_VERTICAL = 2;
+    final int WALLS = WALL_HORIZONTAL | WALL_VERTICAL;
 
     private int layout[][];
 
@@ -27,7 +28,7 @@ public class Labyrinth {
     private Paint _wallPaint;
 
     public Labyrinth(Resources resources) {
-        String levelResource = resources.getString(R.string.level_00);
+        String levelResource = resources.getString(R.string.level_small);
         initFromResource(levelResource);
 
         _wallPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -61,6 +62,25 @@ public class Labyrinth {
                 bounds.top + _height * _cellSize);
     }
 
+    public boolean canMove(RectF objectBounds) {
+        return canMove(objectBounds.left, objectBounds.top) &&
+                canMove(objectBounds.left, objectBounds.bottom) &&
+                canMove(objectBounds.right, objectBounds.top) &&
+                canMove(objectBounds.right, objectBounds.bottom);
+    }
+
+    public boolean canMove(float x, float y) {
+        int cell = cellAt(x, y);
+        return cell == 0;
+    }
+
+    private int cellAt(float x, float y) {
+        int cellX = (int) ((x - _bounds.left) / _cellSize);
+        int cellY = (int) ((y - _bounds.top) / _cellSize);
+
+        return layout[cellX][cellY];
+    }
+
     public void draw(Canvas canvas) {
         for (int i = 0; i < _width; i++) {
             for (int j = 0; j < _height; j++) {
@@ -76,11 +96,11 @@ public class Labyrinth {
                     canvas.drawLine(startX, startY, stopX, startY, _wallPaint);
                 }
 
-                /*
+
                 float l = i * _cellSize + _bounds.left;
                 float t = j * _cellSize + _bounds.top;
                 canvas.drawRect(l, t, l + _cellSize, t + _cellSize, _debugPaint);
-                */
+
             }
         }
     }

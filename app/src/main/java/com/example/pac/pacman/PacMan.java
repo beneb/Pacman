@@ -18,6 +18,7 @@ public class PacMan {
   
     private int _move = STOPPED;
 
+    private final Labyrinth _labyrinth;
     private Paint _paint;
     private RectF _bounds;
 
@@ -25,7 +26,8 @@ public class PacMan {
     private float _direction = 1;
     private Rect _invalidateRect;
 
-    public PacMan(Resources resources) {
+    public PacMan(Resources resources, Labyrinth labyrinth) {
+        _labyrinth = labyrinth;
         _paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         _paint.setStyle(Paint.Style.FILL);
         _paint.setColor(resources.getColor(R.color.pacman));
@@ -78,14 +80,20 @@ public class PacMan {
             newY  = _y + 2;
         }
 
-        if (_bounds.contains(newX, newY)) {
+        if (canMove(newX, newY)) {
             newInvalidateRect(newX, newY);
             _x = newX;
             _y = newY;
         } else {
-            _direction = - _direction;
+            _direction = -_direction;
         }
+    }
 
+    private boolean canMove(float newX, float newY) {
+        return _labyrinth.canMove(newX, newY - _radius) &&
+                _labyrinth.canMove(newX, newY + _radius) &&
+                _labyrinth.canMove(newX - _radius, newY) &&
+                _labyrinth.canMove(newX + _radius, newY);
     }
 
     private void newInvalidateRect(float newX, float newY) {
