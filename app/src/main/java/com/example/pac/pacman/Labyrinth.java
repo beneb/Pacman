@@ -96,11 +96,11 @@ public class Labyrinth {
                     canvas.drawLine(startX, startY, stopX, startY, _wallPaint);
                 }
 
-
+/*
                 float l = i * _cellSize + _bounds.left;
                 float t = j * _cellSize + _bounds.top;
                 canvas.drawRect(l, t, l + _cellSize, t + _cellSize, _debugPaint);
-
+*/
             }
         }
     }

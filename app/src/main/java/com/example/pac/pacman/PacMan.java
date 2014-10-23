@@ -90,10 +90,10 @@ public class PacMan {
     }
 
     private boolean canMove(float newX, float newY) {
-        return _labyrinth.canMove(newX, newY - _radius) &&
-                _labyrinth.canMove(newX, newY + _radius) &&
-                _labyrinth.canMove(newX - _radius, newY) &&
-                _labyrinth.canMove(newX + _radius, newY);
+        return _labyrinth.canMove(newX, newY - RADIUS) &&
+                _labyrinth.canMove(newX, newY + RADIUS) &&
+                _labyrinth.canMove(newX - RADIUS, newY) &&
+                _labyrinth.canMove(newX + RADIUS, newY);
     }
 
     private void newInvalidateRect(float newX, float newY) {
