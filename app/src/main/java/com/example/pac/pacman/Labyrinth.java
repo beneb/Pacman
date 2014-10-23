@@ -2,9 +2,8 @@ package com.example.pac.pacman;
 
 import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.RectF;
+import android.graphics.Rect;
 
 public class Labyrinth {
 
@@ -19,9 +18,9 @@ public class Labyrinth {
     }
     private LayoutType layout[][] = new LayoutType[_width][_height];
 
-    private RectF _bounds;
-    private float _cellWidth;
-    private float _cellHeight;
+    private Rect _bounds;
+    private int _cellWidth;
+    private int _cellHeight;
 
     private Paint _backgroundPaint;
     private Paint _wallPaint;
@@ -54,7 +53,7 @@ public class Labyrinth {
         }
     }
 
-    public void setBounds(RectF bounds) {
+    public void setBounds(Rect bounds) {
         _bounds = bounds;
         _cellWidth = bounds.width() / _width;
         _cellHeight = bounds.height() / _height;
@@ -66,17 +65,15 @@ public class Labyrinth {
         for (int i = 0; i < _width; i++) {
             for (int j = 0; j < _height; j++) {
                 if (layout[i][j] == LayoutType.WallVertical) {
-                    float startX = _cellWidth*i+_cellWidth/2;
-                    float startY = _cellHeight*j;
-                    float stopX = startX;
-                    float stopY = startY*(j+1);
-                    canvas.drawLine(startX, startY, stopX, stopY, _wallPaint);
+                    int startX = _cellWidth*i+_cellWidth/2;
+                    int startY = _cellHeight*j;
+                    int stopY = startY*(j+1);
+                    canvas.drawLine(startX, startY, startX, stopY, _wallPaint);
                 } else if (layout[i][j] == LayoutType.WallHorizontal) {
-                    float startX = _cellWidth*i;
-                    float startY = _cellHeight*j+_cellWidth/2;
-                    float stopX = _cellWidth*(i+1);
-                    float stopY = startY;
-                    canvas.drawLine(startX, startY, stopX, stopY, _wallPaint);
+                    int startX = _cellWidth*i;
+                    int startY = _cellHeight*j+_cellWidth/2;
+                    int stopX = _cellWidth*(i+1);
+                    canvas.drawLine(startX, startY, stopX, startY, _wallPaint);
                 }
             }
         }

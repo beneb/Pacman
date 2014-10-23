@@ -8,27 +8,25 @@ import android.graphics.RectF;
 
 public class PacMan {
     private final int _radius = 10;
-    private final Resources _resources;
     private Paint _paint;
-    private RectF _bounds;
+    private Rect _bounds;
 
-    private float _x, _y;
+    private int _x, _y;
     private int _direction = 1;
     private Rect _invalidateRect;
 
     public PacMan(Resources resources) {
-        _resources = resources;
         _paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         _paint.setStyle(Paint.Style.FILL);
-        _paint.setColor(_resources.getColor(R.color.pacman));
+        _paint.setColor(resources.getColor(R.color.pacman));
     }
 
     public Rect getInvalidateRect() {
         return _invalidateRect;
     }
 
-    public void setBounds(RectF bounds) {
-        _bounds = new RectF(bounds.left+_radius, bounds.top+_radius, bounds.right-_radius, bounds.bottom-_radius);
+    public void setBounds(Rect bounds) {
+        _bounds = new Rect(bounds.left+_radius, bounds.top+_radius, bounds.right-_radius, bounds.bottom-_radius);
         _x = _bounds.centerX();
         _y = _bounds.centerY();
     }
@@ -39,8 +37,8 @@ public class PacMan {
     }
 
     public void move() {
-        float newX = _x + 2 * _direction;
-        float newY = _y + 2 * _direction;
+        int newX = _x + 2 * _direction;
+        int newY = _y + 2 * _direction;
         if (_bounds.contains(newX, newY)) {
             newInvalidateRect(newX, newY);
             _x = newX;
@@ -57,5 +55,4 @@ public class PacMan {
         int b = (int)Math.max(_y, newY)+2*_radius+1;
         _invalidateRect = new Rect(l, t, r, b);
     }
-
 }
