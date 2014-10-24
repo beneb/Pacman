@@ -1,4 +1,4 @@
-Pacman
-======
+PacMan [![Build Status on Travis:](https://travis-ci.org/beneb/Pacman.png)](https://travis-ci.org/beneb/Pacman)
+=========
 
-Hier folgt eine kurze Beschreibung...
+Collaborative playground for just-for-fun development.
