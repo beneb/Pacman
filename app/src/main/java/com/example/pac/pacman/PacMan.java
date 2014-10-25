@@ -15,6 +15,7 @@ public class PacMan {
 
 
     private int _move = STOPPED;
+    private int _pMouth = 30;
 
     private final Labyrinth _labyrinth;
     private float _radius;
@@ -44,7 +45,7 @@ public class PacMan {
 
     public void draw(Canvas canvas) {
         RectF r = new RectF(_x - _radius, _y - _radius, _x + _radius, _y + _radius);
-        canvas.drawArc(r, 30, 300, true, _paint);
+        canvas.drawArc(r, _pMouth, 300, true, _paint);
     }
 
     public void move() {
@@ -55,15 +56,19 @@ public class PacMan {
             return;
         }
         if (_move == HORIZONTAL_LEFT) {
+            _pMouth = 210;
             newX = _x - 2;
         }
         if (_move == HORIZONTAL_RIGHT) {
+            _pMouth = 30;
             newX = _x + 2;
         }
         if (_move == VERTICAL_UP) {
+            _pMouth = 300;
             newY = _y - 2;
         }
         if (_move == VERTICAL_DOWN) {
+            _pMouth = 120;
             newY = _y + 2;
         }
 
