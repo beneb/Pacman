@@ -1,12 +1,14 @@
 package com.example.pac.pacman;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 
 public class StartActivity extends ActionBarActivity {
@@ -15,6 +17,12 @@ public class StartActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
+
+        TextView caption=(TextView)findViewById(R.id.caption);
+        caption.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/PAC-FONT.TTF"));
+
+        Button newGame=(Button)findViewById(R.id.new_game);
+        newGame.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/emulogic.ttf"));
     }
 
 

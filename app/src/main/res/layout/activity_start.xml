@@ -7,32 +7,31 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".StartActivity"
-    >
+    android:background="@color/background"
+    android:clickable="true"
+    android:animateLayoutChanges="false">
 
     <TextView
-        android:text="@string/hello_pacman"
+        android:text="@string/pacman"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textView" />
+        android:id="@+id/caption"
+        android:layout_alignParentEnd="false"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/pacman"
+        android:padding="10dp"
+        android:textSize="@dimen/titel_size" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Exit"
-        android:id="@+id/exit_button"
-        android:onClick="buttonExitClick"
-        android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/button_start_pacman"
-        android:layout_toEndOf="@+id/button_start_pacman"
-        android:layout_marginBottom="57dp" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Start Pacman"
-        android:id="@+id/button_start_pacman"
+        android:text="New Game"
+        android:id="@+id/new_game"
         android:onClick="buttonPacmanClick"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:background="@color/background"
+        android:textColor="@color/foreground"
+        android:textSize="@dimen/menu_size" />
 
 </RelativeLayout>

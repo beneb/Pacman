@@ -3,4 +3,5 @@
     <color name="background">#000000</color>
     <color name="walls">#0000FF</color>
     <color name="pacman">#FFFF00</color>
+    <color name="foreground">#FFFFFF</color>
 </resources>
