@@ -47,21 +47,9 @@ public class PacMan {
         canvas.drawArc(r, 30, 300, true, _paint);
     }
 
-    /*public void move() {
-        int newX = _x + 2 * _direction;
-        int newY = _y + 2 * _direction;
-        if (_bounds.contains(newX, newY)) {
-            newInvalidateRect(newX, newY);
-            _x = newX;
-            _y = newY;
-        } else {
-            _direction = - _direction;
-        }
-    }*/
-
     public void move() {
-        float newX = _x + 2 * _direction;
-        float newY = _y + 2 * _direction;
+        float newX = _x;
+        float newY = _y;
         if (_move == STOPPED) {
             newInvalidateRect(newX, newY);
             return;
@@ -136,6 +124,6 @@ public class PacMan {
     }
 
     private boolean isHorizontal(float x_touched, float y_touched) {
-        return Math.abs(x_touched - _x) < Math.abs(y_touched - _y);
+        return Math.abs(x_touched - _x) > Math.abs(y_touched - _y);
     }
 }

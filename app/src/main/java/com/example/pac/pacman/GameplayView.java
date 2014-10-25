@@ -48,9 +48,10 @@ public class GameplayView extends View {
         _pacman.go(event.getX(), event.getY());
 
 
-        Toast.makeText(context, text, Toast.LENGTH_LONG).show();
+        // Toast.makeText(context, text, Toast.LENGTH_LONG).show();
+        // TODO bene: replace this part with log or with a status line in the bottom of the game board.
 
-        return false;
+        return true;
     }
 
     private CharSequence describeEvent(MotionEvent event) {
