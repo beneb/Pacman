@@ -18,13 +18,14 @@ public class StartActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
-        TextView caption=(TextView)findViewById(R.id.caption);
-        caption.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/PAC-FONT.TTF"));
-
-        Button newGame=(Button)findViewById(R.id.new_game);
-        newGame.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/emulogic.ttf"));
+        setTypeface(R.id.caption, "PAC-FONT.TTF");
+        setTypeface(R.id.new_game, "emulogic.ttf");
     }
 
+    private void setTypeface(int textViewId, final String fontName) {
+        TextView tv = (TextView) findViewById(textViewId);
+        tv.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/" + fontName));
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -33,11 +34,12 @@ public class StartActivity extends ActionBarActivity {
         return true;
     }
 
-    public void buttonPacmanClick(View v){
+    public void buttonPacmanClick(View v) {
         Intent intent = new Intent(this, PacmanActivity.class);
         startActivity(intent);
     }
-    public void buttonExitClick(View v){
+
+    public void buttonExitClick(View v) {
         android.os.Process.killProcess(android.os.Process.myPid());
         System.exit(1);
     }

@@ -20,7 +20,7 @@ public class PacmanActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        _labyrinth = new Labyrinth(getResources()); // TODO deserialize lab from res
+        _labyrinth = new Labyrinth(getResources());
         _pacman = new PacMan(getResources(), _labyrinth);
         _view = new GameplayView(this, _labyrinth, _pacman);
         setContentView(_view);
@@ -29,7 +29,6 @@ public class PacmanActivity extends ActionBarActivity {
 
     private Runnable _updateView = new Runnable() {
         public void run() {
-            Log.d("MainLoop", "handler:" + new Date());
             _pacman.move();
             _view.invalidate(_pacman.getInvalidateRect());
             _handler.removeCallbacks(_updateView);
