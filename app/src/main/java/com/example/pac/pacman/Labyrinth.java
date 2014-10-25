@@ -52,6 +52,10 @@ public class Labyrinth {
         }
     }
 
+    public float getCellSize() {
+        return _cellSize;
+    }
+
     public void init(RectF bounds) {
         float width = bounds.width() / _width;
         float height = bounds.height() / _height;
@@ -104,4 +108,5 @@ public class Labyrinth {
             }
         }
     }
+
 }

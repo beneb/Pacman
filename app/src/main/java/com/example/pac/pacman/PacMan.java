@@ -7,20 +7,18 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 
 public class PacMan {
-    private static final int RADIUS = 10;
-
     private static final int STOPPED = 0;
     private static final int HORIZONTAL_LEFT = 1;
     private static final int HORIZONTAL_RIGHT = 2;
     private static final int VERTICAL_UP = 3;
     private static final int VERTICAL_DOWN = 4;
 
-  
+
     private int _move = STOPPED;
 
     private final Labyrinth _labyrinth;
+    private float _radius;
     private Paint _paint;
-    private RectF _bounds;
 
     private float _x, _y;
     private float _direction = 1;
@@ -37,14 +35,15 @@ public class PacMan {
         return _invalidateRect;
     }
 
-    public void setBounds(RectF bounds) {
-        _bounds = new RectF(bounds.left+RADIUS, bounds.top+RADIUS, bounds.right-RADIUS, bounds.bottom-RADIUS);
-        _x = _bounds.centerX();
-        _y = _bounds.centerY();
+    public void init() {
+        RectF bounds = _labyrinth.getBounds();
+        _radius = _labyrinth.getCellSize() / 2;
+        _x = bounds.centerX();
+        _y = bounds.centerY();
     }
 
     public void draw(Canvas canvas) {
-        RectF r = new RectF(_x- RADIUS, _y- RADIUS, _x+2* RADIUS, _y+2* RADIUS);
+        RectF r = new RectF(_x - _radius, _y - _radius, _x + _radius, _y + _radius);
         canvas.drawArc(r, 30, 300, true, _paint);
     }
 
@@ -63,21 +62,21 @@ public class PacMan {
     public void move() {
         float newX = _x + 2 * _direction;
         float newY = _y + 2 * _direction;
-        if (_move == STOPPED){
+        if (_move == STOPPED) {
             newInvalidateRect(newX, newY);
             return;
         }
-        if (_move == HORIZONTAL_LEFT){
+        if (_move == HORIZONTAL_LEFT) {
             newX = _x - 2;
         }
-        if (_move == HORIZONTAL_RIGHT){
+        if (_move == HORIZONTAL_RIGHT) {
             newX = _x + 2;
         }
-        if (_move == VERTICAL_UP){
+        if (_move == VERTICAL_UP) {
             newY = _y - 2;
         }
-        if (_move == VERTICAL_DOWN){
-            newY  = _y + 2;
+        if (_move == VERTICAL_DOWN) {
+            newY = _y + 2;
         }
 
         if (canMove(newX, newY)) {
@@ -90,31 +89,31 @@ public class PacMan {
     }
 
     private boolean canMove(float newX, float newY) {
-        return _labyrinth.canMove(newX, newY - RADIUS) &&
-                _labyrinth.canMove(newX, newY + RADIUS) &&
-                _labyrinth.canMove(newX - RADIUS, newY) &&
-                _labyrinth.canMove(newX + RADIUS, newY);
+        return _labyrinth.canMove(newX, newY - _radius) &&
+                _labyrinth.canMove(newX, newY + _radius) &&
+                _labyrinth.canMove(newX - _radius, newY) &&
+                _labyrinth.canMove(newX + _radius, newY);
     }
 
     private void newInvalidateRect(float newX, float newY) {
-        int l = (int)Math.min(_x, newX)-2* RADIUS;
-        int t = (int)Math.min(_y, newY)-2* RADIUS;
-        int r = (int)Math.max(_x, newX)+2* RADIUS +1;
-        int b = (int)Math.max(_y, newY)+2* RADIUS +1;
+        int l = (int) (Math.min(_x, newX) - 2 * _radius);
+        int t = (int) (Math.min(_y, newY) - 2 * _radius);
+        int r = (int) (Math.max(_x, newX) + 2 * _radius + 1);
+        int b = (int) (Math.max(_y, newY) + 2 * _radius + 1);
         _invalidateRect = new Rect(l, t, r, b);
     }
 
     public void go(float x_touched, float y_touched) {
-        if (isHorizontal(x_touched, y_touched)){ // horizontal move
-            if (x_touched < _x){
+        if (isHorizontal(x_touched, y_touched)) { // horizontal move
+            if (x_touched < _x) {
                 goLeft();
-            }else{
+            } else {
                 goRight();
             }
-        }else { // vertical move
-            if (y_touched < _y){
+        } else { // vertical move
+            if (y_touched < _y) {
                 goUp();
-            }else {
+            } else {
                 goDown();
             }
         }
@@ -137,6 +136,6 @@ public class PacMan {
     }
 
     private boolean isHorizontal(float x_touched, float y_touched) {
-        return  Math.abs(x_touched -_x) < Math.abs(y_touched - _y);
+        return Math.abs(x_touched - _x) < Math.abs(y_touched - _y);
     }
 }

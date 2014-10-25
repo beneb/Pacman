@@ -67,7 +67,7 @@ public class GameplayView extends View {
         final int margin = 10;
         _bounds = new RectF(margin, margin, w-margin, h-margin);
         _labyrinth.init(_bounds);
-        _pacman.setBounds(_labyrinth.getBounds());
+        _pacman.init();
     }
 }
 
