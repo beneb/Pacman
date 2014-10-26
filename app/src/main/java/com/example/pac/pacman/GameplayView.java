@@ -1,5 +1,6 @@
 package com.example.pac.pacman;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -52,9 +53,12 @@ public class GameplayView extends View {
         return true;
     }
 
+    @SuppressLint("NewApi")
     private String describeEvent(MotionEvent event) {
         StringBuilder sb = new StringBuilder(300);
-        sb.append("Action: ").append(MotionEvent.actionToString(event.getAction()));
+        if (android.os.Build.VERSION.SDK_INT >= 19) {
+            sb.append("Action: ").append(MotionEvent.actionToString(event.getAction()));
+        }
         sb.append(" Location: ").append(event.getX()).append(" x ").append(event.getY());
         return sb.toString();
     }
