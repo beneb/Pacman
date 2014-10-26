@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.util.Collection;
+
 /*
 *   TODO: Maybe it should be a SurfaceView
 *   see  http://android-journey.blogspot.co.il/2010/02/android-2d-simple-example.html
@@ -17,14 +19,15 @@ import android.view.View;
 public class GameplayView extends View {
 
     private final Labyrinth _labyrinth;
-    private final PacMan _pacman;
+    private final PacMan _pacMan;
+    private final Collection<Character> _characters;
     private final Paint _paintBackground;
-    private RectF _bounds;
 
-    public GameplayView(Context context, Labyrinth labyrinth, PacMan pacman) {
+    public GameplayView(Context context, Labyrinth labyrinth, PacMan pacMan, Collection<Character> characters) {
         super(context);
         _labyrinth = labyrinth;
-        _pacman = pacman;
+        _pacMan = pacMan;
+        _characters = characters;
 
         _paintBackground = new Paint(Paint.ANTI_ALIAS_FLAG);
         _paintBackground.setStyle(Paint.Style.FILL);
@@ -37,14 +40,14 @@ public class GameplayView extends View {
         super.onDraw(canvas);
         canvas.drawPaint(_paintBackground);
         _labyrinth.draw(canvas);
-        _pacman.draw(canvas);
+        for (Character ch : _characters) {
+            ch.draw(canvas);
+        }
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        Context context = this.getContext();
-        CharSequence text = describeEvent(event);
-        _pacman.go(event.getX(), event.getY());
+        _pacMan.go(event.getX(), event.getY());
         Log.i("ME", describeEvent(event));
         return true;
     }
@@ -59,9 +62,11 @@ public class GameplayView extends View {
      @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         final int margin = 10;
-        _bounds = new RectF(margin, margin, w-margin, h-margin);
-        _labyrinth.init(_bounds);
-        _pacman.init();
+         RectF bounds = new RectF(margin, margin, w-margin, h-margin);
+        _labyrinth.init(bounds);
+         for (Character ch : _characters) {
+             ch.init();
+         }
     }
 }
 

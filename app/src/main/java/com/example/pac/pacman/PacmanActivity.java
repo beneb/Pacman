@@ -6,30 +6,38 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PacmanActivity extends ActionBarActivity {
 
     private Labyrinth _labyrinth;
-    private PacMan _pacman;
     private Handler _handler = new Handler();
     private GameplayView _view;
+    private List<Character> _characters;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         _labyrinth = new Labyrinth(getResources());
-        _pacman = new PacMan(getResources(), _labyrinth);
-        _view = new GameplayView(this, _labyrinth, _pacman);
+        _characters = new ArrayList<Character>();
+        PacMan pacMan = new PacMan(getResources(), _labyrinth);
+        _characters.add(pacMan);
+        _characters.addAll(Ghost.createGhosts(getResources(), _labyrinth));
+
+        _view = new GameplayView(this, _labyrinth, pacMan, _characters);
         setContentView(_view);
-        // _handler.postDelayed(_updateView, 1000);
-        _handler.post(_updateView);
+        _handler.postDelayed(_updateView, 1000);
     }
 
     private Runnable _updateView = new Runnable() {
         public void run() {
-            _pacman.move();
-            _view.invalidate(_pacman.getInvalidateRect());
-            _handler.removeCallbacks(_updateView);
-            // _handler.postDelayed(this, 30);
+            for (Character character : _characters) {
+                character.move();
+                _view.invalidate(character.getInvalidateRect());
+            }
+            //_handler.removeCallbacks(_updateView);
+            //_handler.postDelayed(this, 30);
             _handler.post(this);
         }
     };
