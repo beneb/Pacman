@@ -27,21 +27,15 @@ public class StartActivity extends ActionBarActivity {
         tv.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/" + fontName));
     }
 
+    public void buttonPacmanClick(View v) {
+        startActivity(new Intent(this, PacmanActivity.class));
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.start, menu);
         return true;
-    }
-
-    public void buttonPacmanClick(View v) {
-        Intent intent = new Intent(this, PacmanActivity.class);
-        startActivity(intent);
-    }
-
-    public void buttonExitClick(View v) {
-        android.os.Process.killProcess(android.os.Process.myPid());
-        System.exit(1);
     }
 
     @Override
