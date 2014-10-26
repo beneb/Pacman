@@ -4,9 +4,9 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
 /*
 *   TODO: Maybe it should be a SurfaceView
@@ -44,26 +44,19 @@ public class GameplayView extends View {
     public boolean onTouchEvent(MotionEvent event) {
         Context context = this.getContext();
         CharSequence text = describeEvent(event);
-
         _pacman.go(event.getX(), event.getY());
-
-
-        // Toast.makeText(context, text, Toast.LENGTH_LONG).show();
-        // TODO bene: replace this part with log or with a status line in the bottom of the game board.
-
+        Log.i("ME", describeEvent(event));
         return true;
     }
 
-    private CharSequence describeEvent(MotionEvent event) {
+    private String describeEvent(MotionEvent event) {
         StringBuilder sb = new StringBuilder(300);
-        sb.append("Action: ").append(event.getAction()).append("\n");
-        sb.append("Location: ").append(event.getX()).append(" x ").append(event.getY()).append("\n");
-
-
+        sb.append("Action: ").append(MotionEvent.actionToString(event.getAction()));
+        sb.append(" Location: ").append(event.getX()).append(" x ").append(event.getY());
         return sb.toString();
     }
 
-    @Override
+     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         final int margin = 10;
         _bounds = new RectF(margin, margin, w-margin, h-margin);

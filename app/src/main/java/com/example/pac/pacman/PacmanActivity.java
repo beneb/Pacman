@@ -3,12 +3,8 @@ package com.example.pac.pacman;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import java.util.Date;
-
 
 public class PacmanActivity extends ActionBarActivity {
 
@@ -24,7 +20,8 @@ public class PacmanActivity extends ActionBarActivity {
         _pacman = new PacMan(getResources(), _labyrinth);
         _view = new GameplayView(this, _labyrinth, _pacman);
         setContentView(_view);
-        _handler.postDelayed(_updateView, 1000);
+        // _handler.postDelayed(_updateView, 1000);
+        _handler.post(_updateView);
     }
 
     private Runnable _updateView = new Runnable() {
@@ -32,7 +29,8 @@ public class PacmanActivity extends ActionBarActivity {
             _pacman.move();
             _view.invalidate(_pacman.getInvalidateRect());
             _handler.removeCallbacks(_updateView);
-            _handler.postDelayed(this, 30);
+            // _handler.postDelayed(this, 30);
+            _handler.post(this);
         }
     };
 
