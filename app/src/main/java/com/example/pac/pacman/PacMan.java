@@ -13,9 +13,14 @@ public class PacMan {
     private static final int VERTICAL_UP = 3;
     private static final int VERTICAL_DOWN = 4;
 
-
     private int _move = STOPPED;
-    private int _pMouth = 30;
+    private int _pMouth;
+
+    private static final int MOUTH_OPEN_GRAD = 30;
+    private static final int MOUTH_CLOSED_GRAD = 0;
+
+    private int _mouthOpenGrad = MOUTH_OPEN_GRAD;
+    private boolean _mouthClosing;
 
     private final Labyrinth _labyrinth;
     private float _radius;
@@ -45,7 +50,7 @@ public class PacMan {
 
     public void draw(Canvas canvas) {
         RectF r = new RectF(_x - _radius, _y - _radius, _x + _radius, _y + _radius);
-        canvas.drawArc(r, _pMouth, 300, true, _paint);
+        canvas.drawArc(r, _pMouth + _mouthOpenGrad, 360 - 2*_mouthOpenGrad, true, _paint);
     }
 
     public void move() {
@@ -56,19 +61,19 @@ public class PacMan {
             return;
         }
         if (_move == HORIZONTAL_LEFT) {
-            _pMouth = 210;
+            _pMouth = 180;
             newX = _x - 2;
         }
         if (_move == HORIZONTAL_RIGHT) {
-            _pMouth = 30;
+            _pMouth = 0;
             newX = _x + 2;
         }
         if (_move == VERTICAL_UP) {
-            _pMouth = 300;
+            _pMouth = 270;
             newY = _y - 2;
         }
         if (_move == VERTICAL_DOWN) {
-            _pMouth = 120;
+            _pMouth = 90;
             newY = _y + 2;
         }
 
@@ -76,9 +81,26 @@ public class PacMan {
             newInvalidateRect(newX, newY);
             _x = newX;
             _y = newY;
+
+            setMouthOpen(true);
         } else {
             _direction = -_direction;
+            setMouthOpen(false);
         }
+    }
+
+    private void setMouthOpen(boolean canMove) {
+        if (!canMove) {
+            _mouthOpenGrad = MOUTH_OPEN_GRAD;
+            _mouthClosing = true;
+            return;
+        }
+        if (_mouthOpenGrad == MOUTH_OPEN_GRAD) {
+            _mouthClosing = true;
+        } else if (_mouthOpenGrad == MOUTH_CLOSED_GRAD) {
+            _mouthClosing = false;
+        }
+        _mouthOpenGrad += _mouthClosing ? -5 : 5;
     }
 
     private boolean canMove(float newX, float newY) {
