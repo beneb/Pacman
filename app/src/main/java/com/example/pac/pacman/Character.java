@@ -26,7 +26,7 @@ public class Character {
     }
 
     public void init() {
-        _size = _labyrinth.getCellSize();
+        _size = _labyrinth.getCellSize()-4;
         newInvalidateRect(_x, _y);
     }
 
