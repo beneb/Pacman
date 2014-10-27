@@ -16,9 +16,7 @@ public class Labyrinth {
         return _bounds;
     }
 
-    final int WALL_HORIZONTAL = 1;
-    final int WALL_VERTICAL = 2;
-    final int WALLS = WALL_HORIZONTAL | WALL_VERTICAL;
+    final int WALL = 1;
 
     private int layout[][];
 
@@ -28,7 +26,7 @@ public class Labyrinth {
     private Paint _wallPaint;
 
     public Labyrinth(Resources resources) {
-        String levelResource = resources.getString(R.string.level_small);
+        String levelResource = resources.getString(R.string.level_classic);
         initFromResource(levelResource);
 
         _wallPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -88,23 +86,16 @@ public class Labyrinth {
     public void draw(Canvas canvas) {
         for (int i = 0; i < _width; i++) {
             for (int j = 0; j < _height; j++) {
-                if (layout[i][j] == WALL_VERTICAL) {
-                    float startX = _cellSize * i + _cellSize / 2 + _bounds.left;
-                    float startY = _cellSize * j + _bounds.top;
-                    float stopY = _cellSize * (j + 1) + _bounds.top;
-                    canvas.drawLine(startX, startY, startX, stopY, _wallPaint);
-                } else if (layout[i][j] == WALL_HORIZONTAL) {
+                if (layout[i][j] == WALL) {
                     float startX = _cellSize * i + _bounds.left;
-                    float startY = _cellSize * j + _cellSize / 2 + _bounds.top;
-                    float stopX = _cellSize * (i + 1) + _bounds.left;
-                    canvas.drawLine(startX, startY, stopX, startY, _wallPaint);
+                    float startY = _cellSize * j + _bounds.top;
+                    canvas.drawRect(startX, startY, startX +_cellSize, startY + _cellSize, _wallPaint);
                 }
+                //--Grid for Debugging
+                //float l = i * _cellSize + _bounds.left;
+                //float t = j * _cellSize + _bounds.top;
+                //canvas.drawRect(l, t, l + _cellSize, t + _cellSize, _debugPaint);
 
-/*
-                float l = i * _cellSize + _bounds.left;
-                float t = j * _cellSize + _bounds.top;
-                canvas.drawRect(l, t, l + _cellSize, t + _cellSize, _debugPaint);
-*/
             }
         }
     }
