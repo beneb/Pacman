@@ -56,8 +56,11 @@ public class GameplayView extends View {
     @SuppressLint("NewApi")
     private String describeEvent(MotionEvent event) {
         StringBuilder sb = new StringBuilder(300);
+        int action = event.getAction();
         if (android.os.Build.VERSION.SDK_INT >= 19) {
-            sb.append("Action: ").append(MotionEvent.actionToString(event.getAction()));
+            sb.append("Action: ").append(MotionEvent.actionToString(action));
+        }else {
+            sb.append("Action: ").append(action);
         }
         sb.append(" Location: ").append(event.getX()).append(" x ").append(event.getY());
         return sb.toString();

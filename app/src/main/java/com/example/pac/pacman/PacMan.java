@@ -6,7 +6,12 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 
 public class PacMan extends Character {
-    private int _pMouth;
+    private static final int MOUTH_RIGHT = 0;
+    private static final int MOUTH_LEFT = 180;
+    private static final int MOUTH_UP = 270;
+    private static final int MOUTH_DOWN = 90;
+
+    private int _pMouth = MOUTH_RIGHT;
 
     private static final int MOUTH_OPEN_GRAD = 30;
     private static final int MOUTH_CLOSED_GRAD = 0;
@@ -46,16 +51,16 @@ public class PacMan extends Character {
         switch (_move) {
             case Stopped:
             case HorizontalRight:
-                _pMouth = 0;
+                _pMouth = MOUTH_RIGHT;
                 break;
             case HorizontalLeft:
-                _pMouth = 180;
+                _pMouth = MOUTH_LEFT;
                 break;
             case VerticalUp:
-                _pMouth = 270;
+                _pMouth = MOUTH_UP;
                 break;
             case VerticalDown:
-                _pMouth = 90;
+                _pMouth = MOUTH_DOWN;
                 break;
         }
         return moved;
