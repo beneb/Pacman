@@ -80,6 +80,16 @@ public class Labyrinth {
         int cellX = (int) ((x - _bounds.left) / _cellSize);
         int cellY = (int) ((y - _bounds.top) / _cellSize);
 
+        if (cellX >= _width) {
+            cellX = 0;
+        } else if (cellX < 0) {
+            cellX = _width - 1;
+        }
+        if (cellY >= _height) {
+            cellY = 0;
+        } else if (cellY < 0) {
+            cellY = _height - 1;
+        }
         return layout[cellX][cellY];
     }
 
@@ -89,7 +99,7 @@ public class Labyrinth {
                 if (layout[i][j] == WALL) {
                     float startX = _cellSize * i + _bounds.left;
                     float startY = _cellSize * j + _bounds.top;
-                    canvas.drawRect(startX, startY, startX +_cellSize, startY + _cellSize, _wallPaint);
+                    canvas.drawRect(startX, startY, startX + _cellSize, startY + _cellSize, _wallPaint);
                 }
                 //--Grid for Debugging
                 //float l = i * _cellSize + _bounds.left;

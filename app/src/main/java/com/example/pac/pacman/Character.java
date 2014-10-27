@@ -58,6 +58,13 @@ public class Character {
         }
 
         if (_move != Direction.Stopped && canMove(newX, newY)) {
+            if (newX > _labyrinth.getBounds().right) {
+                newX = _labyrinth.getBounds().left;
+            }
+            if (newX < _labyrinth.getBounds().left) {
+                newX = _labyrinth.getBounds().right;
+            }
+
             newInvalidateRect(newX, newY);
             _x = newX;
             _y = newY;
