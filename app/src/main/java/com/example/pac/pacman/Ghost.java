@@ -4,7 +4,7 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.RectF;
+import android.graphics.Rect;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,7 +31,7 @@ public class Ghost extends Character {
     @Override
     public void init() {
         super.init();
-        RectF bounds = _labyrinth.getBounds();
+        Rect bounds = _labyrinth.getBounds();
         _x = bounds.centerX() - 2 * _size;
         _y = bounds.centerY() - 3 * _size;
         _foreground.setTextSize(_size);

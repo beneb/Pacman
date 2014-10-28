@@ -15,8 +15,8 @@ public class Character {
         VerticalDown,
     }
 
-    protected float _x, _y;
-    protected float _size;
+    protected int _x, _y;
+    protected int _size;
     protected Direction _move = Direction.Stopped;
 
     protected final Labyrinth _labyrinth;
@@ -37,8 +37,8 @@ public class Character {
     }
 
     public boolean move() {
-        float newX = _x;
-        float newY = _y;
+        int newX = _x;
+        int newY = _y;
 
         switch (_move) {
             case Stopped:
@@ -82,11 +82,11 @@ public class Character {
                 _labyrinth.canMove(newX + radius, newY);
     }
 
-    protected void newInvalidateRect(float newX, float newY) {
-        int l = (int) (Math.min(_x, newX) - _size);
-        int t = (int) (Math.min(_y, newY) - _size);
-        int r = (int) (Math.max(_x, newX) + _size + 1);
-        int b = (int) (Math.max(_y, newY) + _size + 1);
+    protected void newInvalidateRect(int newX, int newY) {
+        int l = Math.min(_x, newX) - _size;
+        int t = Math.min(_y, newY) - _size;
+        int r = Math.max(_x, newX) + _size + 1;
+        int b = Math.max(_y, newY) + _size + 1;
         _invalidateRect = new Rect(l, t, r, b);
     }
 

@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
 
 public class Labyrinth {
@@ -12,7 +13,7 @@ public class Labyrinth {
     private int _height;
     private Paint _debugPaint;
 
-    public RectF getBounds() {
+    public Rect getBounds() {
         return _bounds;
     }
 
@@ -20,8 +21,8 @@ public class Labyrinth {
 
     private int layout[][];
 
-    private RectF _bounds;
-    private float _cellSize;
+    private Rect _bounds;
+    private int _cellSize;
 
     private Paint _wallPaint;
 
@@ -50,15 +51,15 @@ public class Labyrinth {
         }
     }
 
-    public float getCellSize() {
+    public int getCellSize() {
         return _cellSize;
     }
 
-    public void init(RectF bounds) {
-        float width = bounds.width() / _width;
-        float height = bounds.height() / _height;
+    public void init(Rect bounds) {
+        int width = bounds.width() / _width;
+        int height = bounds.height() / _height;
         _cellSize = Math.min(width, height);
-        _bounds = new RectF(bounds.left,
+        _bounds = new Rect(bounds.left,
                 bounds.top,
                 bounds.left + _width * _cellSize,
                 bounds.top + _height * _cellSize);

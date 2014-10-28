@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -69,7 +70,7 @@ public class GameplayView extends View {
      @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         final int margin = 10;
-         RectF bounds = new RectF(margin, margin, w-margin, h-margin);
+         Rect bounds = new Rect(margin, margin, w-margin, h-margin);
         _labyrinth.init(bounds);
          for (Character ch : _characters) {
              ch.init();

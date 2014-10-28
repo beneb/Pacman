@@ -3,6 +3,7 @@ package com.example.pac.pacman;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
 
 public class PacMan extends Character {
@@ -31,7 +32,7 @@ public class PacMan extends Character {
     @Override
     public void init() {
         super.init();
-        RectF bounds = _labyrinth.getBounds();
+        Rect bounds = _labyrinth.getBounds();
         _x = bounds.centerX();
         _y = bounds.centerY();
     }
