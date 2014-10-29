@@ -16,7 +16,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/caption"
-        android:layout_alignParentEnd="false"
         android:layout_centerHorizontal="true"
         android:textColor="@color/pacman"
         android:padding="10dp"
