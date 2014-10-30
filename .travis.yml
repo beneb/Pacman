@@ -4,6 +4,7 @@ android:
   components:
     - build-tools-21.0.2
     - android-21
+    - sys-img-armeabi-v7a-android-21    
 
 before_install:
  - chmod +x gradlew
