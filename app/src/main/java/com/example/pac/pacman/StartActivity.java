@@ -18,7 +18,7 @@ public class StartActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
-        setTypeface(R.id.caption, "PAC-FONT.TTF");
+        setTypeface(R.id.caption, "pacfont.ttf");
         setTypeface(R.id.new_game, "emulogic.ttf");
     }
 
