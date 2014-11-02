@@ -46,13 +46,13 @@ public class Ghost extends Character {
     public boolean move() {
         double rnd = Math.random();
         if (rnd < .25) {
-            _move = Direction.HorizontalLeft;
+            _wishDirection = Direction.Left;
         } else if (rnd < .5) {
-            _move = Direction.HorizontalRight;
+            _wishDirection = Direction.Right;
         } else if (rnd < .75) {
-            _move = Direction.VerticalUp;
+            _wishDirection = Direction.Up;
         } else {
-            _move = Direction.VerticalDown;
+            _wishDirection = Direction.Down;
         }
 
         return super.move();

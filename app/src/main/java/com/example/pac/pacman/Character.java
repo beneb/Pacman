@@ -2,6 +2,7 @@ package com.example.pac.pacman;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.util.Log;
 
 public class Character {
 
@@ -9,15 +10,16 @@ public class Character {
 
     public enum Direction {
         Stopped,
-        HorizontalLeft,
-        HorizontalRight,
-        VerticalUp,
-        VerticalDown,
+        Left,
+        Right,
+        Up,
+        Down,
     }
 
     protected int _x, _y;
     protected int _size;
-    protected Direction _move = Direction.Stopped;
+    protected Direction _wishDirection = Direction.Left;
+    protected Direction _direction = Direction.Stopped;
 
     protected final Labyrinth _labyrinth;
 
@@ -40,24 +42,52 @@ public class Character {
         int newX = _x;
         int newY = _y;
 
-        switch (_move) {
+        switch (_wishDirection) {
             case Stopped:
                 break;
-            case HorizontalLeft:
+            case Left:
                 newX = _x - MOVE_DELTA;
                 break;
-            case HorizontalRight:
+            case Right:
                 newX = _x + MOVE_DELTA;
                 break;
-            case VerticalUp:
+            case Up:
                 newY = _y - MOVE_DELTA;
                 break;
-            case VerticalDown:
+            case Down:
                 newY = _y + MOVE_DELTA;
                 break;
         }
 
-        if (_move != Direction.Stopped && canMove(newX, newY)) {
+
+        if (!canMove(newX, newY)) {
+            // reset new values
+            newX = _x;
+            newY = _y;
+
+            switch (_direction) {
+                case Stopped:
+                    break;
+                case Left:
+                    newX = _x - MOVE_DELTA;
+                    break;
+                case Right:
+                    newX = _x + MOVE_DELTA;
+                    break;
+                case Up:
+                    newY = _y - MOVE_DELTA;
+                    break;
+                case Down:
+                    newY = _y + MOVE_DELTA;
+                    break;
+            }
+        } else {
+            _direction = _wishDirection;
+        }
+
+        LogMove(newX, newY);
+
+        if (_wishDirection != Direction.Stopped && canMove(newX, newY)) {
             if (newX > _labyrinth.getBounds().right) {
                 newX = _labyrinth.getBounds().left;
             }
@@ -72,6 +102,12 @@ public class Character {
         } else {
             return false;
         }
+    }
+
+    private void LogMove(int newX, int newY) {
+        Log.i("move", "_direction: " + _direction +
+                    ", _wishDirection: " + _wishDirection +
+                    ", canMove(): " + canMove(newX, newY));
     }
 
     protected boolean canMove(float newX, float newY) {

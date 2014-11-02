@@ -23,7 +23,7 @@ public class PacmanActivity extends ActionBarActivity {
         _characters = new ArrayList<Character>();
         PacMan pacMan = new PacMan(getResources(), _labyrinth);
         _characters.add(pacMan);
-        _characters.addAll(Ghost.createGhosts(getResources(), _labyrinth));
+        // _characters.addAll(Ghost.createGhosts(getResources(), _labyrinth));
 
         _view = new GameplayView(this, _labyrinth, pacMan, _characters);
         setContentView(_view);

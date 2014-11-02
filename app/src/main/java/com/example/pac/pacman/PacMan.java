@@ -49,18 +49,18 @@ public class PacMan extends Character {
         boolean moved = super.move();
         setMouthOpen (moved);
 
-        switch (_move) {
+        switch (_wishDirection) {
             case Stopped:
-            case HorizontalRight:
+            case Right:
                 _pMouth = MOUTH_RIGHT;
                 break;
-            case HorizontalLeft:
+            case Left:
                 _pMouth = MOUTH_LEFT;
                 break;
-            case VerticalUp:
+            case Up:
                 _pMouth = MOUTH_UP;
                 break;
-            case VerticalDown:
+            case Down:
                 _pMouth = MOUTH_DOWN;
                 break;
         }
@@ -98,19 +98,19 @@ public class PacMan extends Character {
     }
 
     private void goDown() {
-        _move = Direction.VerticalDown;
+        _wishDirection = Direction.Down;
     }
 
     private void goUp() {
-        _move = Direction.VerticalUp;
+        _wishDirection = Direction.Up;
     }
 
     private void goRight() {
-        _move = Direction.HorizontalRight;
+        _wishDirection = Direction.Right;
     }
 
     private void goLeft() {
-        _move = Direction.HorizontalLeft;
+        _wishDirection = Direction.Left;
     }
 
     private boolean isHorizontal(float x_touched, float y_touched) {

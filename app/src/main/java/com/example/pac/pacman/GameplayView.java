@@ -50,7 +50,7 @@ public class GameplayView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         _pacMan.go(event.getX(), event.getY());
-        Log.i("ME", describeEvent(event));
+        // Log.i("ME", describeEvent(event));
         return true;
     }
 
