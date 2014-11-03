@@ -49,7 +49,7 @@ public class PacMan extends Character {
         boolean moved = super.move();
         setMouthOpen (moved);
 
-        switch (_wishDirection) {
+        switch (_direction) {
             case Stopped:
             case Right:
                 _pMouth = MOUTH_RIGHT;
