@@ -112,10 +112,10 @@ public class Character {
 
     protected boolean canMove(float newX, float newY) {
         float radius = _size/2;
-        return _labyrinth.canMove(newX, newY - radius) &&
-                _labyrinth.canMove(newX, newY + radius) &&
-                _labyrinth.canMove(newX - radius, newY) &&
-                _labyrinth.canMove(newX + radius, newY);
+        return _labyrinth.canMove(newX - radius, newY - radius) &&
+                _labyrinth.canMove(newX + radius, newY - radius) &&
+                _labyrinth.canMove(newX + radius, newY + radius) &&
+                _labyrinth.canMove(newX - radius, newY + radius);
     }
 
     protected void newInvalidateRect(int newX, int newY) {
