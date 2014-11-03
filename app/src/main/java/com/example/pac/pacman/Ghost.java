@@ -22,7 +22,7 @@ public class Ghost extends Character {
     private final Paint _foreground;
 
     private Ghost(Resources resources, Labyrinth labyrinth, int color) {
-        super(labyrinth);
+        super(resources, labyrinth);
         _foreground = new Paint(Paint.ANTI_ALIAS_FLAG);
         _foreground.setStyle(Paint.Style.FILL);
         _foreground.setColor(color);

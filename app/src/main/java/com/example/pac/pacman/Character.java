@@ -1,12 +1,15 @@
 package com.example.pac.pacman;
 
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.Log;
+import android.util.TypedValue;
 
 public class Character {
 
-    private static final int MOVE_DELTA = 2;
+    private final float MOVE_DELTA;
 
     public enum Direction {
         Stopped,
@@ -16,19 +19,23 @@ public class Character {
         Down,
     }
 
-    protected int _x, _y;
+    protected float _x, _y;
     protected int _size;
     protected Direction _wishDirection = Direction.Left;
     protected Direction _direction = Direction.Stopped;
 
     protected final Labyrinth _labyrinth;
 
-    public Character(Labyrinth labyrinth) {
+    public Character(Resources r, Labyrinth labyrinth) {
         _labyrinth = labyrinth;
+
+        final float MOVE_DELTA_DIP = 2.5f;
+        MOVE_DELTA = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, MOVE_DELTA_DIP, r.getDisplayMetrics());
+        Log.i("Character", "MOVE_DELTA = " + MOVE_DELTA);
     }
 
     public void init() {
-        _size = _labyrinth.getCellSize()-4;
+        _size = _labyrinth.getCellSize()-2;
         newInvalidateRect(_x, _y);
     }
 
@@ -39,8 +46,8 @@ public class Character {
     }
 
     public boolean move() {
-        int newX = _x;
-        int newY = _y;
+        float newX = _x;
+        float newY = _y;
 
         switch (_wishDirection) {
             case Stopped:
@@ -85,8 +92,6 @@ public class Character {
             _direction = _wishDirection;
         }
 
-        LogMove(newX, newY);
-
         if (_wishDirection != Direction.Stopped && canMove(newX, newY)) {
             if (newX > _labyrinth.getBounds().right) {
                 newX = _labyrinth.getBounds().left;
@@ -104,12 +109,6 @@ public class Character {
         }
     }
 
-    private void LogMove(int newX, int newY) {
-        Log.i("move", "_direction: " + _direction +
-                    ", _wishDirection: " + _wishDirection +
-                    ", canMove(): " + canMove(newX, newY));
-    }
-
     protected boolean canMove(float newX, float newY) {
         float radius = _size/2;
         return _labyrinth.canMove(newX - radius, newY - radius) &&
@@ -118,11 +117,11 @@ public class Character {
                 _labyrinth.canMove(newX - radius, newY + radius);
     }
 
-    protected void newInvalidateRect(int newX, int newY) {
-        int l = Math.min(_x, newX) - _size;
-        int t = Math.min(_y, newY) - _size;
-        int r = Math.max(_x, newX) + _size + 1;
-        int b = Math.max(_y, newY) + _size + 1;
+    protected void newInvalidateRect(float newX, float newY) {
+        int l = (int)Math.min(_x, newX) - _size;
+        int t = (int)Math.min(_y, newY) - _size;
+        int r = (int)Math.max(_x, newX) + _size + 1;
+        int b = (int)Math.max(_y, newY) + _size + 1;
         _invalidateRect = new Rect(l, t, r, b);
     }
 

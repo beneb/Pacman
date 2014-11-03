@@ -1,8 +1,11 @@
 package com.example.pac.pacman;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
+import android.util.TypedValue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +28,7 @@ public class PacmanActivity extends ActionBarActivity {
 
         _view = new GameplayView(this, _labyrinth, pacMan, _characters);
         setContentView(_view);
+
         _handler.postDelayed(_updateView, 1000);
     }
 

@@ -23,7 +23,7 @@ public class PacMan extends Character {
     private Paint _paint;
 
     public PacMan(Resources resources, Labyrinth labyrinth) {
-        super(labyrinth);
+        super(resources, labyrinth);
         _paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         _paint.setStyle(Paint.Style.FILL);
         _paint.setColor(resources.getColor(R.color.pacman));
