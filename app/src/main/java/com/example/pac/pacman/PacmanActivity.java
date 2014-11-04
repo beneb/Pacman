@@ -1,6 +1,7 @@
 package com.example.pac.pacman;
 
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
@@ -22,9 +23,9 @@ public class PacmanActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         _labyrinth = new Labyrinth(getResources());
         _characters = new ArrayList<Character>();
-        PacMan pacMan = new PacMan(getResources(), _labyrinth);
+        PacMan pacMan = new PacMan(getResources(), _labyrinth, Color.YELLOW, "Pac-Man", "Al Bundy");
         _characters.add(pacMan);
-        // _characters.addAll(Ghost.createGhosts(getResources(), _labyrinth));
+        // _characters.addAll(GhostRepository.CreateGhosts(getResources(), _labyrinth));
 
         _view = new GameplayView(this, _labyrinth, pacMan, _characters);
         setContentView(_view);

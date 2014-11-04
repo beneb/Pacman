@@ -2,30 +2,13 @@ package com.example.pac.pacman;
 
 import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
-import java.util.Arrays;
-import java.util.Collection;
+public abstract class Ghost extends Character {
 
-public class Ghost extends Character {
-
-    public static Collection<Ghost> createGhosts(Resources resources, Labyrinth labyrinth) {
-        return Arrays.asList(
-                new Ghost(resources, labyrinth, Color.RED),
-                new Ghost(resources, labyrinth, Color.CYAN),
-                new Ghost(resources, labyrinth, Color.GRAY),
-                new Ghost(resources, labyrinth, Color.MAGENTA));
-    }
-
-    private final Paint _foreground;
-
-    private Ghost(Resources resources, Labyrinth labyrinth, int color) {
-        super(resources, labyrinth);
-        _foreground = new Paint(Paint.ANTI_ALIAS_FLAG);
-        _foreground.setStyle(Paint.Style.FILL);
-        _foreground.setColor(color);
+    protected Ghost(Resources resources, Labyrinth labyrinth, int color, String name, String nickName) {
+        super(resources, labyrinth, name, nickName, color);
     }
 
     @Override
