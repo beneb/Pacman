@@ -2,18 +2,11 @@ package com.example.pac.pacman;
 
 import android.content.res.Resources;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.util.Log;
 import android.util.TypedValue;
 
 public class Character extends GameObject {
-
-    public enum Direction {
-        Stopped,
-        Left,
-        Right,
-        Up,
-        Down;
-    }
 
     private String _name;
     private String _nickName;
@@ -39,7 +32,7 @@ public class Character extends GameObject {
         Log.i("Character", "MOVE_DELTA = " + MOVE_DELTA);
     }
 
-    public FloatPoint GetNewWayPoint(Direction direction, float moveDelta) {
+    public PointF GetNewWayPoint(Direction direction, float moveDelta) {
         float newX = _x;
         float newY = _y;
 
@@ -60,14 +53,14 @@ public class Character extends GameObject {
                 break;
         }
 
-        return new FloatPoint(newX, newY);
+        return new PointF(newX, newY);
     }
 
     public boolean move() {
         float newX;
         float newY;
 
-        FloatPoint newWayPoint = GetNewWayPoint(_wishDirection, MOVE_DELTA);
+        PointF newWayPoint = GetNewWayPoint(_wishDirection, MOVE_DELTA);
         newX = newWayPoint.x;
         newY = newWayPoint.y;
 
@@ -96,23 +89,11 @@ public class Character extends GameObject {
         }
     }
 
-    protected boolean canMove(float newX, float newY) {
+    private boolean canMove(float newX, float newY) {
         float radius = _size/2;
         return _labyrinth.canMove(newX - radius, newY - radius) &&
                 _labyrinth.canMove(newX + radius, newY - radius) &&
                 _labyrinth.canMove(newX + radius, newY + radius) &&
                 _labyrinth.canMove(newX - radius, newY + radius);
-    }
-
-    public void SetColor(int color) {
-        _foreground.setColor(color);
-    }
-
-    public void ResetColor() {
-        _foreground.setColor(_typedColor);
-    }
-
-    public float GetMoveDelta() {
-        return MOVE_DELTA;
     }
 }

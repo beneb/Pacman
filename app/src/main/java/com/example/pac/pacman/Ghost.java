@@ -7,9 +7,9 @@ import android.graphics.Rect;
 
 public abstract class Ghost extends Character {
 
-    private MoveStrategy _moveStrategy;
+    private IMoveStrategy _moveStrategy;
 
-    protected Ghost(Resources resources, Labyrinth labyrinth, int color, String name, String nickName, MoveStrategy moveStrategy) {
+    protected Ghost(Resources resources, Labyrinth labyrinth, int color, String name, String nickName, IMoveStrategy moveStrategy) {
         super(resources, labyrinth, name, nickName, color);
         _foreground.setColor(color);
         _moveStrategy = moveStrategy;
@@ -19,8 +19,8 @@ public abstract class Ghost extends Character {
     public void init() {
         super.init();
         Rect bounds = _labyrinth.getBounds();
-        _x = bounds.centerX() - _size;
-        _y = bounds.centerY() - _size;
+        _x = bounds.left + _labyrinth.getCellSize() + _labyrinth.getCellSize()/2;
+        _y = bounds.top  + _labyrinth.getCellSize() + _labyrinth.getCellSize()/2;
         _foreground.setTextSize(_size);
     }
 
@@ -31,7 +31,7 @@ public abstract class Ghost extends Character {
 
     @Override
     public boolean move() {
-        _wishDirection = _moveStrategy.GetNextDirection(this);
+        _wishDirection = _moveStrategy.getNextDirection(_x, _y);
         return super.move();
     }
 }

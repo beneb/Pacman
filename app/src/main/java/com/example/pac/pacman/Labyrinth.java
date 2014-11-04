@@ -4,10 +4,36 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 public class Labyrinth {
+
+    public class Cell {
+        private int row;
+        private int col;
+
+        public Cell(int row, int col) {
+            this.row = row;
+            this.col = col;
+        }
+
+        public int getRow() {
+            return row;
+        }
+
+        public int getCol() {
+            return col;
+        }
+
+        public boolean equals(Cell c) {
+            return c != null && col == c.col && row == c.row;
+        }
+    }
 
     private int _width;
     private int _height;
@@ -72,26 +98,52 @@ public class Labyrinth {
                 canMove(objectBounds.right, objectBounds.bottom);
     }
 
-    public boolean canMove(float x, float y) {
-        int cell = cellAt(x, y);
+    public boolean canMove(float targetX, float targetY) {
+        int cell = cellValueAt(targetX, targetY);
         return cell == 0;
     }
 
-    private int cellAt(float x, float y) {
-        int cellX = (int) ((x - _bounds.left) / _cellSize);
-        int cellY = (int) ((y - _bounds.top) / _cellSize);
+    private int getCellValue(Cell cell) {
+        return layout[cell.col][cell.row];
+    }
 
-        if (cellX >= _width) {
-            cellX = 0;
-        } else if (cellX < 0) {
-            cellX = _width - 1;
+
+    private int cellValueAt(float x, float y) {
+        Cell cell = cellAt(x, y);
+        return getCellValue(cell);
+    }
+
+    public Cell cellAt(float x, float y) {
+        int col = (int) ((x - _bounds.left) / _cellSize);
+        int row = (int) ((y - _bounds.top) / _cellSize);
+
+        if (col >= _width) {
+            col = 0;
+        } else if (col < 0) {
+            col = _width - 1;
         }
-        if (cellY >= _height) {
-            cellY = 0;
-        } else if (cellY < 0) {
-            cellY = _height - 1;
+        if (row >= _height) {
+            row = 0;
+        } else if (row < 0) {
+            row = _height - 1;
         }
-        return layout[cellX][cellY];
+        return new Cell(row, col);
+    }
+
+    public boolean canMove(Cell cell, Direction direction) {
+        switch (direction) {
+            case Stopped:
+                return false;
+            case Left:
+                return cell.col > 0 && getCellValue(new Cell(cell.col - 1, cell.row)) == 0;
+            case Right:
+                return cell.col < _width - 1 && getCellValue(new Cell(cell.col + 1, cell.row)) == 0;
+            case Up:
+                return cell.row > 0 && getCellValue(new Cell(cell.col, cell.row - 1)) == 0;
+            case Down:
+                return cell.row < _height - 1 && getCellValue(new Cell(cell.col, cell.row + 1)) == 0;
+        }
+        return false;
     }
 
     public void draw(Canvas canvas) {
