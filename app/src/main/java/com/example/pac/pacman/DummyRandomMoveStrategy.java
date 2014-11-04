@@ -11,15 +11,30 @@ public class DummyRandomMoveStrategy extends MoveStrategy {
     @Override
     public Character.Direction GetNextDirection(Ghost performer) {
         Character.Direction directionToUse = performer._direction;
+
+        if (directionToUse == Character.Direction.Stopped) {
+            return GetRandomDirectionWithoutStopped();
+        }
+
         FloatPoint newWayPoint = performer.GetNewWayPoint(directionToUse, performer.GetMoveDelta());
 
-        if (performer.canMove(newWayPoint.x, newWayPoint.y)) {
-            return directionToUse;
-        } else {
-            // choose next random direction
+        while (!performer.canMove(newWayPoint.x, newWayPoint.y)) {
+            directionToUse = GetRandomDirectionWithoutStopped();
+        }
+
+        return directionToUse;
+    }
+
+    private Character.Direction GetRandomDirectionWithoutStopped() {
+        // choose next random direction
+        Character.Direction newDirection;
+
+        do {
             Random rnd = new Random(new Date().getTime());
             int rndInt = rnd.nextInt(4);
-            return Character.Direction.values()[rndInt];
-        }
+            newDirection = Character.Direction.values()[rndInt];
+        } while (newDirection == Character.Direction.Stopped);
+
+        return newDirection;
     }
 }

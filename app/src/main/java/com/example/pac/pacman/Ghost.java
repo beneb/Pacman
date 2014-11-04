@@ -19,8 +19,8 @@ public abstract class Ghost extends Character {
     public void init() {
         super.init();
         Rect bounds = _labyrinth.getBounds();
-        _x = bounds.centerX() - 2 * _size;
-        _y = bounds.centerY() - 3 * _size;
+        _x = bounds.centerX() - _size;
+        _y = bounds.centerY() - _size;
         _foreground.setTextSize(_size);
     }
 
