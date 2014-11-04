@@ -1,15 +1,19 @@
 package com.example.pac.pacman;
 
 import android.content.res.Resources;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.util.Log;
 import android.util.TypedValue;
 
 public class Character extends GameObject {
+
+    public enum Direction {
+        Stopped,
+        Left,
+        Right,
+        Up,
+        Down;
+    }
 
     private String _name;
     private String _nickName;
@@ -17,14 +21,6 @@ public class Character extends GameObject {
 
     private final float MOVE_DELTA;
     protected Paint _foreground;
-
-    public enum Direction {
-        Stopped,
-        Left,
-        Right,
-        Up,
-        Down,
-    }
 
     protected Direction _wishDirection = Direction.Left;
     protected Direction _direction = Direction.Stopped;
@@ -37,55 +33,48 @@ public class Character extends GameObject {
 
         _foreground = new Paint(Paint.ANTI_ALIAS_FLAG);
         _foreground.setStyle(Paint.Style.FILL);
-        _foreground.setColor(r.getColor(typedColor));
 
         final float MOVE_DELTA_DIP = 2.5f;
         MOVE_DELTA = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, MOVE_DELTA_DIP, r.getDisplayMetrics());
         Log.i("Character", "MOVE_DELTA = " + MOVE_DELTA);
     }
 
-    public boolean move() {
+    public FloatPoint GetNewWayPoint(Direction direction, float moveDelta) {
         float newX = _x;
         float newY = _y;
 
-        switch (_wishDirection) {
+        switch (direction) {
             case Stopped:
                 break;
             case Left:
-                newX = _x - MOVE_DELTA;
+                newX = _x - moveDelta;
                 break;
             case Right:
-                newX = _x + MOVE_DELTA;
+                newX = _x + moveDelta;
                 break;
             case Up:
-                newY = _y - MOVE_DELTA;
+                newY = _y - moveDelta;
                 break;
             case Down:
-                newY = _y + MOVE_DELTA;
+                newY = _y + moveDelta;
                 break;
         }
 
-        if (!canMove(newX, newY)) {
-            // reset new values
-            newX = _x;
-            newY = _y;
+        return new FloatPoint(newX, newY);
+    }
 
-            switch (_direction) {
-                case Stopped:
-                    break;
-                case Left:
-                    newX = _x - MOVE_DELTA;
-                    break;
-                case Right:
-                    newX = _x + MOVE_DELTA;
-                    break;
-                case Up:
-                    newY = _y - MOVE_DELTA;
-                    break;
-                case Down:
-                    newY = _y + MOVE_DELTA;
-                    break;
-            }
+    public boolean move() {
+        float newX;
+        float newY;
+
+        FloatPoint newWayPoint = GetNewWayPoint(_wishDirection, MOVE_DELTA);
+        newX = newWayPoint.x;
+        newY = newWayPoint.y;
+
+        if (!canMove(newX, newY)) {
+            newWayPoint = GetNewWayPoint(_direction, MOVE_DELTA);
+            newX = newWayPoint.x;
+            newY = newWayPoint.y;
         } else {
             _direction = _wishDirection;
         }
@@ -121,5 +110,9 @@ public class Character extends GameObject {
 
     public void ResetColor() {
         _foreground.setColor(_typedColor);
+    }
+
+    public float GetMoveDelta() {
+        return MOVE_DELTA;
     }
 }

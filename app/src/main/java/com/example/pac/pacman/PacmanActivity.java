@@ -23,9 +23,9 @@ public class PacmanActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         _labyrinth = new Labyrinth(getResources());
         _characters = new ArrayList<Character>();
-        PacMan pacMan = new PacMan(getResources(), _labyrinth, Color.YELLOW, "Pac-Man", "Al Bundy");
+        PacMan pacMan = new PacMan(getResources(), _labyrinth);
         _characters.add(pacMan);
-        // _characters.addAll(GhostRepository.CreateGhosts(getResources(), _labyrinth));
+        _characters.addAll(GhostRepository.CreateGhosts(getResources(), _labyrinth));
 
         _view = new GameplayView(this, _labyrinth, pacMan, _characters);
         setContentView(_view);

@@ -6,6 +6,6 @@ import android.graphics.Color;
 public class ShadowGhost extends Ghost {
 
     public ShadowGhost(Resources resources, Labyrinth labyrinth) {
-        super(resources, labyrinth, Color.RED, "Shadow", "Blinky");
+        super(resources, labyrinth, Color.RED, "Shadow", "Blinky", new DummyRandomMoveStrategy());
     }
 }

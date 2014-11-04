@@ -7,8 +7,12 @@ import android.graphics.Rect;
 
 public abstract class Ghost extends Character {
 
-    protected Ghost(Resources resources, Labyrinth labyrinth, int color, String name, String nickName) {
+    private MoveStrategy _moveStrategy;
+
+    protected Ghost(Resources resources, Labyrinth labyrinth, int color, String name, String nickName, MoveStrategy moveStrategy) {
         super(resources, labyrinth, name, nickName, color);
+        _foreground.setColor(color);
+        _moveStrategy = moveStrategy;
     }
 
     @Override
@@ -27,17 +31,7 @@ public abstract class Ghost extends Character {
 
     @Override
     public boolean move() {
-        double rnd = Math.random();
-        if (rnd < .25) {
-            _wishDirection = Direction.Left;
-        } else if (rnd < .5) {
-            _wishDirection = Direction.Right;
-        } else if (rnd < .75) {
-            _wishDirection = Direction.Up;
-        } else {
-            _wishDirection = Direction.Down;
-        }
-
+        _wishDirection = _moveStrategy.GetNextDirection(this);
         return super.move();
     }
 }

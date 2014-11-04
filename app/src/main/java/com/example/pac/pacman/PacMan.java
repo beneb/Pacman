@@ -20,8 +20,9 @@ public class PacMan extends Character {
     private int _mouthOpenGrad = MOUTH_OPEN_GRAD;
     private boolean _mouthClosing;
 
-    public PacMan(Resources resources, Labyrinth labyrinth, int color, String name, String nickName) {
-        super(resources, labyrinth, name, nickName, color);
+    public PacMan(Resources resources, Labyrinth labyrinth) {
+        super(resources, labyrinth, "Pac-Man", "Al Bundy", R.color.pacman);
+        _foreground.setColor(resources.getColor(R.color.pacman));
     }
 
     @Override
