@@ -5,8 +5,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,6 +32,11 @@ public class Labyrinth {
             return col;
         }
 
+        @Override
+        public String toString() {
+            return String.format("{row = %d, col = %d}", row, col);
+        }
+
         public boolean equals(Cell c) {
             return c != null && col == c.col && row == c.row;
         }
@@ -44,6 +51,9 @@ public class Labyrinth {
     }
 
     final int WALL = 1;
+    final int PAC_MAN = 0x8000;
+
+    private Cell _pacManCell;
 
     private int layout[][];
 
@@ -72,8 +82,26 @@ public class Labyrinth {
         layout = new int[_width][_height];
         for (int w = 0; w < _width; w++) {
             for (int h = 0; h < _height; h++) {
-                layout[w][h] = Integer.parseInt(rows[h].substring(w, w + 1));
+                String cellValue = rows[h].substring(w, w + 1);
+                if (cellValue.equals("P")) {
+                    layout[w][h] = 0;
+                    _pacManCell = new Cell(h, w);
+                } else {
+                    layout[w][h] = Integer.parseInt(cellValue);
+                }
             }
+        }
+    }
+
+    public Cell getPacManCell() {
+        return _pacManCell;
+    }
+
+    public void setPacManPosition(float x, float y) {
+        Cell c = cellAt(x, y);
+        if (!_pacManCell.equals(c)) {
+            Log.d("Labyrinth", "Pac-Man Cell: " + c);
+            _pacManCell = c;
         }
     }
 
@@ -147,20 +175,23 @@ public class Labyrinth {
     }
 
     public void draw(Canvas canvas) {
-        for (int i = 0; i < _width; i++) {
-            for (int j = 0; j < _height; j++) {
-                if (layout[i][j] == WALL) {
-                    float startX = _cellSize * i + _bounds.left;
-                    float startY = _cellSize * j + _bounds.top;
-                    canvas.drawRect(startX, startY, startX + _cellSize, startY + _cellSize, _wallPaint);
+        for (int col = 0; col < _width; col++) {
+            for (int row = 0; row < _height; row++) {
+                if (layout[col][row] == WALL) {
+                    RectF cellBounds = getCellBounds(col, row);
+                    canvas.drawRect(cellBounds, _wallPaint);
                 }
                 //--Grid for Debugging
-                //float l = i * _cellSize + _bounds.left;
-                //float t = j * _cellSize + _bounds.top;
+                //float l = col * _cellSize + _bounds.left;
+                //float t = row * _cellSize + _bounds.top;
                 //canvas.drawRect(l, t, l + _cellSize, t + _cellSize, _debugPaint);
 
             }
         }
     }
-
+    public RectF getCellBounds(int col, int row) {
+        float startX = _cellSize * col + _bounds.left;
+        float startY = _cellSize * row + _bounds.top;
+        return new RectF(startX, startY, startX + _cellSize, startY + _cellSize);
+    }
 }

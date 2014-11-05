@@ -26,7 +26,6 @@ public class DummyRandomMoveStrategy implements IMoveStrategy {
             _lastDirection = directions.get((int) (rnd / fraction));
         } else {
             _lastCell = cell;
-            boolean res = GameEnv.getInstance().getLabyrinth().canMove(_lastCell, _lastDirection);
         }
         return _lastDirection;
     }
