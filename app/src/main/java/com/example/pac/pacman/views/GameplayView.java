@@ -1,4 +1,4 @@
-package com.example.pac.pacman;
+package com.example.pac.pacman.views;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -7,6 +7,9 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.View;
+
+import com.example.pac.pacman.*;
+import com.example.pac.pacman.Character;
 
 import java.util.Collection;
 
@@ -19,7 +22,7 @@ import java.util.Collection;
 public class GameplayView extends View {
 
     private final PacMan _pacMan;
-    private final Collection<Character> _characters;
+    private final Collection<com.example.pac.pacman.Character> _characters;
     private final Paint _paintBackground;
 
     public GameplayView(Context context, PacMan pacMan, Collection<Character> characters) {
