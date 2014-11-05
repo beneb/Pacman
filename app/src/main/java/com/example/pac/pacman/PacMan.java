@@ -2,7 +2,6 @@ package com.example.pac.pacman;
 
 import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
@@ -20,15 +19,15 @@ public class PacMan extends Character {
     private int _mouthOpenGrad = MOUTH_OPEN_GRAD;
     private boolean _mouthClosing;
 
-    public PacMan(Resources resources, Labyrinth labyrinth) {
-        super(resources, labyrinth, "Pac-Man", "Al Bundy", R.color.pacman);
+    public PacMan(Resources resources) {
+        super("Pac-Man", "Al Bundy", R.color.pacman);
         _foreground.setColor(resources.getColor(R.color.pacman));
     }
 
     @Override
     public void init() {
         super.init();
-        Rect bounds = _labyrinth.getBounds();
+        Rect bounds = GameEnv.getInstance().getLabyrinth().getBounds();
         _x = bounds.centerX();
         _y = bounds.centerY();
     }

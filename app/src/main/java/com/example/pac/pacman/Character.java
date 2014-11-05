@@ -1,6 +1,5 @@
 package com.example.pac.pacman;
 
-import android.content.res.Resources;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.util.Log;
@@ -18,8 +17,8 @@ public class Character extends GameObject {
     protected Direction _wishDirection = Direction.Left;
     protected Direction _direction = Direction.Stopped;
 
-    public Character(Resources r, Labyrinth labyrinth, String name, String nickName, int typedColor) {
-        super(labyrinth);
+    public Character(String name, String nickName, int typedColor) {
+        super();
         _name = name;
         _nickName = nickName;
         _typedColor = typedColor;
@@ -28,7 +27,7 @@ public class Character extends GameObject {
         _foreground.setStyle(Paint.Style.FILL);
 
         final float MOVE_DELTA_DIP = 2.5f;
-        MOVE_DELTA = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, MOVE_DELTA_DIP, r.getDisplayMetrics());
+        MOVE_DELTA = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, MOVE_DELTA_DIP, GameEnv.getInstance().getResources().getDisplayMetrics());
         Log.i("Character", "MOVE_DELTA = " + MOVE_DELTA);
     }
 
@@ -73,11 +72,12 @@ public class Character extends GameObject {
         }
 
         if (_wishDirection != Direction.Stopped && canMove(newX, newY)) {
-            if (newX > _labyrinth.getBounds().right) {
-                newX = _labyrinth.getBounds().left;
+            Labyrinth lab = GameEnv.getInstance().getLabyrinth();
+            if (newX > lab.getBounds().right) {
+                newX = lab.getBounds().left;
             }
-            if (newX < _labyrinth.getBounds().left) {
-                newX = _labyrinth.getBounds().right;
+            if (newX < lab.getBounds().left) {
+                newX = lab.getBounds().right;
             }
 
             newInvalidateRect(newX, newY);
@@ -91,9 +91,10 @@ public class Character extends GameObject {
 
     private boolean canMove(float newX, float newY) {
         float radius = _size/2;
-        return _labyrinth.canMove(newX - radius, newY - radius) &&
-                _labyrinth.canMove(newX + radius, newY - radius) &&
-                _labyrinth.canMove(newX + radius, newY + radius) &&
-                _labyrinth.canMove(newX - radius, newY + radius);
+        Labyrinth lab = GameEnv.getInstance().getLabyrinth();
+        return lab.canMove(newX - radius, newY - radius) &&
+                lab.canMove(newX + radius, newY - radius) &&
+                lab.canMove(newX + radius, newY + radius) &&
+                lab.canMove(newX - radius, newY + radius);
     }
 }

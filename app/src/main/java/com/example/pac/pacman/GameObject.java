@@ -5,16 +5,13 @@ import android.graphics.Rect;
 
 public class GameObject {
 
-    public GameObject(Labyrinth labyrinth) {
-        _labyrinth = labyrinth;
-    }
+    public GameObject() {}
 
     protected float _x, _y;
     protected int _size;
-    protected final Labyrinth _labyrinth;
 
     public void init() {
-        _size = _labyrinth.getCellSize()-2;
+        _size = GameEnv.getInstance().getLabyrinth().getCellSize()-2;
         newInvalidateRect(_x, _y);
     }
 

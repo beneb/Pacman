@@ -5,8 +5,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.RectF;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -20,14 +18,12 @@ import java.util.Collection;
 * */
 public class GameplayView extends View {
 
-    private final Labyrinth _labyrinth;
     private final PacMan _pacMan;
     private final Collection<Character> _characters;
     private final Paint _paintBackground;
 
-    public GameplayView(Context context, Labyrinth labyrinth, PacMan pacMan, Collection<Character> characters) {
+    public GameplayView(Context context, PacMan pacMan, Collection<Character> characters) {
         super(context);
-        _labyrinth = labyrinth;
         _pacMan = pacMan;
         _characters = characters;
 
@@ -41,7 +37,7 @@ public class GameplayView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawPaint(_paintBackground);
-        _labyrinth.draw(canvas);
+        GameEnv.getInstance().getLabyrinth().draw(canvas);
         for (Character ch : _characters) {
             ch.draw(canvas);
         }
@@ -71,7 +67,7 @@ public class GameplayView extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         final int margin = 10;
          Rect bounds = new Rect(margin, margin, w-margin, h-margin);
-        _labyrinth.init(bounds);
+         GameEnv.getInstance().getLabyrinth().init(bounds);
          for (Character ch : _characters) {
              ch.init();
          }

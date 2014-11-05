@@ -1,29 +1,22 @@
 package com.example.pac.pacman;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Random;
 
-/**
- * Created by Viktor on 04.11.2014.
- */
 public class DummyRandomMoveStrategy implements IMoveStrategy {
-    private final Labyrinth _labyrinth;
+
     private Labyrinth.Cell _lastCell;
     private Direction _lastDirection;
 
-    public DummyRandomMoveStrategy(Labyrinth labyrinth) {
-        _labyrinth = labyrinth;
-    }
+    public DummyRandomMoveStrategy() {}
 
     @Override
     public Direction getNextDirection(float x, float y) {
-        Labyrinth.Cell cell = _labyrinth.cellAt(x, y);
+        Labyrinth.Cell cell = GameEnv.getInstance().getLabyrinth().cellAt(x, y);
         if (!cell.equals(_lastCell)) {
             _lastCell = cell;
             ArrayList<Direction> directions = new ArrayList<Direction>();
             for (Direction direction : Direction.values()) {
-                if (_labyrinth.canMove(cell, direction)) {
+                if (GameEnv.getInstance().getLabyrinth().canMove(cell, direction)) {
                     directions.add(direction);
                 }
             }

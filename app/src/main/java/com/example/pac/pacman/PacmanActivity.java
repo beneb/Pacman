@@ -1,19 +1,14 @@
 package com.example.pac.pacman;
 
-import android.content.res.Resources;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
-import android.util.TypedValue;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PacmanActivity extends ActionBarActivity {
 
-    private Labyrinth _labyrinth;
     private Handler _handler = new Handler();
     private GameplayView _view;
     private List<Character> _characters;
@@ -21,13 +16,15 @@ public class PacmanActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        _labyrinth = new Labyrinth(getResources());
-        _characters = new ArrayList<Character>();
-        PacMan pacMan = new PacMan(getResources(), _labyrinth);
-        _characters.add(pacMan);
-        _characters.addAll(GhostRepository.CreateGhosts(getResources(), _labyrinth));
 
-        _view = new GameplayView(this, _labyrinth, pacMan, _characters);
+        GameEnv.getInstance().InitOnce(getResources());
+
+        _characters = new ArrayList<Character>();
+        PacMan pacMan = new PacMan(getResources());
+        _characters.add(pacMan);
+        _characters.addAll(GhostRepository.CreateGhosts());
+
+        _view = new GameplayView(this, pacMan, _characters);
         setContentView(_view);
 
         _handler.postDelayed(_updateView, 1000);
