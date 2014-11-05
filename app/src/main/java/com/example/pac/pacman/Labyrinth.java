@@ -135,13 +135,13 @@ public class Labyrinth {
             case Stopped:
                 return false;
             case Left:
-                return cell.col > 0 && getCellValue(new Cell(cell.col - 1, cell.row)) == 0;
+                return cell.col > 0 && getCellValue(new Cell(cell.row, cell.col - 1)) == 0;
             case Right:
-                return cell.col < _width - 1 && getCellValue(new Cell(cell.col + 1, cell.row)) == 0;
+                return cell.col < _width - 1 && getCellValue(new Cell(cell.row, cell.col + 1)) == 0;
             case Up:
-                return cell.row > 0 && getCellValue(new Cell(cell.col, cell.row - 1)) == 0;
+                return cell.row > 0 && getCellValue(new Cell(cell.row - 1, cell.col)) == 0;
             case Down:
-                return cell.row < _height - 1 && getCellValue(new Cell(cell.col, cell.row + 1)) == 0;
+                return cell.row < _height - 1 && getCellValue(new Cell(cell.row + 1, cell.col)) == 0;
         }
         return false;
     }
