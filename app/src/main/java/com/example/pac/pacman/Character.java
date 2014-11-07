@@ -1,10 +1,12 @@
 package com.example.pac.pacman;
 
+import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.util.Log;
 import android.util.TypedValue;
 
-public abstract class Character extends GameObject {
+public abstract class Character {
 
     private String _name;
     private String _nickName;
@@ -13,6 +15,13 @@ public abstract class Character extends GameObject {
     private final float MOVE_DELTA;
     protected Paint _foreground;
 
+    protected float _x, _y;
+    protected int _size;
+
+    private Rect _invalidateRect;
+    public Rect getInvalidateRect() {
+        return _invalidateRect;
+    }
 
     public Character(String name, String nickName, int typedColor) {
         super();
@@ -28,7 +37,21 @@ public abstract class Character extends GameObject {
         Log.i("Character", "MOVE_DELTA = " + MOVE_DELTA);
     }
 
-    public abstract boolean move();
+    public void init() {
+        _size = GameEnv.getInstance().getLabyrinth().getCellSize()-2;
+        newInvalidateRect(_x, _y);
+    }
+
+    protected void newInvalidateRect(float newX, float newY) {
+        int l = (int)Math.min(_x, newX) - _size;
+        int t = (int)Math.min(_y, newY) - _size;
+        int r = (int)Math.max(_x, newX) + _size + 1;
+        int b = (int)Math.max(_y, newY) + _size + 1;
+        _invalidateRect = new Rect(l, t, r, b);
+    }
+
+    public abstract void draw(Canvas canvas) ;
+    public abstract void move();
 
     protected boolean move(Direction direction) {
         float newX = _x;

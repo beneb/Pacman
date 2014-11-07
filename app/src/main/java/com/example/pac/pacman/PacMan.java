@@ -45,7 +45,7 @@ public class PacMan extends Character {
     }
 
     @Override
-    public boolean move() {
+    public void move() {
         boolean moved = super.move(_wishDirection);
         if (!moved) {
             moved = super.move(_direction);
@@ -72,7 +72,6 @@ public class PacMan extends Character {
                 _pMouth = MOUTH_DOWN;
                 break;
         }
-        return moved;
     }
 
     private void setMouthOpen(boolean canMove) {
