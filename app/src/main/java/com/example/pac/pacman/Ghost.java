@@ -30,7 +30,7 @@ public abstract class Ghost extends Character {
 
     @Override
     public boolean move() {
-        _wishDirection = _moveStrategy.getNextDirection(_x, _y);
-        return super.move();
+        Direction direction = _moveStrategy.getNextDirection(_x, _y);
+        return super.move(direction);
     }
 }

@@ -19,6 +19,9 @@ public class PacMan extends Character {
     private int _mouthOpenGrad = MOUTH_OPEN_GRAD;
     private boolean _mouthClosing;
 
+    protected Direction _wishDirection = Direction.Left;
+    protected Direction _direction = Direction.Stopped;
+
     public PacMan(Resources resources) {
         super("Pac-Man", "Al Bundy", R.color.pacman);
         _foreground.setColor(resources.getColor(R.color.pacman));
@@ -43,7 +46,12 @@ public class PacMan extends Character {
 
     @Override
     public boolean move() {
-        boolean moved = super.move();
+        boolean moved = super.move(_wishDirection);
+        if (!moved) {
+            moved = super.move(_direction);
+        } else {
+            _direction = _wishDirection;
+        }
         if (moved) {
             GameEnv.getInstance().getLabyrinth().setPacManPosition(_x, _y);
         }
