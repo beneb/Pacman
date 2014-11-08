@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class DummyRandomMoveStrategy implements IMoveStrategy {
 
-    private Labyrinth.Cell _lastCell;
+    private int _lastCell = -1;
     private Direction _lastDirection;
 
     public DummyRandomMoveStrategy() {
@@ -12,12 +12,12 @@ public class DummyRandomMoveStrategy implements IMoveStrategy {
 
     @Override
     public Direction getNextDirection(float x, float y) {
-        Labyrinth.Cell cell = GameEnv.getInstance().getLabyrinth().cellAt(x, y);
-        if (_lastCell == null || (!cell.equals(_lastCell) && !GameEnv.getInstance().getLabyrinth().canMove(cell, _lastDirection))) {
-            _lastCell = cell;
+        int cellNum = GameEnv.getInstance().getLabyrinth().cellAt(x, y);
+        if (_lastCell == -1 || (cellNum != _lastCell && !GameEnv.getInstance().getLabyrinth().canMove(cellNum, _lastDirection))) {
+            _lastCell = cellNum;
             ArrayList<Direction> directions = new ArrayList<Direction>();
             for (Direction direction : Direction.values()) {
-                if (GameEnv.getInstance().getLabyrinth().canMove(cell, direction)) {
+                if (GameEnv.getInstance().getLabyrinth().canMove(cellNum, direction)) {
                     directions.add(direction);
                 }
             }
@@ -25,7 +25,7 @@ public class DummyRandomMoveStrategy implements IMoveStrategy {
             double rnd = Math.random();
             _lastDirection = directions.get((int) (rnd / fraction));
         } else {
-            _lastCell = cell;
+            _lastCell = cellNum;
         }
         return _lastDirection;
     }

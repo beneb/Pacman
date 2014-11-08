@@ -2,7 +2,6 @@ package com.example.pac.pacman;
 
 import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.graphics.RectF;
 
 public class PacMan extends Character {
@@ -31,8 +30,8 @@ public class PacMan extends Character {
     public void init() {
         super.init();
         Labyrinth labyrinth = GameEnv.getInstance().getLabyrinth();
-        Labyrinth.Cell c = labyrinth.getPacManCell();
-        RectF cellBounds = labyrinth.getCellBounds(c.getCol(), c.getRow());
+        int cellNum = labyrinth.getPacManCell();
+        RectF cellBounds = labyrinth.getCellBounds(cellNum);
         _x = cellBounds.centerX();
         _y = cellBounds.centerY();
     }
