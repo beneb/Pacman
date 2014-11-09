@@ -3,14 +3,18 @@ package com.example.pac.pacman;
 public final class GameEnv {
 
     private static GameEnv instance;
-    private GameEnv() {}
+
+    private GameEnv() {
+    }
 
     private Labyrinth _labyrinth;
     private android.content.res.Resources _resources;
 
     public void InitOnce(android.content.res.Resources resources) {
         if (_labyrinth == null) {
-            _labyrinth = new Labyrinth(resources);
+            _labyrinth = new Labyrinth(
+                    resources.getString(R.string.level_classic),
+                    resources.getColor(R.color.walls));
         }
 
         if (_resources == null) {

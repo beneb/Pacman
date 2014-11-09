@@ -1,6 +1,5 @@
 package com.example.pac.pacman;
 
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -34,12 +33,11 @@ public class Labyrinth {
     private Paint _wallPaint;
     private Paint _debugPaint;
 
-    public Labyrinth(Resources resources) {
-        String levelResource = resources.getString(R.string.level_classic);
-        initFromResource(levelResource);
+    public Labyrinth(String state, int wallColor) {
+        init(state);
 
         _wallPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        _wallPaint.setColor(resources.getColor(R.color.walls));
+        _wallPaint.setColor(wallColor);
         _wallPaint.setStrokeWidth(5);
 
         _debugPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -47,8 +45,8 @@ public class Labyrinth {
         _debugPaint.setColor(Color.RED);
     }
 
-    private void initFromResource(String levelResource) {
-        String[] rows = levelResource.trim().split(" ");
+    private void init(String state) {
+        String[] rows = state.trim().split(" ");
         _width = rows[0].length();
         _height = rows.length;
         layout = new int[_width][_height];
