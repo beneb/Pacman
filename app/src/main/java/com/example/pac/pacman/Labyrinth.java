@@ -34,7 +34,7 @@ public class Labyrinth {
     private Paint _debugPaint;
 
     public Labyrinth(String state, int wallColor) {
-        init(state);
+        load(state);
 
         _wallPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         _wallPaint.setColor(wallColor);
@@ -45,7 +45,7 @@ public class Labyrinth {
         _debugPaint.setColor(Color.RED);
     }
 
-    private void init(String state) {
+    private void load(String state) {
         String[] rows = state.trim().split(" ");
         _width = rows[0].length();
         _height = rows.length;
@@ -67,6 +67,7 @@ public class Labyrinth {
         int width = bounds.width() / _width;
         int height = bounds.height() / _height;
         _cellSize = Math.min(width, height);
+        Log.i("Labyrinth", "Cell size: " + _cellSize);
         _bounds = new Rect(bounds.left,
                 bounds.top,
                 bounds.left + _width * _cellSize,
@@ -154,7 +155,7 @@ public class Labyrinth {
         }
     }
 
-    public RectF getCellBounds(int col, int row) {
+    private RectF getCellBounds(int col, int row) {
         float startX = _cellSize * col + _bounds.left;
         float startY = _cellSize * row + _bounds.top;
         return new RectF(startX, startY, startX + _cellSize, startY + _cellSize);
