@@ -20,6 +20,7 @@ public class Labyrinth {
     public int getCellSize() {
         return _cellSize;
     }
+
     public int getPacManCell() {
         return _pacManCell;
     }
@@ -61,6 +62,22 @@ public class Labyrinth {
                 }
             }
         }
+    }
+
+    public String getState() {
+        StringBuilder sb = new StringBuilder(_width * _height + 1);
+        for (int h = 0; h < _height; h++) {
+            for (int w = 0; w < _width; w++) {
+                int cell = getCell(w, h);
+                if (cell == _pacManCell) {
+                    sb.append("P");
+                } else {
+                    sb.append(getCellValue(cell));
+                }
+            }
+            sb.append(" ");
+        }
+        return sb.toString().trim();
     }
 
     public void init(Rect bounds) {
@@ -166,4 +183,5 @@ public class Labyrinth {
         int col = getCellCol(cellNum);
         return getCellBounds(col, row);
     }
+
 }
