@@ -9,9 +9,10 @@ import android.util.Log;
 
 public class Labyrinth {
 
+    final int DOT = 0;
     final int WALL = 1;
 
-    private int layout[][];
+    private int _layout[][];
     private int _width;
     private int _height;
     private int _cellSize;
@@ -31,6 +32,8 @@ public class Labyrinth {
         return _bounds;
     }
 
+
+    private Paint _dot;
     private Paint _wallPaint;
     private Paint _debugPaint;
 
@@ -41,6 +44,11 @@ public class Labyrinth {
         _wallPaint.setColor(wallColor);
         _wallPaint.setStrokeWidth(5);
 
+        _dot = new Paint(Paint.ANTI_ALIAS_FLAG);
+        _dot.setColor(Color.WHITE);
+        _dot.setStrokeWidth(5);
+
+
         _debugPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         _debugPaint.setStyle(Paint.Style.STROKE);
         _debugPaint.setColor(Color.RED);
@@ -50,15 +58,15 @@ public class Labyrinth {
         String[] rows = state.trim().split(" ");
         _width = rows[0].length();
         _height = rows.length;
-        layout = new int[_width][_height];
+        _layout = new int[_width][_height];
         for (int w = 0; w < _width; w++) {
             for (int h = 0; h < _height; h++) {
                 String cellValue = rows[h].substring(w, w + 1);
                 if (cellValue.equals("P")) {
-                    layout[w][h] = 0;
+                    _layout[w][h] = 0;
                     _pacManCell = getCell(w, h);
                 } else {
-                    layout[w][h] = Integer.parseInt(cellValue);
+                    _layout[w][h] = Integer.parseInt(cellValue);
                 }
             }
         }
@@ -133,7 +141,7 @@ public class Labyrinth {
         int col = getCellCol(cellNum);
         return row < 0 || row >= _width || col < 0 || col >= _height
                 ? WALL
-                : layout[col][row];
+                : _layout[col][row];
     }
 
     public boolean canMove(float targetX, float targetY) {
@@ -160,10 +168,16 @@ public class Labyrinth {
     public void draw(Canvas canvas) {
         for (int col = 0; col < _width; col++) {
             for (int row = 0; row < _height; row++) {
-                if (layout[col][row] == WALL) {
+                if (_layout[col][row] == WALL) {
                     RectF cellBounds = getCellBounds(col, row);
                     canvas.drawRect(cellBounds, _wallPaint);
                 }
+                if (_layout[col][row] == DOT) {
+                    float startX = _cellSize * col + _cellSize/2;
+                    float startY = _cellSize * row + _cellSize/2;
+                    canvas.drawCircle(startX, startY, 5, _dot);
+                }
+
                 //--Grid for Debugging
                 //float l = col * _cellSize + _bounds.left;
                 //float t = row * _cellSize + _bounds.top;
