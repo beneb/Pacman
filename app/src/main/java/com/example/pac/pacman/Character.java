@@ -38,7 +38,7 @@ public abstract class Character {
     }
 
     public void init() {
-        _size = GameEnv.getInstance().getLabyrinth().getCellSize()-2;
+        _size = GameEnv.getInstance().getLabyrinth().getCellSize()-8;
         newInvalidateRect(_x, _y);
     }
 
