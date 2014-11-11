@@ -17,9 +17,12 @@ public class DummyRandomMoveStrategy implements IMoveStrategy {
             _lastCell = cellNum;
             ArrayList<Direction> directions = new ArrayList<Direction>();
             for (Direction direction : Direction.values()) {
-                if (GameEnv.getInstance().getLabyrinth().canMove(cellNum, direction)) {
+                if (GameEnv.getInstance().getLabyrinth().canMove(cellNum, direction) && direction.isPerpendicular(_lastDirection)) {
                     directions.add(direction);
                 }
+            }
+            if (directions.isEmpty()) {
+                directions.add(Direction.Right);
             }
             double fraction = 1.0 / directions.size();
             double rnd = Math.random();

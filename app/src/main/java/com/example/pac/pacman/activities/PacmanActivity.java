@@ -24,7 +24,9 @@ public class PacmanActivity extends ActionBarActivity {
         GameEnv.getInstance().InitOnce(getResources());
 
         _characters = new ArrayList<Character>();
-        PacMan pacMan = new PacMan(getResources());
+        PacMan pacMan = new PacMan(
+                getResources().getColor(R.color.pacman),
+                GameEnv.getInstance().getLabyrinth());
         _characters.add(pacMan);
         _characters.addAll(GhostRepository.CreateGhosts());
 
@@ -41,7 +43,7 @@ public class PacmanActivity extends ActionBarActivity {
                 _view.invalidate(character.getInvalidateRect());
             }
             _handler.removeCallbacks(_updateView);
-            _handler.postDelayed(this, 30);
+            _handler.postDelayed(this, 50);
         }
     };
 

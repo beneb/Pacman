@@ -1,15 +1,18 @@
 package com.example.pac.pacman;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 
-public abstract class Ghost extends Character {
+public class Ghost extends Character {
 
     private IMoveStrategy _moveStrategy;
 
-    protected Ghost(int color, String name, String nickName, IMoveStrategy moveStrategy) {
-        super(name, nickName, color);
-        _foreground.setColor(color);
+    protected Ghost(int foreground, String name, String nickName, IMoveStrategy moveStrategy, Labyrinth labyrinth) {
+        super(name, nickName, labyrinth);
+        _foreground.setColor(foreground);
         _moveStrategy = moveStrategy;
     }
 
@@ -18,14 +21,15 @@ public abstract class Ghost extends Character {
         super.init();
         Labyrinth lab = GameEnv.getInstance().getLabyrinth();
         Rect bounds = lab.getBounds();
-        _x = bounds.left + lab.getCellSize() + lab.getCellSize()/2;
-        _y = bounds.top  + lab.getCellSize() + lab.getCellSize()/2;
+        _x = bounds.left + lab.getCellSize() + lab.getCellSize() / 2;
+        _y = bounds.top + lab.getCellSize() + lab.getCellSize() / 2;
         _foreground.setTextSize(_size);
     }
 
     @Override
     public void draw(Canvas canvas) {
         canvas.drawText("G", _x, _y, _foreground);
+        super.draw(canvas);
     }
 
     @Override

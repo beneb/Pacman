@@ -18,12 +18,9 @@ public class PacMan extends Character {
     private int _mouthOpenGrad = MOUTH_OPEN_GRAD;
     private boolean _mouthClosing;
 
-    protected Direction _wishDirection = Direction.Left;
-    protected Direction _direction = Direction.Stopped;
-
-    public PacMan(Resources resources) {
-        super("Pac-Man", "Al Bundy", R.color.pacman);
-        _foreground.setColor(resources.getColor(R.color.pacman));
+    public PacMan(int color, Labyrinth labyrinth) {
+        super("Pac-Man", "Al Bundy", labyrinth);
+        _foreground.setColor(color);
     }
 
     @Override
@@ -41,8 +38,10 @@ public class PacMan extends Character {
         float radius = _size/2;
         RectF r = new RectF(_x - radius, _y - radius, _x + radius, _y + radius);
         canvas.drawArc(r, _pMouth + _mouthOpenGrad, 360 - 2*_mouthOpenGrad, true, _foreground);
+        super.draw(canvas);
     }
 
+    private Direction _wishDirection = Direction.Stopped;
     @Override
     public void move() {
         boolean moved = super.move(_wishDirection);
