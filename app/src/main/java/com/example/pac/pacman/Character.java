@@ -74,8 +74,9 @@ public abstract class Character {
                 break;
         }
 
-        if (direction != Direction.Stopped && canMove(newX, newY)) {
-            Labyrinth lab = GameEnv.getInstance().getLabyrinth();
+        Labyrinth lab = GameEnv.getInstance().getLabyrinth();
+        int currentCell = lab.cellAt(_x, _y);
+        if (direction != Direction.Stopped && lab.canMove(currentCell, direction)) {
             if (newX > lab.getBounds().right) {
                 newX = lab.getBounds().left;
             }
@@ -90,14 +91,5 @@ public abstract class Character {
         } else {
             return false;
         }
-    }
-
-    private boolean canMove(float newX, float newY) {
-        float radius = _size/2;
-        Labyrinth lab = GameEnv.getInstance().getLabyrinth();
-        return lab.canMove(newX - radius, newY - radius) &&
-                lab.canMove(newX + radius, newY - radius) &&
-                lab.canMove(newX + radius, newY + radius) &&
-                lab.canMove(newX - radius, newY + radius);
     }
 }
