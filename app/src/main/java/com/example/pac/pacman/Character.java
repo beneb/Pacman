@@ -10,7 +10,7 @@ public abstract class Character {
 
     private String _name;
     private String _nickName;
-    private int _typedColor;
+    protected Labyrinth _labyrinth;
 
     private final float MOVE_DELTA;
     protected Paint _foreground;
@@ -23,11 +23,11 @@ public abstract class Character {
         return _invalidateRect;
     }
 
-    public Character(String name, String nickName, int typedColor) {
+    public Character(String name, String nickName, Labyrinth labyrinth) {
         super();
         _name = name;
         _nickName = nickName;
-        _typedColor = typedColor;
+        _labyrinth = labyrinth;
 
         _foreground = new Paint(Paint.ANTI_ALIAS_FLAG);
         _foreground.setStyle(Paint.Style.FILL);
@@ -38,7 +38,7 @@ public abstract class Character {
     }
 
     public void init() {
-        _size = GameEnv.getInstance().getLabyrinth().getCellSize()-8;
+        _size = _labyrinth.getCellSize()-2;
         newInvalidateRect(_x, _y);
     }
 
@@ -74,14 +74,13 @@ public abstract class Character {
                 break;
         }
 
-        Labyrinth lab = GameEnv.getInstance().getLabyrinth();
-        int currentCell = lab.cellAt(_x, _y);
-        if (direction != Direction.Stopped && lab.canMove(currentCell, direction)) {
-            if (newX > lab.getBounds().right) {
-                newX = lab.getBounds().left;
+        int currentCell = _labyrinth.cellAt(_x, _y);
+        if (direction != Direction.Stopped && _labyrinth.canMove(currentCell, direction)) {
+            if (newX > _labyrinth.getBounds().right) {
+                newX = _labyrinth.getBounds().left;
             }
-            if (newX < lab.getBounds().left) {
-                newX = lab.getBounds().right;
+            if (newX < _labyrinth.getBounds().left) {
+                newX = _labyrinth.getBounds().right;
             }
 
             newInvalidateRect(newX, newY);

@@ -6,18 +6,20 @@ public class DummyRandomMoveStrategy implements IMoveStrategy {
 
     private int _lastCell = -1;
     private Direction _lastDirection;
+    private Labyrinth _labyrinth;
 
-    public DummyRandomMoveStrategy() {
+    public DummyRandomMoveStrategy(Labyrinth labyrinth) {
+        _labyrinth = labyrinth;
     }
 
     @Override
     public Direction getNextDirection(float x, float y) {
-        int cellNum = GameEnv.getInstance().getLabyrinth().cellAt(x, y);
-        if (_lastCell == -1 || (cellNum != _lastCell && !GameEnv.getInstance().getLabyrinth().canMove(cellNum, _lastDirection))) {
+        int cellNum = _labyrinth.cellAt(x, y);
+        if (_lastCell == -1 || (cellNum != _lastCell && !_labyrinth.canMove(cellNum, _lastDirection))) {
             _lastCell = cellNum;
             ArrayList<Direction> directions = new ArrayList<Direction>();
             for (Direction direction : Direction.values()) {
-                if (GameEnv.getInstance().getLabyrinth().canMove(cellNum, direction)) {
+                if (_labyrinth.canMove(cellNum, direction)) {
                     directions.add(direction);
                 }
             }

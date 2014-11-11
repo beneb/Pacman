@@ -21,16 +21,35 @@
         android:padding="10dp"
         android:textSize="@dimen/titel_size" />
 
-    <Button
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/menu_new_game"
-        android:id="@+id/new_game"
-        android:onClick="buttonPacmanClick"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:background="@color/background"
-        android:textColor="@color/foreground"
-        android:textSize="@dimen/menu_size" />
+        android:layout_alignParentTop="false">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/menu_new_game"
+            android:id="@+id/new_game"
+            android:onClick="buttonNewGameClick"
+            android:background="@color/background"
+            android:textColor="@color/foreground"
+            android:textSize="@dimen/menu_size"
+            android:layout_gravity="center_horizontal" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/menu_resume"
+            android:id="@+id/resume"
+            android:onClick="buttonResumeClick"
+            android:background="@color/background"
+            android:textColor="@color/foreground"
+            android:textSize="@dimen/menu_size"
+            android:layout_gravity="center_horizontal" />
+    </LinearLayout>
 
 </RelativeLayout>

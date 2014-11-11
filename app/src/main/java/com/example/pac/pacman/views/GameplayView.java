@@ -24,11 +24,13 @@ public class GameplayView extends View {
     private final PacMan _pacMan;
     private final Collection<com.example.pac.pacman.Character> _characters;
     private final Paint _paintBackground;
+    private Labyrinth _labyrinth;
 
-    public GameplayView(Context context, PacMan pacMan, Collection<Character> characters) {
+    public GameplayView(Context context, Labyrinth labyrinth, PacMan pacMan, Collection<Character> characters) {
         super(context);
         _pacMan = pacMan;
         _characters = characters;
+        _labyrinth = labyrinth;
 
         _paintBackground = new Paint(Paint.ANTI_ALIAS_FLAG);
         _paintBackground.setStyle(Paint.Style.FILL);
@@ -40,7 +42,7 @@ public class GameplayView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawPaint(_paintBackground);
-        GameEnv.getInstance().getLabyrinth().draw(canvas);
+        _labyrinth.draw(canvas);
         for (Character ch : _characters) {
             ch.draw(canvas);
         }
@@ -73,7 +75,7 @@ public class GameplayView extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         final int margin = 10;
          Rect bounds = new Rect(margin, margin, w-margin, h-margin);
-         GameEnv.getInstance().getLabyrinth().init(bounds);
+         _labyrinth.init(bounds);
          for (Character ch : _characters) {
              ch.init();
          }
