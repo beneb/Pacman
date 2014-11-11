@@ -45,7 +45,7 @@ public class Labyrinth {
         _wallPaint.setStrokeWidth(5);
 
         _dot = new Paint(Paint.ANTI_ALIAS_FLAG);
-        _dot.setColor(Color.WHITE);
+        _dot.setColor(Color.YELLOW);
         _dot.setStrokeWidth(5);
 
 
