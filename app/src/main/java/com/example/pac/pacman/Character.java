@@ -74,8 +74,9 @@ public abstract class Character {
                 break;
         }
 
-        if (direction != Direction.Stopped && canMove(newX, newY)) {
-            Labyrinth lab = GameEnv.getInstance().getLabyrinth();
+        Labyrinth lab = GameEnv.getInstance().getLabyrinth();
+        int currentCell = lab.cellAt(_x, _y);
+        if (direction != Direction.Stopped && lab.canMove(currentCell, direction)) {
             if (newX > lab.getBounds().right) {
                 newX = lab.getBounds().left;
             }
