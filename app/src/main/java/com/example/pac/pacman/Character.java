@@ -92,13 +92,4 @@ public abstract class Character {
             return false;
         }
     }
-
-    private boolean canMove(float newX, float newY) {
-        float radius = _size/2;
-        Labyrinth lab = GameEnv.getInstance().getLabyrinth();
-        return lab.canMove(newX - radius, newY - radius) &&
-                lab.canMove(newX + radius, newY - radius) &&
-                lab.canMove(newX + radius, newY + radius) &&
-                lab.canMove(newX - radius, newY + radius);
-    }
 }
