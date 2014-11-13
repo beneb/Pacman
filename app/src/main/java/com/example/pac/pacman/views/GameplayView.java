@@ -51,7 +51,7 @@ public class GameplayView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         // currently  act only on ACTION_DOWN
-        if (event.getAction() == 0) {
+        if (event.getAction() == 1) {
             _pacMan.go(event.getX(), event.getY());
         }
         // Log.i("ME", describeEvent(event));
