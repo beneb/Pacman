@@ -173,8 +173,8 @@ public class Labyrinth {
                     canvas.drawRect(cellBounds, _wallPaint);
                 }
                 if (_layout[col][row] == DOT) {
-                    float startX = _cellSize * col + _cellSize/2;
-                    float startY = _cellSize * row + _cellSize/2;
+                    float startX = _cellSize * col + _cellSize/2 + _bounds.left;
+                    float startY = _cellSize * row + _cellSize/2 + _bounds.top;
                     canvas.drawCircle(startX, startY, 5, _dot);
                 }
 
