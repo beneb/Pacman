@@ -2,6 +2,7 @@ package com.example.pac.pacman;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.RectF;
 
 public class Ghost extends Character {
 
@@ -10,6 +11,7 @@ public class Ghost extends Character {
     protected Ghost(int color, String name, String nickName, Labyrinth labyrinth, IMoveStrategy moveStrategy) {
         super(name, nickName, labyrinth);
         _foreground.setColor(color);
+        _foreground.setAlpha(150);
         _moveStrategy = moveStrategy;
     }
 
@@ -19,12 +21,13 @@ public class Ghost extends Character {
         Rect bounds = _labyrinth.getBounds();
         _x = bounds.left + _labyrinth.getCellSize() + _labyrinth.getCellSize()/2;
         _y = bounds.top  + _labyrinth.getCellSize() + _labyrinth.getCellSize()/2;
-        _foreground.setTextSize(_size);
     }
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.drawText("G", _x, _y, _foreground);
+        float radius = _size/2;
+        RectF r = new RectF(_x - radius, _y - radius, _x + radius, _y + radius);
+        canvas.drawRect(r, _foreground);
     }
 
     @Override
