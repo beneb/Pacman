@@ -13,13 +13,17 @@ public class DummyRandomMoveStrategy implements IMoveStrategy {
     }
 
     @Override
-    public Direction getNextDirection(float x, float y) {
-        int cellNum = _labyrinth.cellAt(x, y);
-        if (_lastCell == -1 || (cellNum != _lastCell && !_labyrinth.canMove(cellNum, _lastDirection))) {
-            _lastCell = cellNum;
+    public Direction GetCurrentOrNextDirection(float currentX, float currentY) {
+        int currentCell = _labyrinth.cellAt(currentX, currentY);
+        if (_lastCell == -1 ||
+            (
+             !_labyrinth.canMoveWithinCurrentCell(currentX, currentY, currentCell, _lastDirection) &&
+             !_labyrinth.canMove(currentCell, _lastDirection))) {
+
+            _lastCell = currentCell;
             ArrayList<Direction> directions = new ArrayList<Direction>();
             for (Direction direction : Direction.values()) {
-                if (_labyrinth.canMove(cellNum, direction)) {
+                if (_labyrinth.canMove(currentCell, direction)) {
                     directions.add(direction);
                 }
             }
@@ -27,7 +31,7 @@ public class DummyRandomMoveStrategy implements IMoveStrategy {
             double rnd = Math.random();
             _lastDirection = directions.get((int) (rnd / fraction));
         } else {
-            _lastCell = cellNum;
+            _lastCell = currentCell;
         }
         return _lastDirection;
     }

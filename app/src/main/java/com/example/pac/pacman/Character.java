@@ -54,6 +54,10 @@ public abstract class Character {
     public abstract void move();
 
     protected boolean move(Direction direction) {
+        if (direction == Direction.Stopped) {
+            return false;
+        }
+
         float newX = _x;
         float newY = _y;
 
@@ -75,10 +79,6 @@ public abstract class Character {
         }
 
         int currentCell = _labyrinth.cellAt(_x, _y);
-
-        if (direction == Direction.Stopped) {
-            return false;
-        }
 
         // move to the next cell if possible
         if (_labyrinth.canMove(currentCell, direction)) {

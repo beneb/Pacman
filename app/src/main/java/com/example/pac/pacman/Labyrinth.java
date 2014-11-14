@@ -159,7 +159,7 @@ public class Labyrinth {
         float currentCellCenterX = GetCellCenterX(currentCell);
         float currentCellCenterY = GetCellCenterY(currentCell);
 
-        // TODO: dont let the char walk behind the centerX oder centerY position
+        // TODO: don´t let the char walk behind the centerX oder centerY position
 
         switch (direction) {
             case Stopped:
@@ -176,18 +176,18 @@ public class Labyrinth {
         return false;
     }
 
-    public boolean canMove(int cell, Direction direction) {
+    public boolean canMove(int currentCell, Direction direction) {
         switch (direction) {
             case Stopped:
                 return false;
             case Left:
-                return getCellValue(cell - 1) == 0;
+                return getCellValue(currentCell - 1) == 0;
             case Right:
-                return getCellValue(cell + 1) == 0;
+                return getCellValue(currentCell + 1) == 0;
             case Up:
-                return getCellValue(cell - _width) == 0;
+                return getCellValue(currentCell - _width) == 0;
             case Down:
-                return getCellValue(cell + _width) == 0;
+                return getCellValue(currentCell + _width) == 0;
         }
         return false;
     }

@@ -32,7 +32,7 @@ public class Ghost extends Character {
 
     @Override
     public void move() {
-        Direction direction = _moveStrategy.getNextDirection(_x, _y);
+        Direction direction = _moveStrategy.GetCurrentOrNextDirection(_x, _y);
         super.move(direction);
     }
 }

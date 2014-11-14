@@ -1,7 +1,7 @@
 package com.example.pac.pacman;
 
 public interface IMoveStrategy {
-    Direction getNextDirection(float x, float y);
+    Direction GetCurrentOrNextDirection(float x, float y);
 }
 
 enum Direction {
