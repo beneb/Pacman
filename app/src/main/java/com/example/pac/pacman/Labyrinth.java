@@ -3,6 +3,7 @@ package com.example.pac.pacman;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
@@ -144,9 +145,35 @@ public class Labyrinth {
                 : _layout[col][row];
     }
 
-    public boolean canMove(float targetX, float targetY) {
-        int cellValue = getCellValue(cellAt(targetX, targetY));
-        return cellValue == 0;
+    private float GetCellCenterX(int cellNum) {
+        int col = getCellCol(cellNum);
+        return _cellSize * col + _cellSize/2 + _bounds.left;
+    }
+
+    private float GetCellCenterY(int cellNum) {
+        int row = getCellRow(cellNum);
+        return _cellSize * row + _cellSize/2 + _bounds.top;
+    }
+
+    public boolean canMoveWithinCurrentCell(float currentX, float currentY, float moveDelta, int currentCell, Direction direction) {
+        float diff_x_ofPositionToCellCenter = 0;
+        float diff_y_ofPositionToCellCenter = 0;
+        float currentCellCenterX = GetCellCenterX(currentCell);
+        float currentCellCenterY = GetCellCenterY(currentCell);
+
+        switch (direction) {
+            case Stopped:
+                return false;
+            case Left:
+                return currentX > currentCellCenterX;
+            case Right:
+                return currentX < currentCellCenterX;
+            case Up:
+                return currentY > currentCellCenterY;
+            case Down:
+                return currentY < currentCellCenterY;
+        }
+        return false;
     }
 
     public boolean canMove(int cell, Direction direction) {

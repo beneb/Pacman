@@ -75,7 +75,15 @@ public abstract class Character {
         }
 
         int currentCell = _labyrinth.cellAt(_x, _y);
-        if (direction != Direction.Stopped && _labyrinth.canMove(currentCell, direction)) {
+
+        if (direction == Direction.Stopped) {
+            return false;
+        }
+
+        // move to the next cell if possible
+        if (_labyrinth.canMove(currentCell, direction)) {
+
+            // use teleportation to get on the other side ;)
             if (newX > _labyrinth.getBounds().right) {
                 newX = _labyrinth.getBounds().left;
             }
@@ -87,8 +95,16 @@ public abstract class Character {
             _x = newX;
             _y = newY;
             return true;
-        } else {
-            return false;
+
+        } else if (_labyrinth.canMoveWithinCurrentCell(_x, _y, MOVE_DELTA, currentCell, direction)) {
+
+            newInvalidateRect(newX, newY);
+            _x = newX;
+            _y = newY;
+            return true;
         }
+
+        return false;
+
     }
 }
