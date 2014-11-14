@@ -19,6 +19,7 @@ public class StartActivity extends ActionBarActivity {
 
         setTypeface(R.id.caption, "pacfont.ttf");
         setTypeface(R.id.new_game, "emulogic.ttf");
+        setTypeface(R.id.resume, "emulogic.ttf");
     }
 
     private void setTypeface(int textViewId, final String fontName) {
@@ -26,7 +27,13 @@ public class StartActivity extends ActionBarActivity {
         tv.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/" + fontName));
     }
 
-    public void buttonPacmanClick(View v) {
+    public void buttonNewGameClick(View v) {
         startActivity(new Intent(this, PacmanActivity.class));
+    }
+
+    public void buttonResumeClick(View v) {
+        Intent resumeIntent = new Intent(this, PacmanActivity.class);
+        resumeIntent.setAction(PacmanActivity.RESUME_ACTION);
+        startActivity(resumeIntent);
     }
 }

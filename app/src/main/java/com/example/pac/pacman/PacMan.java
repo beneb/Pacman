@@ -26,9 +26,8 @@ public class PacMan extends Character {
     @Override
     public void init() {
         super.init();
-        Labyrinth labyrinth = GameEnv.getInstance().getLabyrinth();
-        int cellNum = labyrinth.getPacManCell();
-        RectF cellBounds = labyrinth.getCellBounds(cellNum);
+        int cellNum = _labyrinth.getPacManCell();
+        RectF cellBounds = _labyrinth.getCellBounds(cellNum);
         _x = cellBounds.centerX();
         _y = cellBounds.centerY();
     }
@@ -51,7 +50,7 @@ public class PacMan extends Character {
             _direction = _wishDirection;
         }
         if (moved) {
-            GameEnv.getInstance().getLabyrinth().setPacManPosition(_x, _y);
+            _labyrinth.setPacManPosition(_x, _y);
         }
         setMouthOpen (moved);
 

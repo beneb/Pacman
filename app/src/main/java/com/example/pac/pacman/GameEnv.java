@@ -7,16 +7,9 @@ public final class GameEnv {
     private GameEnv() {
     }
 
-    private Labyrinth _labyrinth;
     private android.content.res.Resources _resources;
 
     public void InitOnce(android.content.res.Resources resources) {
-        if (_labyrinth == null) {
-            _labyrinth = new Labyrinth(
-                    resources.getString(R.string.level_classic),
-                    resources.getColor(R.color.walls));
-        }
-
         if (_resources == null) {
             _resources = resources;
         }
@@ -27,10 +20,6 @@ public final class GameEnv {
             GameEnv.instance = new GameEnv();
         }
         return GameEnv.instance;
-    }
-
-    public Labyrinth getLabyrinth() {
-        return _labyrinth;
     }
 
     public android.content.res.Resources getResources() {

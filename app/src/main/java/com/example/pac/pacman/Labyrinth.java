@@ -3,15 +3,17 @@ package com.example.pac.pacman;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
 
 public class Labyrinth {
 
+    final int DOT = 0;
     final int WALL = 1;
 
-    private int layout[][];
+    private int _layout[][];
     private int _width;
     private int _height;
     private int _cellSize;
@@ -31,6 +33,8 @@ public class Labyrinth {
         return _bounds;
     }
 
+
+    private Paint _dot;
     private Paint _wallPaint;
     private Paint _debugPaint;
 
@@ -41,6 +45,11 @@ public class Labyrinth {
         _wallPaint.setColor(wallColor);
         _wallPaint.setStrokeWidth(5);
 
+        _dot = new Paint(Paint.ANTI_ALIAS_FLAG);
+        _dot.setColor(Color.YELLOW);
+        _dot.setStrokeWidth(5);
+
+
         _debugPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         _debugPaint.setStyle(Paint.Style.STROKE);
         _debugPaint.setColor(Color.RED);
@@ -50,15 +59,15 @@ public class Labyrinth {
         String[] rows = state.trim().split(" ");
         _width = rows[0].length();
         _height = rows.length;
-        layout = new int[_width][_height];
+        _layout = new int[_width][_height];
         for (int w = 0; w < _width; w++) {
             for (int h = 0; h < _height; h++) {
                 String cellValue = rows[h].substring(w, w + 1);
                 if (cellValue.equals("P")) {
-                    layout[w][h] = 0;
+                    _layout[w][h] = 0;
                     _pacManCell = getCell(w, h);
                 } else {
-                    layout[w][h] = Integer.parseInt(cellValue);
+                    _layout[w][h] = Integer.parseInt(cellValue);
                 }
             }
         }
@@ -133,26 +142,52 @@ public class Labyrinth {
         int col = getCellCol(cellNum);
         return row < 0 || row >= _width || col < 0 || col >= _height
                 ? WALL
-                : layout[col][row];
+                : _layout[col][row];
     }
 
-    public boolean canMove(float targetX, float targetY) {
-        int cellValue = getCellValue(cellAt(targetX, targetY));
-        return cellValue == 0;
+    private float GetCellCenterX(int cellNum) {
+        int col = getCellCol(cellNum);
+        return _cellSize * col + _cellSize/2 + _bounds.left;
     }
 
-    public boolean canMove(int cell, Direction direction) {
+    private float GetCellCenterY(int cellNum) {
+        int row = getCellRow(cellNum);
+        return _cellSize * row + _cellSize/2 + _bounds.top;
+    }
+
+    public boolean canMoveWithinCurrentCell(float currentX, float currentY, int currentCell, Direction direction) {
+        float currentCellCenterX = GetCellCenterX(currentCell);
+        float currentCellCenterY = GetCellCenterY(currentCell);
+
+        // TODO: don´t let the char walk behind the centerX oder centerY position
+
         switch (direction) {
             case Stopped:
                 return false;
             case Left:
-                return getCellValue(cell - 1) == 0;
+                return currentX > currentCellCenterX;
             case Right:
-                return getCellValue(cell + 1) == 0;
+                return currentX < currentCellCenterX;
             case Up:
-                return getCellValue(cell - _width) == 0;
+                return currentY > currentCellCenterY;
             case Down:
-                return getCellValue(cell + _width) == 0;
+                return currentY < currentCellCenterY;
+        }
+        return false;
+    }
+
+    public boolean canMove(int currentCell, Direction direction) {
+        switch (direction) {
+            case Stopped:
+                return false;
+            case Left:
+                return getCellValue(currentCell - 1) == 0;
+            case Right:
+                return getCellValue(currentCell + 1) == 0;
+            case Up:
+                return getCellValue(currentCell - _width) == 0;
+            case Down:
+                return getCellValue(currentCell + _width) == 0;
         }
         return false;
     }
@@ -160,10 +195,16 @@ public class Labyrinth {
     public void draw(Canvas canvas) {
         for (int col = 0; col < _width; col++) {
             for (int row = 0; row < _height; row++) {
-                if (layout[col][row] == WALL) {
+                if (_layout[col][row] == WALL) {
                     RectF cellBounds = getCellBounds(col, row);
                     canvas.drawRect(cellBounds, _wallPaint);
                 }
+                if (_layout[col][row] == DOT) {
+                    float startX = _cellSize * col + _cellSize/2 + _bounds.left;
+                    float startY = _cellSize * row + _cellSize/2 + _bounds.top;
+                    canvas.drawCircle(startX, startY, 5, _dot);
+                }
+
                 //--Grid for Debugging
                 //float l = col * _cellSize + _bounds.left;
                 //float t = row * _cellSize + _bounds.top;

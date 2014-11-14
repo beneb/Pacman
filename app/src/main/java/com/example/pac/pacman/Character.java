@@ -121,6 +121,7 @@ public abstract class Character {
         }
 
         if (direction != Direction.Stopped && canMove) {
+            // use teleportation to get on the other side ;)
             if (newX > _labyrinth.getBounds().right) {
                 newX = _labyrinth.getBounds().left;
             }
@@ -132,8 +133,17 @@ public abstract class Character {
             _x = newX;
             _y = newY;
             return true;
-        } else {
-            return false;
+
+        } else if (_labyrinth.canMoveWithinCurrentCell(_x, _y, cell, direction)) {
+            // move within current cell
+
+            newInvalidateRect(newX, newY);
+            _x = newX;
+            _y = newY;
+            return true;
         }
+
+        return false;
+
     }
 }
