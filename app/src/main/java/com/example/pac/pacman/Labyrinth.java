@@ -155,11 +155,11 @@ public class Labyrinth {
         return _cellSize * row + _cellSize/2 + _bounds.top;
     }
 
-    public boolean canMoveWithinCurrentCell(float currentX, float currentY, float moveDelta, int currentCell, Direction direction) {
-        float diff_x_ofPositionToCellCenter = 0;
-        float diff_y_ofPositionToCellCenter = 0;
+    public boolean canMoveWithinCurrentCell(float currentX, float currentY, int currentCell, Direction direction) {
         float currentCellCenterX = GetCellCenterX(currentCell);
         float currentCellCenterY = GetCellCenterY(currentCell);
+
+        // TODO: dont let the char walk behind the centerX oder centerY position
 
         switch (direction) {
             case Stopped:

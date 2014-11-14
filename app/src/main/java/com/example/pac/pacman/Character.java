@@ -96,7 +96,8 @@ public abstract class Character {
             _y = newY;
             return true;
 
-        } else if (_labyrinth.canMoveWithinCurrentCell(_x, _y, MOVE_DELTA, currentCell, direction)) {
+        } else if (_labyrinth.canMoveWithinCurrentCell(_x, _y, currentCell, direction)) {
+            // move within current cell
 
             newInvalidateRect(newX, newY);
             _x = newX;
