@@ -1,16 +1,16 @@
 package com.example.pac.pacman;
 
-import android.graphics.Color;
+import android.content.res.Resources;
 
 import java.util.Arrays;
 import java.util.Collection;
 
 public class GhostRepository {
-    public static Collection<Ghost> CreateGhosts(Labyrinth labyrinth) {
+    public static Collection<Ghost> CreateGhosts(Resources resources, Labyrinth labyrinth) {
         return Arrays.asList(
-                new Ghost(Color.RED, "Shadow", "Blinky", labyrinth, new DummyRandomMoveStrategy(labyrinth)),
-                new Ghost(Color.CYAN, "Bashful", "Inky", labyrinth, new DummyRandomMoveStrategy(labyrinth)),
-                new Ghost(Color.MAGENTA, "Speedy", "Pinky", labyrinth, new DummyRandomMoveStrategy(labyrinth)),
-                new Ghost(Color.rgb(255, 102, 0), "Pokey", "Clyde", labyrinth, new DummyRandomMoveStrategy(labyrinth)));
+                new Ghost("Shadow", "Blinky", resources.getColor(R.color.Blinky), new DummyRandomMoveStrategy(labyrinth), labyrinth),
+                new Ghost("Bashful", "Inky", resources.getColor(R.color.Inky), new DummyRandomMoveStrategy(labyrinth), labyrinth),
+                new Ghost("Speedy", "Pinky", resources.getColor(R.color.Pinky), new DummyRandomMoveStrategy(labyrinth), labyrinth),
+                new Ghost("Pokey", "Clyde", resources.getColor(R.color.Clyde), new DummyRandomMoveStrategy(labyrinth), labyrinth));
     }
 }

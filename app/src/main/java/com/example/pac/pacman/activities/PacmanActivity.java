@@ -41,11 +41,9 @@ public class PacmanActivity extends ActionBarActivity {
         GameEnv.getInstance().InitOnce(getResources());
 
         _characters = new ArrayList<Character>();
-        PacMan pacMan = new PacMan(
-                getResources().getColor(R.color.pacman),
-                _labyrinth);
+        PacMan pacMan = new PacMan(getResources().getColor(R.color.pacman), _labyrinth);
         _characters.add(pacMan);
-        _characters.addAll(GhostRepository.CreateGhosts(_labyrinth));
+        _characters.addAll(GhostRepository.CreateGhosts(getResources(), _labyrinth));
 
         _view = new GameplayView(this, _labyrinth, pacMan, _characters);
         setContentView(_view);

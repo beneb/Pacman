@@ -10,10 +10,9 @@ public class Ghost extends Character {
 
     private IMoveStrategy _moveStrategy;
 
-    protected Ghost(int color, String name, String nickName, Labyrinth labyrinth, IMoveStrategy moveStrategy) {
+    protected Ghost(String name, String nickName, int color, IMoveStrategy moveStrategy, Labyrinth labyrinth) {
         super(name, nickName, labyrinth);
         _foreground.setColor(color);
-        _foreground.setAlpha(150);
         _moveStrategy = moveStrategy;
     }
 
