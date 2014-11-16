@@ -15,7 +15,7 @@ public abstract class Character {
 
     private final Paint _debugPaint;
 
-    protected final float MOVE_DELTA;
+    protected float _moveDelta;
     protected Paint _foreground;
 
     protected float _x, _y;
@@ -49,14 +49,12 @@ public abstract class Character {
         _debugPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         _debugPaint.setStyle(Paint.Style.STROKE);
         _debugPaint.setColor(Color.RED);
-
-        final float MOVE_DELTA_DIP = 2.5f;
-        MOVE_DELTA = MOVE_DELTA_DIP;
-        Log.i("Character", "MOVE_DELTA = " + MOVE_DELTA);
     }
 
     public void init() {
         _size = _labyrinth.getCellSize() - 2;
+        _moveDelta = _size / 6;
+        Log.i("Character", "MOVE DELTA = " + _moveDelta);
         newInvalidateRect(_x, _y);
     }
 
@@ -82,11 +80,11 @@ public abstract class Character {
         RectF bounds = _labyrinth.getCellBounds(cell);
         float centerX = bounds.centerX();
         float centerY = bounds.centerY();
-        float delta = MOVE_DELTA;
+        float delta = _moveDelta;
         boolean canMove = true;
         // don´t let the char walk behind the centerX oder centerY position
         if (_newDirection.isPerpendicular(_direction)) {
-            delta = getDelta(centerX, centerY, MOVE_DELTA);
+            delta = getDelta(centerX, centerY, _moveDelta);
             _direction = getDirectionInTheSameCell(centerX, centerY);
         } else {
             _newDirection = direction;
@@ -95,7 +93,7 @@ public abstract class Character {
             }
             canMove = _labyrinth.canMove(cell, _direction);
             if (!canMove) {
-                delta = getDelta(centerX, centerY, MOVE_DELTA);
+                delta = getDelta(centerX, centerY, _moveDelta);
                 _direction = getDirectionInTheSameCell(centerX, centerY);
                 canMove = delta != 0;
             }
@@ -147,7 +145,7 @@ public abstract class Character {
             delta = centerY - _y;
         }
         delta = Math.abs(delta);
-        delta = delta > MOVE_DELTA ? MOVE_DELTA : delta;
+        delta = delta > _moveDelta ? _moveDelta : delta;
         return delta;
     }
 

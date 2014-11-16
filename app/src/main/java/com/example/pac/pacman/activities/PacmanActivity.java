@@ -66,7 +66,7 @@ public class PacmanActivity extends ActionBarActivity {
                 _view.invalidate(character.getInvalidateRect());
             }
             _handler.removeCallbacks(_updateView);
-            _handler.postDelayed(this, 50);
+            _handler.postDelayed(this, 30);
         }
     };
 
