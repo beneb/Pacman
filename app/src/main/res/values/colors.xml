@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="background">#000000</color>
+    <color name="foreground">#FFFFFF</color>
     <color name="walls">#0000FF</color>
     <color name="pacman">#FFFF00</color>
-    <color name="foreground">#FFFFFF</color>
+    <color name="Blinky">#99FF0000</color>
+    <color name="Inky">#9900FFFF</color>
+    <color name="Pinky">#99FF00FF</color>
+    <color name="Clyde">#99FFA500</color>
+    <color name="ScaredGhost">#000000FF</color>
 </resources>
