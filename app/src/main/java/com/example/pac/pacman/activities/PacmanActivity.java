@@ -34,8 +34,7 @@ public class PacmanActivity extends ActionBarActivity {
         String action = intent.getAction();
         String state = loadLabyrinthState(action);
 
-        _labyrinth = new Labyrinth(state, getResources().getColor(R.color.walls));
-
+        _labyrinth = new Labyrinth(state, getResources());
         GameEnv.getInstance().InitOnce(getResources());
 
         _characters = new ArrayList<Character>();

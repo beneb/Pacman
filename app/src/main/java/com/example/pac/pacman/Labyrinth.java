@@ -1,5 +1,6 @@
 package com.example.pac.pacman;
 
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -39,25 +40,12 @@ public class Labyrinth {
     private Paint _wallPaint;
     private Paint _debugPaint;
 
-    public Labyrinth(String state, int wallColor) {
+    public Labyrinth(String state, Resources resource) {
         load(state);
-
-        _wallPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        _wallPaint.setColor(wallColor);
-        _wallPaint.setStrokeWidth(5);
-
-        _dot = new Paint(Paint.ANTI_ALIAS_FLAG);
-        _dot.setColor(Color.YELLOW);
-        _dot.setStrokeWidth(5);
-
-        _empty = new Paint(Paint.ANTI_ALIAS_FLAG);
-        _empty.setColor(Color.BLACK);
-        _empty.setStrokeWidth(5);
-
-
-        _debugPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        _debugPaint.setStyle(Paint.Style.STROKE);
-        _debugPaint.setColor(Color.RED);
+        _dot =  PaintObjectsFactory.createDot(resource.getColor(R.color.dot));
+        _empty = PaintObjectsFactory.createEmptyDot(resource.getColor(R.color.empty_dot));
+        _wallPaint = PaintObjectsFactory.createWall(resource.getColor(R.color.walls));
+        // _debugPaint = PaintObjectsFactory.createDebugPaint(Color.RED);
     }
 
     private void load(String state) {
@@ -107,7 +95,8 @@ public class Labyrinth {
 
     public void setPacManPosition(float x, float y) {
         int c = cellAt(x, y);
-        // Set here the labyrinth layout to empty??
+
+        // Set here the labyrinth layout to empty, pacman is eating dots here.
         int col = GetLabyrinthCol(x);
         int row = GetLabyrinthRow(y);
         _layout[col][row] = EMPTY;
@@ -234,9 +223,9 @@ public class Labyrinth {
                 }
 
                 //--Grid for Debugging
-                float l = col * _cellSize + _bounds.left;
-                float t = row * _cellSize + _bounds.top;
-                canvas.drawRect(l, t, l + _cellSize, t + _cellSize, _debugPaint);
+                // float l = col * _cellSize + _bounds.left;
+                // float t = row * _cellSize + _bounds.top;
+                // canvas.drawRect(l, t, l + _cellSize, t + _cellSize, _debugPaint);
             }
         }
     }

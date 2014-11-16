@@ -9,7 +9,7 @@ public class LabyrinthTests extends TestCase {
 
     @Override
     public void setUp() throws Exception {
-        _labyrinth = new Labyrinth("101 P00 101", 0);
+        _labyrinth = new Labyrinth("101 P00 101", getResources());
         _labyrinth.init(new Rect(0, 0, 30, 30));
     }
 
