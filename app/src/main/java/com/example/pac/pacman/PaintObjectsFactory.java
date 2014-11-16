@@ -22,8 +22,9 @@ public class PaintObjectsFactory {
 
     private static Paint createPaint(int color){
         Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
+        p.setStyle(Paint.Style.FILL_AND_STROKE);
         p.setColor(color);
-        p.setStrokeWidth(5);
+        p.setStrokeWidth(1.5f);
         return p;
     }
 }

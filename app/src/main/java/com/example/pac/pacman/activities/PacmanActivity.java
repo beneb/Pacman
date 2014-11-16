@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.PersistableBundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 
-import com.example.pac.pacman.*;
 import com.example.pac.pacman.Character;
+import com.example.pac.pacman.GameEnv;
+import com.example.pac.pacman.GhostRepository;
+import com.example.pac.pacman.Labyrinth;
+import com.example.pac.pacman.PacMan;
+import com.example.pac.pacman.R;
 import com.example.pac.pacman.views.GameplayView;
 
 import java.util.ArrayList;
@@ -38,9 +40,9 @@ public class PacmanActivity extends ActionBarActivity {
         GameEnv.getInstance().InitOnce(getResources());
 
         _characters = new ArrayList<Character>();
-        PacMan pacMan = new PacMan(_labyrinth, getResources());
+        PacMan pacMan = new PacMan(getResources().getColor(R.color.pacman), _labyrinth);
         _characters.add(pacMan);
-        _characters.addAll(GhostRepository.CreateGhosts(_labyrinth));
+        _characters.addAll(GhostRepository.CreateGhosts(getResources(), _labyrinth));
 
         _view = new GameplayView(this, _labyrinth, pacMan, _characters);
         setContentView(_view);
@@ -64,7 +66,7 @@ public class PacmanActivity extends ActionBarActivity {
                 _view.invalidate(character.getInvalidateRect());
             }
             _handler.removeCallbacks(_updateView);
-            _handler.postDelayed(this, 30);
+            _handler.postDelayed(this, 50);
         }
     };
 

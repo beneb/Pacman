@@ -1,6 +1,5 @@
 package com.example.pac.pacman;
 
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.RectF;
 
@@ -18,12 +17,11 @@ public class PacMan extends Character {
     private int _mouthOpenGrad = MOUTH_OPEN_GRAD;
     private boolean _mouthClosing;
 
-    protected Direction _wishDirection = Direction.Left;
-    protected Direction _direction = Direction.Stopped;
+    private PacManMoveStrategy _moveStrategy = new PacManMoveStrategy(_labyrinth);
 
-    public PacMan(Labyrinth labyrinth, Resources resources) {
+    public PacMan(int color, Labyrinth labyrinth) {
         super("Pac-Man", "Al Bundy", labyrinth);
-        _foreground.setColor(resources.getColor(R.color.pacman));
+        _foreground.setColor(color);
     }
 
     @Override
@@ -40,22 +38,19 @@ public class PacMan extends Character {
         float radius = _size/2;
         RectF r = new RectF(_x - radius, _y - radius, _x + radius, _y + radius);
         canvas.drawArc(r, _pMouth + _mouthOpenGrad, 360 - 2*_mouthOpenGrad, true, _foreground);
+        super.draw(canvas);
     }
 
     @Override
     public void move() {
-        boolean moved = super.move(_wishDirection);
-        if (!moved) {
-            moved = super.move(_direction);
-        } else {
-            _direction = _wishDirection;
-        }
-        if (moved) {
+        Direction direction= super.move(_moveStrategy.GetCurrentOrNextDirection(_x, _y));
+
+        if (!direction.equals(Direction.Stopped)) {
             _labyrinth.setPacManPosition(_x, _y);
         }
-        setMouthOpen (moved);
+        setMouthOpen (!direction.equals(Direction.Stopped));
 
-        switch (_direction) {
+        switch (direction) {
             case Stopped:
             case Right:
                 _pMouth = MOUTH_RIGHT;
@@ -89,33 +84,17 @@ public class PacMan extends Character {
     public void go(float x_touched, float y_touched) {
         if (isHorizontal(x_touched, y_touched)) { // horizontal move
             if (x_touched < _x) {
-                goLeft();
+                _moveStrategy.setWishDirection(Direction.Left);
             } else {
-                goRight();
+                _moveStrategy.setWishDirection(Direction.Right);
             }
         } else { // vertical move
             if (y_touched < _y) {
-                goUp();
+                _moveStrategy.setWishDirection(Direction.Up);
             } else {
-                goDown();
+                _moveStrategy.setWishDirection(Direction.Down);
             }
         }
-    }
-
-    private void goDown() {
-        _wishDirection = Direction.Down;
-    }
-
-    private void goUp() {
-        _wishDirection = Direction.Up;
-    }
-
-    private void goRight() {
-        _wishDirection = Direction.Right;
-    }
-
-    private void goLeft() {
-        _wishDirection = Direction.Left;
     }
 
     private boolean isHorizontal(float x_touched, float y_touched) {

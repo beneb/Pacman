@@ -2,9 +2,7 @@ package com.example.pac.pacman;
 
 import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
 
@@ -17,10 +15,10 @@ public class Labyrinth {
     private int _layout[][];
     private int _width;
     private int _height;
-    private int _cellSize;
+    private float _cellSize;
     private int _pacManCell;
 
-    public int getCellSize() {
+    public float getCellSize() {
         return _cellSize;
     }
 
@@ -28,9 +26,9 @@ public class Labyrinth {
         return _pacManCell;
     }
 
-    private Rect _bounds;
+    private RectF _bounds;
 
-    public Rect getBounds() {
+    public RectF getBounds() {
         return _bounds;
     }
 
@@ -42,10 +40,12 @@ public class Labyrinth {
 
     public Labyrinth(String state, Resources resource) {
         load(state);
-        _dot =  PaintObjectsFactory.createDot(resource.getColor(R.color.dot));
-        _empty = PaintObjectsFactory.createEmptyDot(resource.getColor(R.color.empty_dot));
-        _wallPaint = PaintObjectsFactory.createWall(resource.getColor(R.color.walls));
-        // _debugPaint = PaintObjectsFactory.createDebugPaint(Color.RED);
+        if (resource != null) {
+            _dot = PaintObjectsFactory.createDot(resource.getColor(R.color.dot));
+            _empty = PaintObjectsFactory.createEmptyDot(resource.getColor(R.color.empty_dot));
+            _wallPaint = PaintObjectsFactory.createWall(resource.getColor(R.color.walls));
+            // _debugPaint = PaintObjectsFactory.createDebugPaint(Color.RED);
+        }
     }
 
     private void load(String state) {
@@ -68,13 +68,13 @@ public class Labyrinth {
 
     public String getState() {
         StringBuilder sb = new StringBuilder(_width * _height + 1);
-        for (int h = 0; h < _height; h++) {
-            for (int w = 0; w < _width; w++) {
-                int cell = getCell(w, h);
+        for (int row = 0; row < _height; row++) {
+            for (int col = 0; col < _width; col++) {
+                int cell = getCell(col, row);
                 if (cell == _pacManCell) {
                     sb.append("P");
                 } else {
-                    sb.append(getCellValue(cell));
+                    sb.append(getCellValue(row, col));
                 }
             }
             sb.append(" ");
@@ -82,12 +82,12 @@ public class Labyrinth {
         return sb.toString().trim();
     }
 
-    public void init(Rect bounds) {
-        int width = bounds.width() / _width;
-        int height = bounds.height() / _height;
+    public void init(RectF bounds) {
+        float width = bounds.width() / _width;
+        float height = bounds.height() / _height;
         _cellSize = Math.min(width, height);
         Log.i("Labyrinth", "Cell size: " + _cellSize);
-        _bounds = new Rect(bounds.left,
+        _bounds = new RectF(bounds.left,
                 bounds.top,
                 bounds.left + _width * _cellSize,
                 bounds.top + _height * _cellSize);
@@ -97,9 +97,7 @@ public class Labyrinth {
         int c = cellAt(x, y);
 
         // Set here the labyrinth layout to empty, pacman is eating dots here.
-        int col = GetLabyrinthCol(x);
-        int row = GetLabyrinthRow(y);
-        _layout[col][row] = EMPTY;
+        setCellValue(c, EMPTY);
 
         if (_pacManCell != c) {
             Log.d("Labyrinth", "Pac-Man Cell: " + c);
@@ -144,63 +142,41 @@ public class Labyrinth {
         return getCell(col, row);
     }
 
-    private int getCellValue(int cellNum) {
-        int row = getCellRow(cellNum);
-        int col = getCellCol(cellNum);
-        return row < 0 || row >= _width || col < 0 || col >= _height
-                ? WALL
+    private int getCellValue(int row, int col) {
+        return row < 0 || row >= _height || col < 0 || col >= _width
+                ? 0
                 : _layout[col][row];
     }
 
-    private float GetCellCenterX(int cellNum) {
+    private void setCellValue(int cellNum, int value) {
         int col = getCellCol(cellNum);
-        return _cellSize * col + _cellSize/2 + _bounds.left;
-    }
-
-    private float GetCellCenterY(int cellNum) {
         int row = getCellRow(cellNum);
-        return _cellSize * row + _cellSize/2 + _bounds.top;
-    }
 
-    public boolean canMoveWithinCurrentCell(float currentX, float currentY, int currentCell, Direction direction) {
-        float currentCellCenterX = GetCellCenterX(currentCell);
-        float currentCellCenterY = GetCellCenterY(currentCell);
-
-        // TODO: don´t let the char walk behind the centerX oder centerY position
-
-        switch (direction) {
-            case Stopped:
-                return false;
-            case Left:
-                return currentX > currentCellCenterX;
-            case Right:
-                return currentX < currentCellCenterX;
-            case Up:
-                return currentY > currentCellCenterY;
-            case Down:
-                return currentY < currentCellCenterY;
+        if (row >= 0 && row < _height && col >= 0 && col < _width) {
+            _layout[col][row] = value;
         }
-        return false;
     }
 
     public boolean canMove(int currentCell, Direction direction) {
+        int row = getCellRow(currentCell);
+        int col = getCellCol(currentCell);
         switch (direction) {
             case Stopped:
                 return false;
             case Left:
-                return canMoveForCell(currentCell - 1);
+                return canMoveForCell(row, col - 1);
             case Right:
-                return canMoveForCell(currentCell + 1);
+                return canMoveForCell(row, col + 1);
             case Up:
-                return canMoveForCell(currentCell - _width);
+                return canMoveForCell(row - 1, col);
             case Down:
-                return canMoveForCell(currentCell + _width);
+                return canMoveForCell(row + 1, col);
         }
         return false;
     }
 
-    private boolean canMoveForCell(int cell) {
-        int cellValue = getCellValue(cell);
+    private boolean canMoveForCell(int row, int col) {
+        int cellValue = getCellValue(row, col);
         return cellValue ==  EMPTY || cellValue == DOT;
     }
 
