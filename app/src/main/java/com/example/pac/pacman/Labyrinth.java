@@ -3,7 +3,6 @@ package com.example.pac.pacman;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
@@ -140,40 +139,9 @@ public class Labyrinth {
     private int getCellValue(int cellNum) {
         int row = getCellRow(cellNum);
         int col = getCellCol(cellNum);
-        return row < 0 || row >= _width || col < 0 || col >= _height
+        return row < 0 || row >= _height || col < 0 || col >= _width
                 ? WALL
                 : _layout[col][row];
-    }
-
-    private float GetCellCenterX(int cellNum) {
-        int col = getCellCol(cellNum);
-        return _cellSize * col + _cellSize/2 + _bounds.left;
-    }
-
-    private float GetCellCenterY(int cellNum) {
-        int row = getCellRow(cellNum);
-        return _cellSize * row + _cellSize/2 + _bounds.top;
-    }
-
-    public boolean canMoveWithinCurrentCell(float currentX, float currentY, int currentCell, Direction direction) {
-        float currentCellCenterX = GetCellCenterX(currentCell);
-        float currentCellCenterY = GetCellCenterY(currentCell);
-
-        // TODO: don´t let the char walk behind the centerX oder centerY position
-
-        switch (direction) {
-            case Stopped:
-                return false;
-            case Left:
-                return currentX > currentCellCenterX;
-            case Right:
-                return currentX < currentCellCenterX;
-            case Up:
-                return currentY > currentCellCenterY;
-            case Down:
-                return currentY < currentCellCenterY;
-        }
-        return false;
     }
 
     public boolean canMove(int currentCell, Direction direction) {

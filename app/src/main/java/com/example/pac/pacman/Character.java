@@ -79,6 +79,7 @@ public abstract class Character {
         float centerY = bounds.centerY();
         float delta = MOVE_DELTA;
         boolean canMove = true;
+        // don´t let the char walk behind the centerX oder centerY position
         if (_newDirection.isPerpendicular(_direction)) {
             delta = getDelta(centerX, centerY, MOVE_DELTA);
             _direction = getDirectionInTheSameCell(centerX, centerY, delta);

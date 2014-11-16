@@ -9,8 +9,8 @@ public class LabyrinthTests extends TestCase {
 
     @Override
     public void setUp() throws Exception {
-        _labyrinth = new Labyrinth("101 P00 101", 0);
-        _labyrinth.init(new Rect(0, 0, 30, 30));
+        _labyrinth = new Labyrinth("101 P00 101 101", 0);
+        _labyrinth.init(new Rect(0, 0, 30, 40));
     }
 
     public void testCellSize() {
@@ -22,6 +22,9 @@ public class LabyrinthTests extends TestCase {
     }
 
     public void testGetLabyrinthState() {
-        assertEquals("101 P00 101", _labyrinth.getState());
+        assertEquals("101 P00 101 101", _labyrinth.getState());
+    }
+    public void testCanMove() {
+        assertTrue("101 P00 101 101", _labyrinth.canMove(7, Direction.Down));
     }
 }
