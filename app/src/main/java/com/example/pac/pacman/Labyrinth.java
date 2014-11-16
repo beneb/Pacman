@@ -74,13 +74,13 @@ public class Labyrinth {
 
     public String getState() {
         StringBuilder sb = new StringBuilder(_width * _height + 1);
-        for (int h = 0; h < _height; h++) {
-            for (int w = 0; w < _width; w++) {
-                int cell = getCell(w, h);
+        for (int row = 0; row < _height; row++) {
+            for (int col = 0; col < _width; col++) {
+                int cell = getCell(col, row);
                 if (cell == _pacManCell) {
                     sb.append("P");
                 } else {
-                    sb.append(getCellValue(cell));
+                    sb.append(getCellValue(row, col));
                 }
             }
             sb.append(" ");
@@ -136,26 +136,26 @@ public class Labyrinth {
         return getCell(col, row);
     }
 
-    private int getCellValue(int cellNum) {
-        int row = getCellRow(cellNum);
-        int col = getCellCol(cellNum);
+    private int getCellValue(int row, int col) {
         return row < 0 || row >= _height || col < 0 || col >= _width
-                ? WALL
+                ? 0
                 : _layout[col][row];
     }
 
     public boolean canMove(int currentCell, Direction direction) {
+        int row = getCellRow(currentCell);
+        int col = getCellCol(currentCell);
         switch (direction) {
             case Stopped:
                 return false;
             case Left:
-                return getCellValue(currentCell - 1) == 0;
+                return getCellValue(row, col - 1) == 0;
             case Right:
-                return getCellValue(currentCell + 1) == 0;
+                return getCellValue(row, col + 1) == 0;
             case Up:
-                return getCellValue(currentCell - _width) == 0;
+                return getCellValue(row - 1, col) == 0;
             case Down:
-                return getCellValue(currentCell + _width) == 0;
+                return getCellValue(row + 1, col) == 0;
         }
         return false;
     }
