@@ -50,7 +50,7 @@ public class GameplayView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        // currently  act only on ACTION_DOWN
+        // Act only on ACTION_UP - should be good enough for touch and wipe
         if (event.getAction() == 1) {
             _pacMan.go(event.getX(), event.getY());
         }

@@ -3,7 +3,6 @@ package com.example.pac.pacman;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
@@ -12,6 +11,7 @@ public class Labyrinth {
 
     final int DOT = 0;
     final int WALL = 1;
+    final int EMPTY = 2;
 
     private int _layout[][];
     private int _width;
@@ -35,6 +35,7 @@ public class Labyrinth {
 
 
     private Paint _dot;
+    private Paint _empty;
     private Paint _wallPaint;
     private Paint _debugPaint;
 
@@ -48,6 +49,10 @@ public class Labyrinth {
         _dot = new Paint(Paint.ANTI_ALIAS_FLAG);
         _dot.setColor(Color.YELLOW);
         _dot.setStrokeWidth(5);
+
+        _empty = new Paint(Paint.ANTI_ALIAS_FLAG);
+        _empty.setColor(Color.BLACK);
+        _empty.setStrokeWidth(5);
 
 
         _debugPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -102,10 +107,23 @@ public class Labyrinth {
 
     public void setPacManPosition(float x, float y) {
         int c = cellAt(x, y);
+        // Set here the labyrinth layout to empty??
+        int col = GetLabyrinthCol(x);
+        int row = GetLabyrinthRow(y);
+        _layout[col][row] = EMPTY;
+
         if (_pacManCell != c) {
             Log.d("Labyrinth", "Pac-Man Cell: " + c);
             _pacManCell = c;
         }
+    }
+
+    private int GetLabyrinthRow(float y) {
+        return (int) ((y - _bounds.top) / _cellSize);
+    }
+
+    private int GetLabyrinthCol(float x) {
+        return (int) ((x - _bounds.left) / _cellSize);
     }
 
     private int getCell(int col, int row) {
@@ -121,8 +139,8 @@ public class Labyrinth {
     }
 
     public int cellAt(float x, float y) {
-        int col = (int) ((x - _bounds.left) / _cellSize);
-        int row = (int) ((y - _bounds.top) / _cellSize);
+        int col = GetLabyrinthCol(x);
+        int row = GetLabyrinthRow(y);
 
         if (col >= _width) {
             col = 0;
@@ -181,15 +199,20 @@ public class Labyrinth {
             case Stopped:
                 return false;
             case Left:
-                return getCellValue(currentCell - 1) == 0;
+                return canMoveForCell(currentCell - 1);
             case Right:
-                return getCellValue(currentCell + 1) == 0;
+                return canMoveForCell(currentCell + 1);
             case Up:
-                return getCellValue(currentCell - _width) == 0;
+                return canMoveForCell(currentCell - _width);
             case Down:
-                return getCellValue(currentCell + _width) == 0;
+                return canMoveForCell(currentCell + _width);
         }
         return false;
+    }
+
+    private boolean canMoveForCell(int cell) {
+        int cellValue = getCellValue(cell);
+        return cellValue ==  EMPTY || cellValue == DOT;
     }
 
     public void draw(Canvas canvas) {
@@ -204,11 +227,16 @@ public class Labyrinth {
                     float startY = _cellSize * row + _cellSize/2 + _bounds.top;
                     canvas.drawCircle(startX, startY, 5, _dot);
                 }
+                if (_layout[col][row] == EMPTY) {
+                    float startX = _cellSize * col + _cellSize/2 + _bounds.left;
+                    float startY = _cellSize * row + _cellSize/2 + _bounds.top;
+                    canvas.drawCircle(startX, startY, 5, _empty);
+                }
 
                 //--Grid for Debugging
-                //float l = col * _cellSize + _bounds.left;
-                //float t = row * _cellSize + _bounds.top;
-                //canvas.drawRect(l, t, l + _cellSize, t + _cellSize, _debugPaint);
+                float l = col * _cellSize + _bounds.left;
+                float t = row * _cellSize + _bounds.top;
+                canvas.drawRect(l, t, l + _cellSize, t + _cellSize, _debugPaint);
             }
         }
     }
