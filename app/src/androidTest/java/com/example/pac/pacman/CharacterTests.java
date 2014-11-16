@@ -1,7 +1,7 @@
 package com.example.pac.pacman;
 
 import android.graphics.PointF;
-import android.graphics.Rect;
+import android.graphics.RectF;
 
 import junit.framework.TestCase;
 
@@ -16,7 +16,7 @@ public class CharacterTests extends TestCase {
 
     private PacMan initFromLabyrinth_4x4(String state) {
         Labyrinth labyrinth = new Labyrinth(state, 0);
-        labyrinth.init(new Rect(0, 0, 40, 40));
+        labyrinth.init(new RectF(0, 0, 40, 40));
         PacMan pacMan = new PacMan(0, labyrinth);
         pacMan.init();
         return pacMan;
@@ -52,7 +52,7 @@ public class CharacterTests extends TestCase {
 
     public void testTeleportationLeft() {
         Labyrinth labyrinth = new Labyrinth("P00", 0);
-        labyrinth.init(new Rect(0, 0, 30, 10));
+        labyrinth.init(new RectF(0, 0, 30, 10));
         PacMan pacMan = new PacMan(0, labyrinth);
         pacMan.init();
         pacMan.go(0, 5);
@@ -62,7 +62,7 @@ public class CharacterTests extends TestCase {
 
     public void testTeleportationRight() {
         Labyrinth labyrinth = new Labyrinth("00P", 0);
-        labyrinth.init(new Rect(0, 0, 30, 10));
+        labyrinth.init(new RectF(0, 0, 30, 10));
         PacMan pacMan = new PacMan(0, labyrinth);
         pacMan.init();
         pacMan.go(30, 5);

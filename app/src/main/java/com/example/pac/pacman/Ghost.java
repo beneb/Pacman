@@ -1,9 +1,6 @@
 package com.example.pac.pacman;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.RectF;
 
 public class Ghost extends Character {
@@ -20,7 +17,7 @@ public class Ghost extends Character {
     @Override
     public void init() {
         super.init();
-        Rect bounds = _labyrinth.getBounds();
+        RectF bounds = _labyrinth.getBounds();
         _x = bounds.left + _labyrinth.getCellSize() + _labyrinth.getCellSize()/2;
         _y = bounds.top  + _labyrinth.getCellSize() + _labyrinth.getCellSize()/2;
     }

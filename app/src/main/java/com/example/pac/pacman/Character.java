@@ -7,7 +7,6 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
-import android.util.TypedValue;
 
 public abstract class Character {
 
@@ -20,12 +19,13 @@ public abstract class Character {
     protected Paint _foreground;
 
     protected float _x, _y;
-    protected int _size;
+    protected float _size;
 
     // NOTE: Test-induces design damage
-    public PointF getPosition(){
+    public PointF getPosition() {
         return new PointF(_x, _y);
     }
+
     private Rect _invalidateRect;
 
     public Rect getInvalidateRect() {
@@ -61,11 +61,11 @@ public abstract class Character {
     }
 
     protected void newInvalidateRect(float newX, float newY) {
-        int l = (int) Math.min(_x, newX) - _size;
-        int t = (int) Math.min(_y, newY) - _size;
-        int r = (int) Math.max(_x, newX) + _size + 1;
-        int b = (int) Math.max(_y, newY) + _size + 1;
-        _invalidateRect = new Rect(l, t, r, b);
+        float l = Math.min(_x, newX) - _size;
+        float t = Math.min(_y, newY) - _size;
+        float r = Math.max(_x, newX) + _size + 1;
+        float b = Math.max(_y, newY) + _size + 1;
+        _invalidateRect = new Rect((int) l, (int) t, (int) r + 1, (int) b + 1);
     }
 
     public void draw(Canvas canvas) {
@@ -153,11 +153,11 @@ public abstract class Character {
 
     private Direction getDirectionInTheSameCell(float centerX, float centerY) {
         if (_x == centerX && _y == centerY) {
-             return _newDirection;
+            return _newDirection;
         } else if (_x != centerX) {
             return centerX - _x > 0 ? Direction.Right : Direction.Left;
         } else if (_y != centerY) {
-            return centerY - _y > 0 ? Direction.Down: Direction.Up;
+            return centerY - _y > 0 ? Direction.Down : Direction.Up;
         }
         return _direction;
     }

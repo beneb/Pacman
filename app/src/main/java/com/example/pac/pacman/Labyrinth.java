@@ -3,7 +3,6 @@ package com.example.pac.pacman;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
 
@@ -15,10 +14,10 @@ public class Labyrinth {
     private int _layout[][];
     private int _width;
     private int _height;
-    private int _cellSize;
+    private float _cellSize;
     private int _pacManCell;
 
-    public int getCellSize() {
+    public float getCellSize() {
         return _cellSize;
     }
 
@@ -26,9 +25,9 @@ public class Labyrinth {
         return _pacManCell;
     }
 
-    private Rect _bounds;
+    private RectF _bounds;
 
-    public Rect getBounds() {
+    public RectF getBounds() {
         return _bounds;
     }
 
@@ -41,8 +40,9 @@ public class Labyrinth {
         load(state);
 
         _wallPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        _wallPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        _wallPaint.setStrokeWidth(1.5f);
         _wallPaint.setColor(wallColor);
-        _wallPaint.setStrokeWidth(5);
 
         _dot = new Paint(Paint.ANTI_ALIAS_FLAG);
         _dot.setColor(Color.YELLOW);
@@ -88,12 +88,12 @@ public class Labyrinth {
         return sb.toString().trim();
     }
 
-    public void init(Rect bounds) {
-        int width = bounds.width() / _width;
-        int height = bounds.height() / _height;
+    public void init(RectF bounds) {
+        float width = bounds.width() / _width;
+        float height = bounds.height() / _height;
         _cellSize = Math.min(width, height);
         Log.i("Labyrinth", "Cell size: " + _cellSize);
-        _bounds = new Rect(bounds.left,
+        _bounds = new RectF(bounds.left,
                 bounds.top,
                 bounds.left + _width * _cellSize,
                 bounds.top + _height * _cellSize);
