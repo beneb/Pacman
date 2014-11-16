@@ -3,6 +3,7 @@ package com.example.pac.pacman;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
@@ -21,6 +22,10 @@ public abstract class Character {
     protected float _x, _y;
     protected int _size;
 
+    // NOTE: Test-induces design damage
+    public PointF getPosition(){
+        return new PointF(_x, _y);
+    }
     private Rect _invalidateRect;
 
     public Rect getInvalidateRect() {
@@ -46,7 +51,7 @@ public abstract class Character {
         _debugPaint.setColor(Color.RED);
 
         final float MOVE_DELTA_DIP = 2.5f;
-        MOVE_DELTA = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, MOVE_DELTA_DIP, GameEnv.getInstance().getResources().getDisplayMetrics());
+        MOVE_DELTA = MOVE_DELTA_DIP;
         Log.i("Character", "MOVE_DELTA = " + MOVE_DELTA);
     }
 
@@ -72,7 +77,7 @@ public abstract class Character {
 
     public abstract void move();
 
-    protected boolean move(Direction direction) {
+    protected Direction move(Direction direction) {
         int cell = _labyrinth.cellAt(_x, _y);
         RectF bounds = _labyrinth.getCellBounds(cell);
         float centerX = bounds.centerX();
@@ -82,7 +87,7 @@ public abstract class Character {
         // don´t let the char walk behind the centerX oder centerY position
         if (_newDirection.isPerpendicular(_direction)) {
             delta = getDelta(centerX, centerY, MOVE_DELTA);
-            _direction = getDirectionInTheSameCell(centerX, centerY, delta);
+            _direction = getDirectionInTheSameCell(centerX, centerY);
         } else {
             _newDirection = direction;
             if (!_newDirection.isPerpendicular(_direction)) {
@@ -91,7 +96,7 @@ public abstract class Character {
             canMove = _labyrinth.canMove(cell, _direction);
             if (!canMove) {
                 delta = getDelta(centerX, centerY, MOVE_DELTA);
-                _direction = getDirectionInTheSameCell(centerX, centerY, delta);
+                _direction = getDirectionInTheSameCell(centerX, centerY);
                 canMove = delta != 0;
             }
         }
@@ -129,11 +134,8 @@ public abstract class Character {
             newInvalidateRect(newX, newY);
             _x = newX;
             _y = newY;
-            return true;
-
-        } else {
-            return false;
         }
+        return _direction;
     }
 
     private float getDelta(float centerX, float centerY, float delta) {
@@ -149,13 +151,13 @@ public abstract class Character {
         return delta;
     }
 
-    private Direction getDirectionInTheSameCell(float centerX, float centerY, float delta) {
+    private Direction getDirectionInTheSameCell(float centerX, float centerY) {
         if (_x == centerX && _y == centerY) {
              return _newDirection;
         } else if (_x != centerX) {
-            return delta > 0 ? Direction.Right : Direction.Left;
+            return centerX - _x > 0 ? Direction.Right : Direction.Left;
         } else if (_y != centerY) {
-            return delta > 0 ? Direction.Down: Direction.Up;
+            return centerY - _y > 0 ? Direction.Down: Direction.Up;
         }
         return _direction;
     }

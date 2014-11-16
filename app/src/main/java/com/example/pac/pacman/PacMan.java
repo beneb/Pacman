@@ -43,13 +43,12 @@ public class PacMan extends Character {
 
     @Override
     public void move() {
-        Direction direction = _moveStrategy.GetCurrentOrNextDirection(_x, _y);
-        boolean moved = super.move(direction);
+        Direction direction= super.move(_moveStrategy.GetCurrentOrNextDirection(_x, _y));
 
-        if (moved) {
+        if (!direction.equals(Direction.Stopped)) {
             _labyrinth.setPacManPosition(_x, _y);
         }
-        setMouthOpen (moved);
+        setMouthOpen (!direction.equals(Direction.Stopped));
 
         switch (direction) {
             case Stopped:
