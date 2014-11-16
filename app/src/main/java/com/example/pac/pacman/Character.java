@@ -80,23 +80,19 @@ public abstract class Character {
         float delta = MOVE_DELTA;
         boolean canMove = true;
         if (_newDirection.isPerpendicular(_direction)) {
-            if (_x == centerX && _y == centerY) {
-                _direction = _newDirection;
-            } else if (_x != centerX) {
-                delta = centerX - _x;
-                _direction = delta > 0 ? Direction.Right : Direction.Left;
-            } else if (_y != centerY) {
-                delta = centerY - _y;
-                _direction = delta > 0 ? Direction.Down: Direction.Up;
-            }
-            delta = Math.abs(delta);
-            delta = delta > MOVE_DELTA ? MOVE_DELTA : delta;
+            delta = getDelta(centerX, centerY, MOVE_DELTA);
+            _direction = getDirectionInTheSameCell(centerX, centerY, delta);
         } else {
             _newDirection = direction;
             if (!_newDirection.isPerpendicular(_direction)) {
                 _direction = _newDirection;
             }
             canMove = _labyrinth.canMove(cell, _direction);
+            if (!canMove) {
+                delta = getDelta(centerX, centerY, MOVE_DELTA);
+                _direction = getDirectionInTheSameCell(centerX, centerY, delta);
+                canMove = delta != 0;
+            }
         }
 
 
@@ -120,7 +116,7 @@ public abstract class Character {
                 break;
         }
 
-        if (direction != Direction.Stopped && canMove) {
+        if (_direction != Direction.Stopped && canMove) {
             // use teleportation to get on the other side ;)
             if (newX > _labyrinth.getBounds().right) {
                 newX = _labyrinth.getBounds().left;
@@ -137,5 +133,29 @@ public abstract class Character {
         } else {
             return false;
         }
+    }
+
+    private float getDelta(float centerX, float centerY, float delta) {
+        if (_x == centerX && _y == centerY) {
+            delta = 0;
+        } else if (_x != centerX) {
+            delta = centerX - _x;
+        } else if (_y != centerY) {
+            delta = centerY - _y;
+        }
+        delta = Math.abs(delta);
+        delta = delta > MOVE_DELTA ? MOVE_DELTA : delta;
+        return delta;
+    }
+
+    private Direction getDirectionInTheSameCell(float centerX, float centerY, float delta) {
+        if (_x == centerX && _y == centerY) {
+             return _newDirection;
+        } else if (_x != centerX) {
+            return delta > 0 ? Direction.Right : Direction.Left;
+        } else if (_y != centerY) {
+            return delta > 0 ? Direction.Down: Direction.Up;
+        }
+        return _direction;
     }
 }
