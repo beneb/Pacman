@@ -1,6 +1,5 @@
 package com.example.pac.pacman;
 
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.RectF;
 
@@ -17,6 +16,8 @@ public class PacMan extends Character {
 
     private int _mouthOpenGrad = MOUTH_OPEN_GRAD;
     private boolean _mouthClosing;
+
+    private PacManMoveStrategy _moveStrategy = new PacManMoveStrategy(_labyrinth);
 
     public PacMan(int color, Labyrinth labyrinth) {
         super("Pac-Man", "Al Bundy", labyrinth);
@@ -40,21 +41,17 @@ public class PacMan extends Character {
         super.draw(canvas);
     }
 
-    private Direction _wishDirection = Direction.Stopped;
     @Override
     public void move() {
-        boolean moved = super.move(_wishDirection);
-        if (!moved) {
-            moved = super.move(_direction);
-        } else {
-            _direction = _wishDirection;
-        }
+        Direction direction = _moveStrategy.GetCurrentOrNextDirection(_x, _y);
+        boolean moved = super.move(direction);
+
         if (moved) {
             _labyrinth.setPacManPosition(_x, _y);
         }
         setMouthOpen (moved);
 
-        switch (_direction) {
+        switch (direction) {
             case Stopped:
             case Right:
                 _pMouth = MOUTH_RIGHT;
@@ -88,33 +85,17 @@ public class PacMan extends Character {
     public void go(float x_touched, float y_touched) {
         if (isHorizontal(x_touched, y_touched)) { // horizontal move
             if (x_touched < _x) {
-                goLeft();
+                _moveStrategy.setWishDirection(Direction.Left);
             } else {
-                goRight();
+                _moveStrategy.setWishDirection(Direction.Right);
             }
         } else { // vertical move
             if (y_touched < _y) {
-                goUp();
+                _moveStrategy.setWishDirection(Direction.Up);
             } else {
-                goDown();
+                _moveStrategy.setWishDirection(Direction.Down);
             }
         }
-    }
-
-    private void goDown() {
-        _wishDirection = Direction.Down;
-    }
-
-    private void goUp() {
-        _wishDirection = Direction.Up;
-    }
-
-    private void goRight() {
-        _wishDirection = Direction.Right;
-    }
-
-    private void goLeft() {
-        _wishDirection = Direction.Left;
     }
 
     private boolean isHorizontal(float x_touched, float y_touched) {

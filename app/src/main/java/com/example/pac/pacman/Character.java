@@ -30,7 +30,7 @@ public abstract class Character {
     protected final Labyrinth _labyrinth;
 
     private Direction _newDirection = Direction.Stopped;
-    protected Direction _direction = Direction.Stopped;
+    private Direction _direction = Direction.Stopped;
 
     public Character(String name, String nickName, Labyrinth labyrinth) {
         _labyrinth = labyrinth;
@@ -134,16 +134,8 @@ public abstract class Character {
             _y = newY;
             return true;
 
-        } else if (_labyrinth.canMoveWithinCurrentCell(_x, _y, cell, direction)) {
-            // move within current cell
-
-            newInvalidateRect(newX, newY);
-            _x = newX;
-            _y = newY;
-            return true;
+        } else {
+            return false;
         }
-
-        return false;
-
     }
 }

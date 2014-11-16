@@ -16,9 +16,7 @@ public class DummyRandomMoveStrategy implements IMoveStrategy {
     public Direction GetCurrentOrNextDirection(float currentX, float currentY) {
         int currentCell = _labyrinth.cellAt(currentX, currentY);
         if (_lastCell == -1 ||
-            (
-             !_labyrinth.canMoveWithinCurrentCell(currentX, currentY, currentCell, _lastDirection) &&
-             !_labyrinth.canMove(currentCell, _lastDirection))) {
+            (currentCell != _lastCell && !_labyrinth.canMove(currentCell, _lastDirection))) {
 
             _lastCell = currentCell;
             ArrayList<Direction> directions = new ArrayList<Direction>();
