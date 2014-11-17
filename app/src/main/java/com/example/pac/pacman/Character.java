@@ -67,10 +67,10 @@ public abstract class Character {
     }
 
     public void draw(Canvas canvas) {
-        int cell = _labyrinth.cellAt(_x, _y);
-        RectF bounds = _labyrinth.getCellBounds(cell);
-        canvas.drawRect(bounds, _debugPaint);
-        canvas.drawCircle(_x, _y, 1, _debugPaint);
+        //int cell = _labyrinth.cellAt(_x, _y);
+        //RectF bounds = _labyrinth.getCellBounds(cell);
+        //canvas.drawRect(bounds, _debugPaint);
+        //canvas.drawCircle(_x, _y, 1, _debugPaint);
     }
 
     public abstract void move();
