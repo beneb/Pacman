@@ -15,7 +15,7 @@ public abstract class Character {
 
     private final Paint _debugPaint;
 
-    protected float _moveDelta;
+    protected float _maxMoveDelta;
     protected Paint _foreground;
 
     protected float _x, _y;
@@ -35,7 +35,7 @@ public abstract class Character {
     protected final Labyrinth _labyrinth;
 
     private Direction _newDirection = Direction.Stopped;
-    private Direction _direction = Direction.Stopped;
+    private Direction _currentDirection = Direction.Stopped;
 
     public Character(String name, String nickName, Labyrinth labyrinth) {
         _labyrinth = labyrinth;
@@ -53,8 +53,8 @@ public abstract class Character {
 
     public void init() {
         _size = _labyrinth.getCellSize() - 2;
-        _moveDelta = _size / 6;
-        Log.i("Character", "MOVE DELTA = " + _moveDelta);
+        _maxMoveDelta = _size / 6;
+        Log.i("Character", "MOVE DELTA = " + _maxMoveDelta);
         newInvalidateRect(_x, _y);
     }
 
@@ -80,32 +80,19 @@ public abstract class Character {
         RectF bounds = _labyrinth.getCellBounds(cell);
         float centerX = bounds.centerX();
         float centerY = bounds.centerY();
-        float delta = _moveDelta;
-        boolean canMove = true;
-        // don´t let the char walk behind the centerX oder centerY position
-        if (_newDirection.isPerpendicular(_direction)) {
-            delta = getDelta(centerX, centerY, _moveDelta);
-            _direction = getDirectionInTheSameCell(centerX, centerY);
+        _newDirection = direction;
+        if (_newDirection.isPerpendicular(_currentDirection) || _newDirection == Direction.Stopped) {
+            // don´t let the char walk behind the centerX oder centerY position
+            _currentDirection = getDirectionInTheSameCell(centerX, centerY);
         } else {
-            _newDirection = direction;
-            if (!_newDirection.isPerpendicular(_direction)) {
-                _direction = _newDirection;
-            }
-            canMove = _labyrinth.canMove(cell, _direction);
-            if (!canMove) {
-                delta = getDelta(centerX, centerY, _moveDelta);
-                _direction = getDirectionInTheSameCell(centerX, centerY);
-                canMove = delta != 0;
-            }
+            _currentDirection = _newDirection;
         }
-
 
         float newX = _x;
         float newY = _y;
 
-        switch (_direction) {
-            case Stopped:
-                break;
+        float delta = getDelta(centerX, centerY);
+        switch (_currentDirection) {
             case Left:
                 newX = _x - delta;
                 break;
@@ -120,7 +107,7 @@ public abstract class Character {
                 break;
         }
 
-        if (_direction != Direction.Stopped && canMove) {
+        if (_currentDirection != Direction.Stopped) {
             // use teleportation to get on the other side ;)
             if (newX > _labyrinth.getBounds().right) {
                 newX = _labyrinth.getBounds().left;
@@ -133,19 +120,18 @@ public abstract class Character {
             _x = newX;
             _y = newY;
         }
-        return _direction;
+        return _currentDirection;
     }
 
-    private float getDelta(float centerX, float centerY, float delta) {
-        if (_x == centerX && _y == centerY) {
-            delta = 0;
-        } else if (_x != centerX) {
+    private float getDelta(float centerX, float centerY) {
+        float delta = _maxMoveDelta;
+        if (_x != centerX) {
             delta = centerX - _x;
         } else if (_y != centerY) {
             delta = centerY - _y;
         }
         delta = Math.abs(delta);
-        delta = delta > _moveDelta ? _moveDelta : delta;
+        delta = delta > _maxMoveDelta ? _maxMoveDelta : delta;
         return delta;
     }
 
@@ -157,6 +143,6 @@ public abstract class Character {
         } else if (_y != centerY) {
             return centerY - _y > 0 ? Direction.Down : Direction.Up;
         }
-        return _direction;
+        return _currentDirection;
     }
 }

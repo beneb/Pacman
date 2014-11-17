@@ -35,21 +35,28 @@ public class PacMan extends Character {
 
     @Override
     public void draw(Canvas canvas) {
-        float radius = _size/2;
+        float radius = _size / 2;
         RectF r = new RectF(_x - radius, _y - radius, _x + radius, _y + radius);
-        canvas.drawArc(r, _pMouth + _mouthOpenGrad, 360 - 2*_mouthOpenGrad, true, _foreground);
+        canvas.drawArc(r, _pMouth + _mouthOpenGrad, 360 - 2 * _mouthOpenGrad, true, _foreground);
         super.draw(canvas);
     }
 
     @Override
     public void move() {
-        Direction direction= super.move(_moveStrategy.GetCurrentOrNextDirection(_x, _y));
-
+        Direction direction = super.move(_moveStrategy.GetCurrentOrNextDirection(_x, _y));
         if (!direction.equals(Direction.Stopped)) {
             _labyrinth.setPacManPosition(_x, _y);
+            setMouthOpen(direction);
         }
-        setMouthOpen (!direction.equals(Direction.Stopped));
+    }
 
+    private void setMouthOpen(Direction direction) {
+        if (_mouthOpenGrad == MOUTH_OPEN_GRAD) {
+            _mouthClosing = true;
+        } else if (_mouthOpenGrad == MOUTH_CLOSED_GRAD) {
+            _mouthClosing = false;
+        }
+        _mouthOpenGrad += _mouthClosing ? -5 : 5;
         switch (direction) {
             case Right:
                 _pMouth = MOUTH_RIGHT;
@@ -64,20 +71,6 @@ public class PacMan extends Character {
                 _pMouth = MOUTH_DOWN;
                 break;
         }
-    }
-
-    private void setMouthOpen(boolean canMove) {
-        if (!canMove) {
-            _mouthOpenGrad = MOUTH_OPEN_GRAD;
-            _mouthClosing = true;
-            return;
-        }
-        if (_mouthOpenGrad == MOUTH_OPEN_GRAD) {
-            _mouthClosing = true;
-        } else if (_mouthOpenGrad == MOUTH_CLOSED_GRAD) {
-            _mouthClosing = false;
-        }
-        _mouthOpenGrad += _mouthClosing ? -5 : 5;
     }
 
     public void go(float x_touched, float y_touched) {
