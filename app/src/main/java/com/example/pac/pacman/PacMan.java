@@ -51,7 +51,6 @@ public class PacMan extends Character {
         setMouthOpen (!direction.equals(Direction.Stopped));
 
         switch (direction) {
-            case Stopped:
             case Right:
                 _pMouth = MOUTH_RIGHT;
                 break;
