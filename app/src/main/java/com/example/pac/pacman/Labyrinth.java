@@ -6,7 +6,13 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.Log;
 
+import com.example.pac.pacman.event.DotEvent;
+import com.example.pac.pacman.event.EventListener;
+import com.example.pac.pacman.event.EventManager;
+
 public class Labyrinth {
+
+    private EventManager _eventManager;
 
     final int DOT = 0;
     final int WALL = 1;
@@ -46,6 +52,12 @@ public class Labyrinth {
             _wallPaint = PaintObjectsFactory.createWall(resource.getColor(R.color.walls));
             // _debugPaint = PaintObjectsFactory.createDebugPaint(Color.RED);
         }
+
+        _eventManager = new EventManager();
+    }
+
+    public void registerScoreListener(EventListener<DotEvent> dotEventEventListener){
+        _eventManager.registerObserver(DotEvent.class, dotEventEventListener);
     }
 
     private void load(String state) {
@@ -97,11 +109,21 @@ public class Labyrinth {
         int c = cellAt(x, y);
 
         // Set here the labyrinth layout to empty, pacman is eating dots here.
+        fireDotEvent(c);
         setCellValue(c, EMPTY);
 
         if (_pacManCell != c) {
             Log.d("Labyrinth", "Pac-Man Cell: " + c);
             _pacManCell = c;
+        }
+    }
+
+    private void fireDotEvent(int cellNum) {
+        int col = getCellCol(cellNum);
+        int row = getCellRow(cellNum);
+
+        if (_layout[col][row] == DOT) {
+            _eventManager.fire(new DotEvent());
         }
     }
 
