@@ -5,12 +5,9 @@ import android.graphics.RectF;
 
 public class Ghost extends Character {
 
-    private IMoveStrategy _moveStrategy;
-
     protected Ghost(String name, String nickName, int color, IMoveStrategy moveStrategy, Labyrinth labyrinth) {
-        super(name, nickName, labyrinth);
+        super(name, nickName, moveStrategy, labyrinth);
         _foreground.setColor(color);
-        _moveStrategy = moveStrategy;
     }
 
     @Override
@@ -27,11 +24,5 @@ public class Ghost extends Character {
         RectF r = new RectF(_x - radius, _y - radius, _x + radius, _y + radius);
         canvas.drawRect(r, _foreground);
         super.draw(canvas);
-    }
-
-    @Override
-    public void move() {
-        Direction direction = _moveStrategy.GetCurrentOrNextDirection(_x, _y);
-        super.move(direction);
     }
 }

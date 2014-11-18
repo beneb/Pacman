@@ -18,6 +18,8 @@ public abstract class Character {
     protected float _maxMoveDelta;
     protected Paint _foreground;
 
+    protected IMoveStrategy _moveStrategy;
+
     protected float _x, _y;
     protected float _size;
 
@@ -37,7 +39,8 @@ public abstract class Character {
     private Direction _newDirection = Direction.Stopped;
     private Direction _currentDirection = Direction.Stopped;
 
-    public Character(String name, String nickName, Labyrinth labyrinth) {
+    public Character(String name, String nickName, IMoveStrategy moveStrategy, Labyrinth labyrinth) {
+        _moveStrategy = moveStrategy;
         _labyrinth = labyrinth;
 
         _name = name;
@@ -73,14 +76,14 @@ public abstract class Character {
         //canvas.drawCircle(_x, _y, 1, _debugPaint);
     }
 
-    public abstract void move();
+    public Direction move() {
+        _newDirection = _moveStrategy.GetCurrentOrNextDirection(_x, _y);
 
-    protected Direction move(Direction direction) {
         int cell = _labyrinth.cellAt(_x, _y);
         RectF bounds = _labyrinth.getCellBounds(cell);
         float centerX = bounds.centerX();
         float centerY = bounds.centerY();
-        _newDirection = direction;
+
         if (_newDirection.isPerpendicular(_currentDirection) || _newDirection == Direction.Stopped) {
             // don´t let the char walk behind the centerX oder centerY position
             _currentDirection = getDirectionInTheSameCell(centerX, centerY);

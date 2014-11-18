@@ -17,10 +17,8 @@ public class PacMan extends Character {
     private int _mouthOpenGrad = MOUTH_OPEN_GRAD;
     private boolean _mouthClosing;
 
-    private PacManMoveStrategy _moveStrategy = new PacManMoveStrategy(_labyrinth);
-
     public PacMan(int color, Labyrinth labyrinth) {
-        super("Pac-Man", "Al Bundy", labyrinth);
+        super("Pac-Man", "Al Bundy", new PacManMoveStrategy(labyrinth), labyrinth);
         _foreground.setColor(color);
     }
 
@@ -42,12 +40,13 @@ public class PacMan extends Character {
     }
 
     @Override
-    public void move() {
-        Direction direction = super.move(_moveStrategy.GetCurrentOrNextDirection(_x, _y));
+    public Direction move() {
+        Direction direction = super.move();
         if (!direction.equals(Direction.Stopped)) {
             _labyrinth.setPacManPosition(_x, _y);
             setMouthOpen(direction);
         }
+        return direction;
     }
 
     private void setMouthOpen(Direction direction) {
@@ -74,17 +73,18 @@ public class PacMan extends Character {
     }
 
     public void go(float x_touched, float y_touched) {
+        PacManMoveStrategy moveStrategy = (PacManMoveStrategy)_moveStrategy; // TODO as intermediate step. will be decoupled later through eventing
         if (isHorizontal(x_touched, y_touched)) { // horizontal move
             if (x_touched < _x) {
-                _moveStrategy.setWishDirection(Direction.Left);
+                moveStrategy.setWishDirection(Direction.Left);
             } else {
-                _moveStrategy.setWishDirection(Direction.Right);
+                moveStrategy.setWishDirection(Direction.Right);
             }
         } else { // vertical move
             if (y_touched < _y) {
-                _moveStrategy.setWishDirection(Direction.Up);
+                moveStrategy.setWishDirection(Direction.Up);
             } else {
-                _moveStrategy.setWishDirection(Direction.Down);
+                moveStrategy.setWishDirection(Direction.Down);
             }
         }
     }
