@@ -58,7 +58,7 @@ public class Labyrinth {
                 String cellValue = rows[h].substring(w, w + 1);
                 if (cellValue.equals("P")) {
                     _layout[w][h] = 0;
-                    _pacManCell = getCell(w, h);
+                    _pacManCell = getCell(h, w);
                 } else {
                     _layout[w][h] = Integer.parseInt(cellValue);
                 }
@@ -70,7 +70,7 @@ public class Labyrinth {
         StringBuilder sb = new StringBuilder(_width * _height + 1);
         for (int row = 0; row < _height; row++) {
             for (int col = 0; col < _width; col++) {
-                int cell = getCell(col, row);
+                int cell = getCell(row, col);
                 if (cell == _pacManCell) {
                     sb.append("P");
                 } else {
@@ -105,15 +105,15 @@ public class Labyrinth {
         }
     }
 
-    private int GetLabyrinthRow(float y) {
+    private int getRow(float y) {
         return (int) ((y - _bounds.top) / _cellSize);
     }
 
-    private int GetLabyrinthCol(float x) {
+    private int getCol(float x) {
         return (int) ((x - _bounds.left) / _cellSize);
     }
 
-    private int getCell(int col, int row) {
+    private int getCell(int row, int col) {
         return row * _width + col;
     }
 
@@ -126,8 +126,8 @@ public class Labyrinth {
     }
 
     public int cellAt(float x, float y) {
-        int col = GetLabyrinthCol(x);
-        int row = GetLabyrinthRow(y);
+        int col = getCol(x);
+        int row = getRow(y);
 
         if (col >= _width) {
             col = 0;
@@ -139,7 +139,7 @@ public class Labyrinth {
         } else if (row < 0) {
             row = _height - 1;
         }
-        return getCell(col, row);
+        return getCell(row, col);
     }
 
     private int getCellValue(int row, int col) {
@@ -177,24 +177,24 @@ public class Labyrinth {
 
     private boolean canMoveForCell(int row, int col) {
         int cellValue = getCellValue(row, col);
-        return cellValue ==  EMPTY || cellValue == DOT;
+        return cellValue == EMPTY || cellValue == DOT;
     }
 
     public void draw(Canvas canvas) {
         for (int col = 0; col < _width; col++) {
             for (int row = 0; row < _height; row++) {
-                if (_layout[col][row] == WALL) {
-                    RectF cellBounds = getCellBounds(col, row);
+                if (getCellValue(row, col) == WALL) {
+                    RectF cellBounds = getCellBounds(row, col);
                     canvas.drawRect(cellBounds, _wallPaint);
                 }
-                if (_layout[col][row] == DOT) {
-                    float startX = _cellSize * col + _cellSize/2 + _bounds.left;
-                    float startY = _cellSize * row + _cellSize/2 + _bounds.top;
+                if (getCellValue(row, col) == DOT) {
+                    float startX = _cellSize * col + _cellSize / 2 + _bounds.left;
+                    float startY = _cellSize * row + _cellSize / 2 + _bounds.top;
                     canvas.drawCircle(startX, startY, 5, _dot);
                 }
-                if (_layout[col][row] == EMPTY) {
-                    float startX = _cellSize * col + _cellSize/2 + _bounds.left;
-                    float startY = _cellSize * row + _cellSize/2 + _bounds.top;
+                if (getCellValue(row, col) == EMPTY) {
+                    float startX = _cellSize * col + _cellSize / 2 + _bounds.left;
+                    float startY = _cellSize * row + _cellSize / 2 + _bounds.top;
                     canvas.drawCircle(startX, startY, 5, _empty);
                 }
 
@@ -206,7 +206,7 @@ public class Labyrinth {
         }
     }
 
-    private RectF getCellBounds(int col, int row) {
+    private RectF getCellBounds(int row, int col) {
         float startX = _cellSize * col + _bounds.left;
         float startY = _cellSize * row + _bounds.top;
         return new RectF(startX, startY, startX + _cellSize, startY + _cellSize);
@@ -215,7 +215,6 @@ public class Labyrinth {
     public RectF getCellBounds(int cellNum) {
         int row = getCellRow(cellNum);
         int col = getCellCol(cellNum);
-        return getCellBounds(col, row);
+        return getCellBounds(row, col);
     }
-
 }
