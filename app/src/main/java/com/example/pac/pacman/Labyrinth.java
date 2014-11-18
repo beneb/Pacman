@@ -6,6 +6,9 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.Log;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.example.pac.pacman.event.DotEvent;
 import com.example.pac.pacman.event.EventListener;
 import com.example.pac.pacman.event.EventManager;
@@ -22,14 +25,11 @@ public class Labyrinth {
     private int _width;
     private int _height;
     private float _cellSize;
-    private int _pacManCell;
+
+    private Map<java.lang.Character, Integer> _characterPositions = new HashMap<java.lang.Character, Integer>();
 
     public float getCellSize() {
         return _cellSize;
-    }
-
-    public int getPacManCell() {
-        return _pacManCell;
     }
 
     private RectF _bounds;
@@ -68,11 +68,11 @@ public class Labyrinth {
         for (int w = 0; w < _width; w++) {
             for (int h = 0; h < _height; h++) {
                 String cellValue = rows[h].substring(w, w + 1);
-                if (cellValue.equals("P")) {
-                    _layout[w][h] = 0;
-                    _pacManCell = getCell(h, w);
-                } else {
+                if (java.lang.Character.isDigit(cellValue.charAt(0))) {
                     _layout[w][h] = Integer.parseInt(cellValue);
+                } else {
+                    _layout[w][h] = 0;
+                    setCharacterPosition(cellValue.charAt(0), getCell(h, w));
                 }
             }
         }
@@ -83,8 +83,9 @@ public class Labyrinth {
         for (int row = 0; row < _height; row++) {
             for (int col = 0; col < _width; col++) {
                 int cell = getCell(row, col);
-                if (cell == _pacManCell) {
-                    sb.append("P");
+                java.lang.Character id = getCharacterCodeForPosition(cell);
+                if (id != null) {
+                    sb.append(id);
                 } else {
                     sb.append(getCellValue(row, col));
                 }
@@ -105,17 +106,21 @@ public class Labyrinth {
                 bounds.top + _height * _cellSize);
     }
 
-    public void setPacManPosition(float x, float y) {
-        int c = cellAt(x, y);
-
-        // Set here the labyrinth layout to empty, pacman is eating dots here.
-        fireDotEvent(c);
-        setCellValue(c, EMPTY);
-
-        if (_pacManCell != c) {
-            Log.d("Labyrinth", "Pac-Man Cell: " + c);
-            _pacManCell = c;
+    public void setCharacterPosition(Character ch, int cell) {
+        if (getCharacterPosition(ch) != cell) {
+            Log.d("Labyrinth", String.format("%s Cell: %d", ch.getName(), cell));
+            setCharacterPosition(ch.getId(), cell);
         }
+    }
+
+    private void setCharacterPosition(char id, int cell) {
+        // Set here the labyrinth layout to empty, pacman is eating dots here.
+        _characterPositions.put(id, cell);
+    }
+
+    public void eatDot(int cell) {
+        fireDotEvent(cell);
+        setCellValue(cell, EMPTY);
     }
 
     private void fireDotEvent(int cellNum) {
@@ -125,6 +130,21 @@ public class Labyrinth {
         if (_layout[col][row] == DOT) {
             _eventManager.fire(new DotEvent());
         }
+    }
+    
+    public int getCharacterPosition(Character c) {
+        return _characterPositions.containsKey(c.getId())
+                ? _characterPositions.get(c.getId())
+                : 0; // just somewhere
+    }
+
+    public java.lang.Character getCharacterCodeForPosition(int cell) {
+        for (Map.Entry<java.lang.Character, Integer> entry : _characterPositions.entrySet()) {
+            if (entry.getValue() == cell) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 
     private int getRow(float y) {

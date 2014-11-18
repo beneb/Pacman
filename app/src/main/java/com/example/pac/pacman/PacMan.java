@@ -17,18 +17,24 @@ public class PacMan extends Character {
     private int _mouthOpenGrad = MOUTH_OPEN_GRAD;
     private boolean _mouthClosing;
 
-    public PacMan(int color, Labyrinth labyrinth) {
-        super("Pac-Man", "Al Bundy", new PacManMoveStrategy(labyrinth), labyrinth);
-        _foreground.setColor(color);
+    @Override
+    public String getName() {
+        return "Pac-Man";
     }
 
     @Override
-    public void init() {
-        super.init();
-        int cellNum = _labyrinth.getPacManCell();
-        RectF cellBounds = _labyrinth.getCellBounds(cellNum);
-        _x = cellBounds.centerX();
-        _y = cellBounds.centerY();
+    public String getNickName() {
+        return "Al Bundy";
+    }
+
+    @Override
+    public char getId() {
+        return 'P';
+    }
+
+    public PacMan(int color, Labyrinth labyrinth) {
+        super(new PacManMoveStrategy(labyrinth), labyrinth);
+        _foreground.setColor(color);
     }
 
     @Override
@@ -43,8 +49,8 @@ public class PacMan extends Character {
     public Direction move() {
         Direction direction = super.move();
         if (!direction.equals(Direction.Stopped)) {
-            _labyrinth.setPacManPosition(_x, _y);
             setMouthOpen(direction);
+            _labyrinth.eatDot(_labyrinth.cellAt(_x, _y)); // TODO decouple through eventing
         }
         return direction;
     }

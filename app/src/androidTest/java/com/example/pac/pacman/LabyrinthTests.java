@@ -1,7 +1,5 @@
 package com.example.pac.pacman;
 
-import android.content.res.Resources;
-import android.graphics.Rect;
 import android.graphics.RectF;
 
 import junit.framework.TestCase;
@@ -34,5 +32,11 @@ public class LabyrinthTests extends TestCase {
         assertEquals(new RectF(0, 0, 10, 10), _labyrinth.getCellBounds(0));
         assertEquals(new RectF(10, 0, 20, 10), _labyrinth.getCellBounds(1));
         assertEquals(new RectF(0, 10, 10, 20), _labyrinth.getCellBounds(3));
+    }
+
+    public void testGetCharacterPositions() {
+        assertEquals(3, _labyrinth.getCharacterPosition(new PacMan(0, _labyrinth)));
+        assertEquals('P', _labyrinth.getCharacterCodeForPosition(3).charValue());
+        assertEquals(null, _labyrinth.getCharacterCodeForPosition(4));
     }
 }

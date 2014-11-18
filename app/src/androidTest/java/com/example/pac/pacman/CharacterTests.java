@@ -1,6 +1,5 @@
 package com.example.pac.pacman;
 
-import android.content.res.Resources;
 import android.graphics.PointF;
 import android.graphics.RectF;
 
@@ -30,10 +29,10 @@ public class CharacterTests extends TestCase {
     }
 
     private static void moveToTheNextCell(PacMan pacMan, Labyrinth labyrinth) {
-        int cell = labyrinth.getPacManCell();
+        int cell = labyrinth.getCharacterPosition(pacMan);
         for (int i = 0; i < 10; i++) {
             pacMan.move();
-            if (labyrinth.getPacManCell() != cell) {
+            if (labyrinth.getCharacterPosition(pacMan) != cell) {
                 break;
             }
         }
@@ -58,7 +57,7 @@ public class CharacterTests extends TestCase {
         pacMan.init();
         pacMan.go(0, 5);
         moveToTheNextCell(pacMan, labyrinth);
-        assertEquals(2, labyrinth.getPacManCell());
+        assertEquals(2, labyrinth.getCharacterPosition(pacMan));
     }
 
     public void testTeleportationRight() {
@@ -68,6 +67,6 @@ public class CharacterTests extends TestCase {
         pacMan.init();
         pacMan.go(30, 5);
         moveToTheNextCell(pacMan, labyrinth);
-        assertEquals(0, labyrinth.getPacManCell());
+        assertEquals(0, labyrinth.getCharacterPosition(pacMan));
     }
 }

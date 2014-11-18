@@ -10,8 +10,9 @@ import android.util.Log;
 
 public abstract class Character {
 
-    private String _name;
-    private String _nickName;
+    public abstract String getName();
+    public abstract String getNickName();
+    public abstract char getId();
 
     private final Paint _debugPaint;
 
@@ -39,12 +40,9 @@ public abstract class Character {
     private Direction _newDirection = Direction.Stopped;
     private Direction _currentDirection = Direction.Stopped;
 
-    public Character(String name, String nickName, IMoveStrategy moveStrategy, Labyrinth labyrinth) {
+    public Character(IMoveStrategy moveStrategy, Labyrinth labyrinth) {
         _moveStrategy = moveStrategy;
         _labyrinth = labyrinth;
-
-        _name = name;
-        _nickName = nickName;
 
         _foreground = new Paint(Paint.ANTI_ALIAS_FLAG);
         _foreground.setStyle(Paint.Style.FILL);
@@ -59,6 +57,11 @@ public abstract class Character {
         _maxMoveDelta = _size / 6;
         Log.i("Character", "MOVE DELTA = " + _maxMoveDelta);
         newInvalidateRect(_x, _y);
+
+        int cellNum = _labyrinth.getCharacterPosition(this);
+        RectF cellBounds = _labyrinth.getCellBounds(cellNum);
+        _x = cellBounds.centerX();
+        _y = cellBounds.centerY();
     }
 
     protected void newInvalidateRect(float newX, float newY) {
@@ -123,6 +126,8 @@ public abstract class Character {
             _x = newX;
             _y = newY;
         }
+
+        _labyrinth.setCharacterPosition(this, cell);
         return _currentDirection;
     }
 
