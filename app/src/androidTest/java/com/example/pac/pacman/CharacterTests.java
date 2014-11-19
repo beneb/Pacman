@@ -17,7 +17,8 @@ public class CharacterTests extends TestCase {
     private PacMan initFromLabyrinth_4x4(String state) {
         Labyrinth labyrinth = new Labyrinth(state, null);
         labyrinth.init(new RectF(0, 0, 40, 40));
-        PacMan pacMan = new PacMan(0, labyrinth);
+        IMoveStrategy pms = new PacManMoveStrategy(labyrinth);
+        PacMan pacMan = new PacMan(0, pms, labyrinth);
         pacMan.init();
         return pacMan;
     }

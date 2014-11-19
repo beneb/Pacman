@@ -29,6 +29,10 @@ public abstract class Character {
         return new PointF(_x, _y);
     }
 
+    public int getCell() {
+        return _labyrinth.cellAt(_x, _y);
+    }
+
     private Rect _invalidateRect;
 
     public Rect getInvalidateRect() {

@@ -10,9 +10,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.pac.pacman.Character;
+import com.example.pac.pacman.CollisionDetection;
 import com.example.pac.pacman.Direction;
 import com.example.pac.pacman.GameEnv;
+import com.example.pac.pacman.GameLogicHandler;
 import com.example.pac.pacman.GhostRepository;
+import com.example.pac.pacman.IMoveStrategy;
+import com.example.pac.pacman.InputHandler;
 import com.example.pac.pacman.Labyrinth;
 import com.example.pac.pacman.PacMan;
 import com.example.pac.pacman.PacManMoveStrategy;
@@ -35,27 +39,6 @@ public class PacmanActivity extends ActionBarActivity {
         }
     };
 
-    public EventListener<PacManDirectionRequested> _directionChangedListener = new EventListener<PacManDirectionRequested>() {
-        @Override
-        public void onEvent(PacManDirectionRequested event) {
-
-            PointF curPos = _pacMan.getPosition();
-            if (Math.abs(event.getNewX() - curPos.x) > Math.abs(event.getNewY() - curPos.y)) { // horizontal move
-                if (event.getNewX() < curPos.x) {
-                    _pacManStrategy.setWishDirection(Direction.Left);
-                } else {
-                    _pacManStrategy.setWishDirection(Direction.Right);
-                }
-            } else { // vertical move
-                if (event.getNewY() < curPos.y) {
-                    _pacManStrategy.setWishDirection(Direction.Up);
-                } else {
-                    _pacManStrategy.setWishDirection(Direction.Down);
-                }
-            }
-        }
-    };
-
     public static final String RESUME_ACTION = "RESUME";
     public static final String SETTINGS = "SETTINGS";
     public static final String LABYRINTH_STATE = "LABYRINTH_STATE";
@@ -67,7 +50,8 @@ public class PacmanActivity extends ActionBarActivity {
     private int tmp = 0;
     private EventManager _eventManager = new EventManager();
     private PacMan _pacMan;
-    private PacManMoveStrategy _pacManStrategy;
+    private InputHandler _inputHandler;
+    private GameLogicHandler _gameLogicHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,16 +61,20 @@ public class PacmanActivity extends ActionBarActivity {
         String action = intent.getAction();
         String state = loadLabyrinthState(action);
 
-        _labyrinth = new Labyrinth(state, getResources());
+        _labyrinth = new Labyrinth(state, getResources(), _eventManager);
         GameEnv.getInstance().InitOnce(getResources());
 
+
+        IMoveStrategy pacManStrategy = new PacManMoveStrategy(_labyrinth);
+        _pacMan = new PacMan(getResources().getColor(R.color.pacman), pacManStrategy, _labyrinth);
+        _inputHandler = new InputHandler(_pacMan, pacManStrategy, _eventManager);
+
+        _gameLogicHandler = new GameLogicHandler(new CollisionDetection(_labyrinth), _pacMan, _eventManager);
+
         _characters = new ArrayList<Character>();
-        _pacManStrategy = new PacManMoveStrategy(_labyrinth);
-        _pacMan = new PacMan(getResources().getColor(R.color.pacman), _pacManStrategy, _labyrinth);
         _characters.addAll(GhostRepository.CreateGhosts(getResources(), _labyrinth));
 
         _eventManager.registerObserver(DotEatenEvent.class, DotEventListener);
-        _eventManager.registerObserver(PacManDirectionRequested.class, _directionChangedListener);
 
         _view = new GameplayView(this, _eventManager, _labyrinth, _pacMan, _characters);
         // setContentView(_view);
@@ -110,7 +98,7 @@ public class PacmanActivity extends ActionBarActivity {
     private Runnable _updateView = new Runnable() {
         public void run() {
             moveAll();
-            eatDots();
+            _gameLogicHandler.HandleAllCollisions();
 
             _handler.removeCallbacks(_updateView);
             _handler.postDelayed(this, 30);
@@ -128,11 +116,7 @@ public class PacmanActivity extends ActionBarActivity {
         _view.invalidate(_pacMan.getInvalidateRect());
     }
 
-    private void eatDots() {
-        if (_labyrinth.eatDot(_pacMan)) {
-            _eventManager.fire(new DotEatenEvent());
-        }
-    }
+
 
     @Override
     protected void onStop() {

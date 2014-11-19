@@ -6,12 +6,16 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.Log;
 
+import com.example.pac.pacman.event.DotEatenEvent;
+import com.example.pac.pacman.event.EventListener;
+import com.example.pac.pacman.event.EventManager;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class Labyrinth {
 
-    final int DOT = 0;
+    public final int DOT = 0;
     final int WALL = 1;
     final int EMPTY = 2;
 
@@ -38,7 +42,14 @@ public class Labyrinth {
     private Paint _wallPaint;
     private Paint _debugPaint;
 
-    public Labyrinth(String state, Resources resource) {
+    public EventListener<DotEatenEvent> DotEventListener = new EventListener<DotEatenEvent>() {
+        @Override
+        public void onEvent(DotEatenEvent event) {
+            setCellValue(event.GetCell(), EMPTY);
+        }
+    };
+
+    public Labyrinth(String state, Resources resource, EventManager eventManager) {
         load(state);
         if (resource != null) {
             _dot = PaintObjectsFactory.createDot(resource.getColor(R.color.dot));
@@ -46,6 +57,8 @@ public class Labyrinth {
             _wallPaint = PaintObjectsFactory.createWall(resource.getColor(R.color.walls));
             // _debugPaint = PaintObjectsFactory.createDebugPaint(Color.RED);
         }
+
+        eventManager.registerObserver(DotEatenEvent.class, DotEventListener);
     }
 
     private void load(String state) {
@@ -106,18 +119,6 @@ public class Labyrinth {
         _characterPositions.put(id, cell);
     }
 
-    public boolean eatDot(Character ch) {
-        int cell = getCharacterPosition(ch);
-        int row = getCellRow(cell);
-        int col = getCellCol(cell);
-        if (getCellValue(row, col) == DOT) {
-            setCellValue(cell, EMPTY);
-            return true;
-        } else {
-            return false;
-        }
-    }
-    
     public int getCharacterPosition(Character c) {
         return _characterPositions.containsKey(c.getId())
                 ? _characterPositions.get(c.getId())
@@ -145,11 +146,11 @@ public class Labyrinth {
         return row * _width + col;
     }
 
-    private int getCellRow(int cellNum) {
+    public int getCellRow(int cellNum) {
         return cellNum / _width;
     }
 
-    private int getCellCol(int cellNum) {
+    public int getCellCol(int cellNum) {
         return cellNum % _width;
     }
 
@@ -170,7 +171,17 @@ public class Labyrinth {
         return getCell(row, col);
     }
 
-    private int getCellValue(int row, int col) {
+    public int getCellValue(int cell) {
+        if (_width * _height > cell + 1) {
+            int row = cell / _width;
+            int col = cell % _width;
+            return _layout[col][row];
+        }
+
+        return 0;
+    }
+
+    public int getCellValue(int row, int col) {
         return row < 0 || row >= _height || col < 0 || col >= _width
                 ? 0
                 : _layout[col][row];
