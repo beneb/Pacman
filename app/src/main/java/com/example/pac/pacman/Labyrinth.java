@@ -9,13 +9,7 @@ import android.util.Log;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.example.pac.pacman.event.DotEvent;
-import com.example.pac.pacman.event.EventListener;
-import com.example.pac.pacman.event.EventManager;
-
 public class Labyrinth {
-
-    private EventManager _eventManager;
 
     final int DOT = 0;
     final int WALL = 1;
@@ -52,12 +46,6 @@ public class Labyrinth {
             _wallPaint = PaintObjectsFactory.createWall(resource.getColor(R.color.walls));
             // _debugPaint = PaintObjectsFactory.createDebugPaint(Color.RED);
         }
-
-        _eventManager = new EventManager();
-    }
-
-    public void registerScoreListener(EventListener<DotEvent> dotEventEventListener){
-        _eventManager.registerObserver(DotEvent.class, dotEventEventListener);
     }
 
     private void load(String state) {
@@ -118,17 +106,15 @@ public class Labyrinth {
         _characterPositions.put(id, cell);
     }
 
-    public void eatDot(int cell) {
-        fireDotEvent(cell);
-        setCellValue(cell, EMPTY);
-    }
-
-    private void fireDotEvent(int cellNum) {
-        int col = getCellCol(cellNum);
-        int row = getCellRow(cellNum);
-
-        if (_layout[col][row] == DOT) {
-            _eventManager.fire(new DotEvent());
+    public boolean eatDot(Character ch) {
+        int cell = getCharacterPosition(ch);
+        int row = getCellRow(cell);
+        int col = getCellCol(cell);
+        if (getCellValue(row, col) == DOT) {
+            setCellValue(cell, EMPTY);
+            return true;
+        } else {
+            return false;
         }
     }
     

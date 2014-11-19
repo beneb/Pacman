@@ -32,8 +32,8 @@ public class PacMan extends Character {
         return 'P';
     }
 
-    public PacMan(int color, Labyrinth labyrinth) {
-        super(new PacManMoveStrategy(labyrinth), labyrinth);
+    public PacMan(int color, IMoveStrategy pacManStrategy, Labyrinth labyrinth) {
+        super(pacManStrategy, labyrinth);
         _foreground.setColor(color);
     }
 
@@ -50,7 +50,6 @@ public class PacMan extends Character {
         Direction direction = super.move();
         if (!direction.equals(Direction.Stopped)) {
             setMouthOpen(direction);
-            _labyrinth.eatDot(_labyrinth.cellAt(_x, _y)); // TODO decouple through eventing
         }
         return direction;
     }
@@ -76,26 +75,5 @@ public class PacMan extends Character {
                 _pMouth = MOUTH_DOWN;
                 break;
         }
-    }
-
-    public void go(float x_touched, float y_touched) {
-        PacManMoveStrategy moveStrategy = (PacManMoveStrategy)_moveStrategy; // TODO as intermediate step. will be decoupled later through eventing
-        if (isHorizontal(x_touched, y_touched)) { // horizontal move
-            if (x_touched < _x) {
-                moveStrategy.setWishDirection(Direction.Left);
-            } else {
-                moveStrategy.setWishDirection(Direction.Right);
-            }
-        } else { // vertical move
-            if (y_touched < _y) {
-                moveStrategy.setWishDirection(Direction.Up);
-            } else {
-                moveStrategy.setWishDirection(Direction.Down);
-            }
-        }
-    }
-
-    private boolean isHorizontal(float x_touched, float y_touched) {
-        return Math.abs(x_touched - _x) > Math.abs(y_touched - _y);
     }
 }

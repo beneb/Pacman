@@ -11,6 +11,8 @@ import android.view.View;
 
 import com.example.pac.pacman.*;
 import com.example.pac.pacman.Character;
+import com.example.pac.pacman.event.EventManager;
+import com.example.pac.pacman.event.PacManDirectionRequested;
 
 import java.util.Collection;
 
@@ -22,13 +24,15 @@ import java.util.Collection;
 * */
 public class GameplayView extends View {
 
+    private final EventManager _eventManager;
     private final PacMan _pacMan;
     private final Collection<com.example.pac.pacman.Character> _characters;
     private final Paint _paintBackground;
     private Labyrinth _labyrinth;
 
-    public GameplayView(Context context, Labyrinth labyrinth, PacMan pacMan, Collection<Character> characters) {
+    public GameplayView(Context context, EventManager eventManager, Labyrinth labyrinth, PacMan pacMan, Collection<Character> characters) {
         super(context);
+        _eventManager = eventManager;
         _pacMan = pacMan;
         _characters = characters;
         _labyrinth = labyrinth;
@@ -47,15 +51,15 @@ public class GameplayView extends View {
         for (Character ch : _characters) {
             ch.draw(canvas);
         }
+        _pacMan.draw(canvas);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         // Act only on ACTION_UP - should be good enough for touch and wipe
         if (event.getAction() == 1) {
-            _pacMan.go(event.getX(), event.getY());
+            _eventManager.fire(new PacManDirectionRequested(event.getX(), event.getY()));
         }
-        // Log.i("ME", describeEvent(event));
         return true;
     }
 
@@ -80,6 +84,7 @@ public class GameplayView extends View {
          for (Character ch : _characters) {
              ch.init();
          }
+         _pacMan.init();
     }
 }
 

@@ -33,7 +33,7 @@ public class EventManager {
             observer.onEvent(event);
     }
 
-    public void destroy() {
+    public void unregisterAll() {
         for (Map.Entry<Class<?>, Set<EventListener<?>>> e : registrations.entrySet())
             e.getValue().clear();
         registrations.clear();
