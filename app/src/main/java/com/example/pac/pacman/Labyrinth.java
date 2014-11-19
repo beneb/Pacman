@@ -225,19 +225,14 @@ public class Labyrinth {
     public void draw(Canvas canvas) {
         for (int col = 0; col < _width; col++) {
             for (int row = 0; row < _height; row++) {
+                RectF cellBounds = getCellBounds(row, col);
                 if (getCellValue(row, col) == WALL) {
-                    RectF cellBounds = getCellBounds(row, col);
                     canvas.drawRect(cellBounds, _wallPaint);
                 }
                 if (getCellValue(row, col) == DOT) {
-                    float startX = _cellSize * col + _cellSize / 2 + _bounds.left;
-                    float startY = _cellSize * row + _cellSize / 2 + _bounds.top;
-                    canvas.drawCircle(startX, startY, 5, _dot);
-                }
-                if (getCellValue(row, col) == EMPTY) {
-                    float startX = _cellSize * col + _cellSize / 2 + _bounds.left;
-                    float startY = _cellSize * row + _cellSize / 2 + _bounds.top;
-                    canvas.drawCircle(startX, startY, 5, _empty);
+                    float startX = cellBounds.centerX();
+                    float startY = cellBounds.centerY();
+                    canvas.drawCircle(startX, startY, getDotSize(), _dot);
                 }
 
                 //--Grid for Debugging
@@ -246,6 +241,10 @@ public class Labyrinth {
                 // canvas.drawRect(l, t, l + _cellSize, t + _cellSize, _debugPaint);
             }
         }
+    }
+
+    private float getDotSize() {
+        return _cellSize / 14;
     }
 
     private RectF getCellBounds(int row, int col) {
