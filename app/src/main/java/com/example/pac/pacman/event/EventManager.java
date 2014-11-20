@@ -1,5 +1,7 @@
 package com.example.pac.pacman.event;
 
+import android.annotation.SuppressLint;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -24,12 +26,12 @@ public class EventManager {
         observers.remove(listener);
     }
 
+    @SuppressWarnings("unchecked")
     public void fire(Object event) {
         final Set<EventListener<?>> observers = registrations.get(event.getClass());
         if (observers == null) return;
 
         for (EventListener observer : observers)
-            //noinspection unchecked
             observer.onEvent(event);
     }
 
