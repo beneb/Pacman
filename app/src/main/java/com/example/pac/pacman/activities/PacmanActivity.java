@@ -70,7 +70,7 @@ public class PacmanActivity extends ActionBarActivity {
         String action = intent.getAction();
         String state = loadLabyrinthState(action);
 
-        _labyrinth = new Labyrinth(state, getResources(), _eventManager);
+        _labyrinth = new Labyrinth(state, getResources());
         GameEnv.getInstance().InitOnce(getResources());
 
 
@@ -90,6 +90,7 @@ public class PacmanActivity extends ActionBarActivity {
         final RelativeLayout frame = (RelativeLayout) findViewById(R.id.frame);
         frame.addView(_view);
 
+        _eventManager.registerObserver(DotEatenEvent.class, _labyrinth.DotEventListener);
         _eventManager.registerObserver(DotEatenEvent.class, DotEventListener);
         _eventManager.registerObserver(ChangeHitPointsEvent.class, ChangeHitPoints);
 

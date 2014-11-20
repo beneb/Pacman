@@ -8,7 +8,6 @@ import android.util.Log;
 
 import com.example.pac.pacman.event.DotEatenEvent;
 import com.example.pac.pacman.event.EventListener;
-import com.example.pac.pacman.event.EventManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,7 +48,7 @@ public class Labyrinth {
         }
     };
 
-    public Labyrinth(String state, Resources resource, EventManager eventManager) {
+    public Labyrinth(String state, Resources resource) {
         load(state);
         if (resource != null) {
             _dot = PaintObjectsFactory.createDot(resource.getColor(R.color.dot));
@@ -57,8 +56,6 @@ public class Labyrinth {
             _wallPaint = PaintObjectsFactory.createWall(resource.getColor(R.color.walls));
             // _debugPaint = PaintObjectsFactory.createDebugPaint(Color.RED);
         }
-
-        eventManager.registerObserver(DotEatenEvent.class, DotEventListener);
     }
 
     private void load(String state) {

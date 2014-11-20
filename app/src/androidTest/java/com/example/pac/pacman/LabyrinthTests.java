@@ -5,12 +5,13 @@ import android.graphics.RectF;
 import junit.framework.TestCase;
 
 public class LabyrinthTests extends TestCase {
+    private PacManEnvironment _environment;
     private Labyrinth _labyrinth;
 
     @Override
     public void setUp() throws Exception {
-        _labyrinth = new Labyrinth("101 P00 101 101", null);
-        _labyrinth.init(new RectF(0, 0, 30, 40));
+        _environment= new PacManEnvironment("101 P00 101 101", 30, 40);
+        _labyrinth = _environment.getLabyrinth();
     }
 
     public void testCellSize() {
@@ -35,7 +36,7 @@ public class LabyrinthTests extends TestCase {
     }
 
     public void testGetCharacterPositions() {
-        assertEquals(3, _labyrinth.getCharacterPosition(new PacMan(0, _labyrinth)));
+        assertEquals(3, _environment.getPacManPosition());
         assertEquals('P', _labyrinth.getCharacterCodeForPosition(3).charValue());
         assertEquals(null, _labyrinth.getCharacterCodeForPosition(4));
     }
