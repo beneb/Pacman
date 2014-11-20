@@ -2,6 +2,7 @@ package com.example.pac.pacman.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
@@ -114,6 +115,7 @@ public class PacmanActivity extends ActionBarActivity {
             final TextView score = (TextView) findViewById(R.id.scoreTextView);
             score.setText("Score: " + EventDotsScore);
             final TextView ouchTxt = (TextView) findViewById(R.id.ouchTextView);
+            ouchTxt.setTextColor(Color.RED);
             ouchTxt.setText(_pacManWasHit ? "OUCH!!!" : "");
         }
     };

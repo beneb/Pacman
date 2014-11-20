@@ -3,6 +3,8 @@ package com.example.pac.pacman;
 import android.graphics.PointF;
 import android.graphics.RectF;
 
+import com.example.pac.pacman.event.EventManager;
+
 import junit.framework.TestCase;
 
 public class CharacterTests extends TestCase {
@@ -15,7 +17,7 @@ public class CharacterTests extends TestCase {
     }
 
     private PacMan initFromLabyrinth_4x4(String state) {
-        Labyrinth labyrinth = new Labyrinth(state, null);
+        Labyrinth labyrinth = new Labyrinth(state, null, new EventManager());
         labyrinth.init(new RectF(0, 0, 40, 40));
         IMoveStrategy pms = new PacManMoveStrategy(labyrinth);
         PacMan pacMan = new PacMan(0, pms, labyrinth);
