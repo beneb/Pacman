@@ -24,7 +24,6 @@ import com.example.pac.pacman.event.ChangeHitPointsEvent;
 import com.example.pac.pacman.event.DotEatenEvent;
 import com.example.pac.pacman.event.EventListener;
 import com.example.pac.pacman.event.EventManager;
-import com.example.pac.pacman.event.InvalidateRectInViewEvent;
 import com.example.pac.pacman.util.Fonts;
 import com.example.pac.pacman.views.GameplayView;
 
@@ -63,6 +62,8 @@ public class PacmanActivity extends ActionBarActivity {
     private InputHandler _inputHandler;
     private GameLogicHandler _gameLogicHandler;
 
+    private TextView _score;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,12 +91,16 @@ public class PacmanActivity extends ActionBarActivity {
         final RelativeLayout frame = (RelativeLayout) findViewById(R.id.frame);
         frame.addView(_view);
 
-        Fonts.setRegularFont(this, R.id.scoreTextView);
+        Fonts.setRegularFont(this, R.id.scoreTextLabel);
+        Fonts.setRegularFontWithColor(this, R.id.textScore, Color.YELLOW);
         Fonts.setRegularFont(this, R.id.ouchTextView);
 
         _eventManager.registerObserver(DotEatenEvent.class, _labyrinth.DotEventListener);
         _eventManager.registerObserver(DotEatenEvent.class, DotEventListener);
         _eventManager.registerObserver(ChangeHitPointsEvent.class, ChangeHitPoints);
+
+        // Score view
+        _score = (TextView) findViewById(R.id.textScore);
 
         _handler.postDelayed(_updateView, 1000);
     }
@@ -116,8 +121,7 @@ public class PacmanActivity extends ActionBarActivity {
 
             _handler.removeCallbacks(_updateView);
             _handler.postDelayed(this, 30);
-            final TextView score = (TextView) findViewById(R.id.scoreTextView);
-            score.setText("Score: " + EventDotsScore);
+            _score.setText("" + EventDotsScore);
             final TextView ouchTxt = (TextView) findViewById(R.id.ouchTextView);
             ouchTxt.setTextColor(Color.RED);
             ouchTxt.setText(_pacManWasHit ? "OUCH!!!" : "");

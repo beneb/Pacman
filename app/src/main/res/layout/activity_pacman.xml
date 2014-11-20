@@ -7,14 +7,14 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:contentDescription="@string/pacman"
-        android:layout_above="@+id/scoreTextView" />
+        android:layout_above="@+id/scoreTextLabel" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/score"
-            android:id="@+id/scoreTextView"
+            android:text="@string/scoreLabel"
+            android:id="@+id/scoreTextLabel"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
@@ -27,6 +27,16 @@
             android:id="@+id/ouchTextView"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text='""'
+        android:id="@+id/textScore"
+        android:layout_below="@+id/frame"
+        android:layout_toRightOf="@+id/scoreTextLabel"
+        android:layout_toEndOf="@+id/scoreTextLabel" />
 </RelativeLayout>
 
 
