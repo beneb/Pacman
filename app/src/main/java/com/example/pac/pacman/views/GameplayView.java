@@ -50,8 +50,9 @@ public class GameplayView extends View {
         _paintBackground = new Paint(Paint.ANTI_ALIAS_FLAG);
         _paintBackground.setStyle(Paint.Style.FILL);
         _paintBackground.setColor(getResources().getColor(R.color.background));
-
     }
+
+    
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -64,29 +65,17 @@ public class GameplayView extends View {
         _pacMan.draw(canvas);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         // Act only on ACTION_UP - should be good enough for touch and wipe
-        if (event.getAction() == 1) {
+        if (event.getAction() == MotionEvent.ACTION_UP) {
             _eventManager.fire(new PacManDirectionRequested(event.getX(), event.getY()));
         }
         return true;
     }
 
-    @SuppressLint("NewApi")
-    private String describeEvent(MotionEvent event) {
-        StringBuilder sb = new StringBuilder(300);
-        int action = event.getAction();
-        if (android.os.Build.VERSION.SDK_INT >= 19) {
-            sb.append("Action: ").append(MotionEvent.actionToString(action));
-        }else {
-            sb.append("Action: ").append(action);
-        }
-        sb.append(" Location: ").append(event.getX()).append(" x ").append(event.getY());
-        return sb.toString();
-    }
-
-     @Override
+    @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         final int margin = 10;
          RectF bounds = new RectF(margin, margin, w-margin, h-margin);
