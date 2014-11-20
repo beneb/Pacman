@@ -1,5 +1,9 @@
 package com.example.pac.pacman;
 
+import com.example.pac.pacman.event.InvalidateRectInViewEvent;
+
+import java.util.List;
+
 public class CollisionDetection {
 
     private Labyrinth _labyrinth;
@@ -8,8 +12,21 @@ public class CollisionDetection {
         _labyrinth = labyrinth;
     }
 
-    public boolean PacManCanEatADot(Character ch) {
-        int cell = _labyrinth.getCharacterPosition(ch);
-        return _labyrinth.getCellValue(cell) == _labyrinth.DOT;
+    public boolean PacManCanEatADot(PacMan pacMan) {
+        int pacMansCell = _labyrinth.getCharacterPosition(pacMan);
+        return _labyrinth.getCellValue(pacMansCell) == _labyrinth.DOT;
+    }
+
+    public boolean PacManInteractWithAGhost(PacMan pacMan, List<Character> ghosts) {
+        int pacMansCell = _labyrinth.getCharacterPosition(pacMan);
+
+        for (Character ghost : ghosts) {
+            int ghostsCell = _labyrinth.getCharacterPosition(ghost);
+            if (ghostsCell == pacMansCell) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

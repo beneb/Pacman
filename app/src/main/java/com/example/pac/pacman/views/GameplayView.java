@@ -10,7 +10,10 @@ import android.view.View;
 
 import com.example.pac.pacman.*;
 import com.example.pac.pacman.Character;
+import com.example.pac.pacman.event.DotEatenEvent;
+import com.example.pac.pacman.event.EventListener;
 import com.example.pac.pacman.event.EventManager;
+import com.example.pac.pacman.event.InvalidateRectInViewEvent;
 import com.example.pac.pacman.event.PacManDirectionRequested;
 
 import java.util.Collection;
@@ -23,6 +26,13 @@ import java.util.Collection;
 * */
 public class GameplayView extends View {
 
+    public EventListener<InvalidateRectInViewEvent> NewInvalidRectListener = new EventListener<InvalidateRectInViewEvent>() {
+        @Override
+        public void onEvent(InvalidateRectInViewEvent event) {
+            invalidate(event.GetRect());
+        }
+    };
+
     private final EventManager _eventManager;
     private final PacMan _pacMan;
     private final Collection<com.example.pac.pacman.Character> _characters;
@@ -32,6 +42,7 @@ public class GameplayView extends View {
     public GameplayView(Context context, EventManager eventManager, Labyrinth labyrinth, PacMan pacMan, Collection<Character> characters) {
         super(context);
         _eventManager = eventManager;
+        _eventManager.registerObserver(InvalidateRectInViewEvent.class, NewInvalidRectListener);
         _pacMan = pacMan;
         _characters = characters;
         _labyrinth = labyrinth;

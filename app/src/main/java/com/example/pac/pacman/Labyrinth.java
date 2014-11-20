@@ -16,8 +16,8 @@ import java.util.Map;
 public class Labyrinth {
 
     public final int DOT = 0;
-    final int WALL = 1;
-    final int EMPTY = 2;
+    public final int WALL = 1;
+    public final int EMPTY = 2;
 
     private int _layout[][];
     private int _width;

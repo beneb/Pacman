@@ -2,7 +2,6 @@ package com.example.pac.pacman.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.PointF;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
@@ -11,7 +10,6 @@ import android.widget.TextView;
 
 import com.example.pac.pacman.Character;
 import com.example.pac.pacman.CollisionDetection;
-import com.example.pac.pacman.Direction;
 import com.example.pac.pacman.GameEnv;
 import com.example.pac.pacman.GameLogicHandler;
 import com.example.pac.pacman.GhostRepository;
@@ -21,10 +19,11 @@ import com.example.pac.pacman.Labyrinth;
 import com.example.pac.pacman.PacMan;
 import com.example.pac.pacman.PacManMoveStrategy;
 import com.example.pac.pacman.R;
+import com.example.pac.pacman.event.ChangeHitPointsEvent;
 import com.example.pac.pacman.event.DotEatenEvent;
 import com.example.pac.pacman.event.EventListener;
 import com.example.pac.pacman.event.EventManager;
-import com.example.pac.pacman.event.PacManDirectionRequested;
+import com.example.pac.pacman.event.InvalidateRectInViewEvent;
 import com.example.pac.pacman.views.GameplayView;
 
 import java.util.ArrayList;
@@ -32,10 +31,19 @@ import java.util.List;
 
 public class PacmanActivity extends ActionBarActivity {
     private int EventDotsScore;
+    private boolean _pacManWasHit;
+
     public EventListener<DotEatenEvent> DotEventListener = new EventListener<DotEatenEvent>() {
         @Override
         public void onEvent(DotEatenEvent event) {
             EventDotsScore++;
+        }
+    };
+
+    public EventListener<ChangeHitPointsEvent> ChangeHitPoints = new EventListener<ChangeHitPointsEvent>() {
+        @Override
+        public void onEvent(ChangeHitPointsEvent event) {
+            _pacManWasHit = !event.IncreaseHitPoints();
         }
     };
 
@@ -69,12 +77,10 @@ public class PacmanActivity extends ActionBarActivity {
         _pacMan = new PacMan(getResources().getColor(R.color.pacman), pacManStrategy, _labyrinth);
         _inputHandler = new InputHandler(_pacMan, pacManStrategy, _eventManager);
 
-        _gameLogicHandler = new GameLogicHandler(new CollisionDetection(_labyrinth), _pacMan, _eventManager);
-
         _characters = new ArrayList<Character>();
         _characters.addAll(GhostRepository.CreateGhosts(getResources(), _labyrinth));
 
-        _eventManager.registerObserver(DotEatenEvent.class, DotEventListener);
+        _gameLogicHandler = new GameLogicHandler(new CollisionDetection(_labyrinth), _pacMan, _eventManager, _characters);
 
         _view = new GameplayView(this, _eventManager, _labyrinth, _pacMan, _characters);
         // setContentView(_view);
@@ -82,6 +88,9 @@ public class PacmanActivity extends ActionBarActivity {
         setContentView(R.layout.activity_pacman);
         final RelativeLayout frame = (RelativeLayout) findViewById(R.id.frame);
         frame.addView(_view);
+
+        _eventManager.registerObserver(DotEatenEvent.class, DotEventListener);
+        _eventManager.registerObserver(ChangeHitPointsEvent.class, ChangeHitPoints);
 
         _handler.postDelayed(_updateView, 1000);
     }
@@ -97,25 +106,17 @@ public class PacmanActivity extends ActionBarActivity {
 
     private Runnable _updateView = new Runnable() {
         public void run() {
-            moveAll();
+            _gameLogicHandler.MoveAllCharacters();
             _gameLogicHandler.HandleAllCollisions();
 
             _handler.removeCallbacks(_updateView);
             _handler.postDelayed(this, 30);
             final TextView score = (TextView) findViewById(R.id.scoreTextView);
-            score.setText("Score:" + EventDotsScore);
+            score.setText("Score: " + EventDotsScore);
+            final TextView ouchTxt = (TextView) findViewById(R.id.ouchTextView);
+            ouchTxt.setText(_pacManWasHit ? "OUCH!!!" : "");
         }
     };
-
-    private void moveAll() {
-        for (Character character : _characters) {
-            character.move();
-            _view.invalidate(character.getInvalidateRect());
-        }
-        _pacMan.move();
-        _view.invalidate(_pacMan.getInvalidateRect());
-    }
-
 
 
     @Override
