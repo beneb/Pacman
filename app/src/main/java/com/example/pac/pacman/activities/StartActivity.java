@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.pac.pacman.R;
+import com.example.pac.pacman.util.Fonts;
 
 
 public class StartActivity extends ActionBarActivity {
@@ -17,15 +18,11 @@ public class StartActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
-        setTypeface(R.id.caption, "pacfont.ttf");
-        setTypeface(R.id.new_game, "emulogic.ttf");
-        setTypeface(R.id.resume, "emulogic.ttf");
+        Fonts.setPacManFont(this, R.id.caption);
+        Fonts.setRegularFont(this, R.id.new_game);
+        Fonts.setRegularFont(this, R.id.resume);
     }
 
-    private void setTypeface(int textViewId, final String fontName) {
-        TextView tv = (TextView) findViewById(textViewId);
-        tv.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/" + fontName));
-    }
 
     public void buttonNewGameClick(View v) {
         startActivity(new Intent(this, PacmanActivity.class));

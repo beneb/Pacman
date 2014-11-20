@@ -25,6 +25,7 @@ import com.example.pac.pacman.event.DotEatenEvent;
 import com.example.pac.pacman.event.EventListener;
 import com.example.pac.pacman.event.EventManager;
 import com.example.pac.pacman.event.InvalidateRectInViewEvent;
+import com.example.pac.pacman.util.Fonts;
 import com.example.pac.pacman.views.GameplayView;
 
 import java.util.ArrayList;
@@ -84,11 +85,13 @@ public class PacmanActivity extends ActionBarActivity {
         _gameLogicHandler = new GameLogicHandler(new CollisionDetection(_labyrinth), _pacMan, _eventManager, _characters);
 
         _view = new GameplayView(this, _eventManager, _labyrinth, _pacMan, _characters);
-        // setContentView(_view);
 
         setContentView(R.layout.activity_pacman);
         final RelativeLayout frame = (RelativeLayout) findViewById(R.id.frame);
         frame.addView(_view);
+
+        Fonts.setRegularFont(this, R.id.scoreTextView);
+        Fonts.setRegularFont(this, R.id.ouchTextView);
 
         _eventManager.registerObserver(DotEatenEvent.class, _labyrinth.DotEventListener);
         _eventManager.registerObserver(DotEatenEvent.class, DotEventListener);
