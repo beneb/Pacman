@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.Log;
 
+import com.example.pac.pacman.event.BigDotEatenEvent;
 import com.example.pac.pacman.event.DotEatenEvent;
 import com.example.pac.pacman.event.EventListener;
 
@@ -17,6 +18,7 @@ public class Labyrinth {
     public final int DOT = 0;
     public final int WALL = 1;
     public final int EMPTY = 2;
+    public final int BIG_DOT = 3;
 
     private int _layout[][];
     private int _width;
@@ -37,7 +39,7 @@ public class Labyrinth {
 
 
     private Paint _dot;
-    private Paint _empty;
+    private Paint _big_dot;
     private Paint _wallPaint;
     private Paint _debugPaint;
 
@@ -47,12 +49,20 @@ public class Labyrinth {
             setCellValue(event.GetCell(), EMPTY);
         }
     };
+    public EventListener<BigDotEatenEvent> BigDotEventListener = new EventListener<BigDotEatenEvent>() {
+        @Override
+        public void onEvent(BigDotEatenEvent event) {
+            setCellValue(event.GetCell(), EMPTY);
+            // TODO: eating big dot means something more, this event should be received by something more
+            // ghosts should change strategy and color... etc.
+        }
+    };
 
     public Labyrinth(String state, Resources resource) {
         load(state);
         if (resource != null) {
             _dot = PaintObjectsFactory.createDot(resource.getColor(R.color.dot));
-            _empty = PaintObjectsFactory.createEmptyDot(resource.getColor(R.color.empty_dot));
+            _big_dot= PaintObjectsFactory.createBigDot(resource.getColor(R.color.dot));
             _wallPaint = PaintObjectsFactory.createWall(resource.getColor(R.color.walls));
             // _debugPaint = PaintObjectsFactory.createDebugPaint(Color.RED);
         }
@@ -213,7 +223,7 @@ public class Labyrinth {
 
     private boolean canMoveForCell(int row, int col) {
         int cellValue = getCellValue(row, col);
-        return cellValue == EMPTY || cellValue == DOT;
+        return cellValue == EMPTY || cellValue == DOT || cellValue == BIG_DOT;
     }
 
     public void draw(Canvas canvas) {
@@ -228,6 +238,11 @@ public class Labyrinth {
                     float startY = cellBounds.centerY();
                     canvas.drawCircle(startX, startY, getDotSize(), _dot);
                 }
+                if (getCellValue(row, col) == BIG_DOT) {
+                    float startX = cellBounds.centerX();
+                    float startY = cellBounds.centerY();
+                    canvas.drawCircle(startX, startY, getBigDotSize(), _big_dot);
+                }
 
                 //--Grid for Debugging
                 // float l = col * _cellSize + _bounds.left;
@@ -239,6 +254,9 @@ public class Labyrinth {
 
     private float getDotSize() {
         return _cellSize / 14;
+    }
+    private float getBigDotSize() {
+        return _cellSize / 4;
     }
 
     private RectF getCellBounds(int row, int col) {

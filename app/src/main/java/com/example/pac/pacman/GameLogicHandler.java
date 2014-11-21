@@ -1,5 +1,6 @@
 package com.example.pac.pacman;
 
+import com.example.pac.pacman.event.BigDotEatenEvent;
 import com.example.pac.pacman.event.ChangeHitPointsEvent;
 import com.example.pac.pacman.event.DotEatenEvent;
 import com.example.pac.pacman.event.DrawRequestEvent;
@@ -43,6 +44,9 @@ public class GameLogicHandler {
 
         if (_collisionDetection.PacManCanEatADot(_pacMan)) {
             _eventManager.fire(new DotEatenEvent(_pacMan.getCell()));
+        }
+        if (_collisionDetection.PacManCanEatBigDot(_pacMan)) {
+            _eventManager.fire(new BigDotEatenEvent(_pacMan.getCell()));
         }
 
         if (_collisionDetection.PacManInteractWithAGhost(_pacMan, _characters)) {

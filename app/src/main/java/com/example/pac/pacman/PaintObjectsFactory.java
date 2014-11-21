@@ -2,16 +2,9 @@ package com.example.pac.pacman;
 import android.graphics.Paint;
 
 public class PaintObjectsFactory {
-
-    static Paint createWall(int color) {
-        return createPaint(color);
-    }
-    static Paint createDot(int color) {
-        return createPaint(color);
-    }
-    static Paint createEmptyDot(int color) {
-        return createPaint(color);
-    }
+    static Paint createWall(int color) {return createPaint(color); }
+    static Paint createDot(int color) {return createPaint(color);  }
+    static Paint createBigDot(int color) {return createPaint(color);  }
 
     public static Paint createDebugPaint(int color) {
         Paint p = createPaint(color);

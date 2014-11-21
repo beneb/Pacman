@@ -18,6 +18,7 @@ import com.example.pac.pacman.PacMan;
 import com.example.pac.pacman.PacManMoveStrategy;
 import com.example.pac.pacman.R;
 import com.example.pac.pacman.SoundHandler;
+import com.example.pac.pacman.event.BigDotEatenEvent;
 import com.example.pac.pacman.event.ChangeHitPointsEvent;
 import com.example.pac.pacman.event.DotEatenEvent;
 import com.example.pac.pacman.event.DrawRequestEvent;
@@ -101,8 +102,12 @@ public class PacmanActivity extends ActionBarActivity {
 
         _eventManager.registerObserver(InitEvent.class, gameLogic.InitGameListener);
         _eventManager.registerObserver(DrawRequestEvent.class, gameLogic.DrawRequestListener);
+
         _eventManager.registerObserver(DotEatenEvent.class, _labyrinth.DotEventListener);
         _eventManager.registerObserver(DotEatenEvent.class, DotEatenListener);
+
+        _eventManager.registerObserver(BigDotEatenEvent.class, _labyrinth.BigDotEventListener);
+
         _eventManager.registerObserver(ChangeHitPointsEvent.class, ChangeHitPoints);
         _eventManager.registerObserver(PacManDirectionRequested.class, new InputHandler(pacMan, pacManStrategy).DirectionChangedListener);
         _eventManager.registerObserver(DotEatenEvent.class, new SoundHandler(this).PlaySoundForEatingADot);
