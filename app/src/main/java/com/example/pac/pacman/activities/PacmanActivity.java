@@ -20,6 +20,7 @@ import com.example.pac.pacman.Labyrinth;
 import com.example.pac.pacman.PacMan;
 import com.example.pac.pacman.PacManMoveStrategy;
 import com.example.pac.pacman.R;
+import com.example.pac.pacman.SoundHandler;
 import com.example.pac.pacman.event.ChangeHitPointsEvent;
 import com.example.pac.pacman.event.DotEatenEvent;
 import com.example.pac.pacman.event.EventListener;
@@ -60,6 +61,7 @@ public class PacmanActivity extends ActionBarActivity {
     private EventManager _eventManager = new EventManager();
     private PacMan _pacMan;
     private InputHandler _inputHandler;
+    private SoundHandler _soundHandler;
     private GameLogicHandler _gameLogicHandler;
 
     private TextView _score;
@@ -79,6 +81,7 @@ public class PacmanActivity extends ActionBarActivity {
         IMoveStrategy pacManStrategy = new PacManMoveStrategy(_labyrinth);
         _pacMan = new PacMan(getResources().getColor(R.color.pacman), pacManStrategy, _labyrinth);
         _inputHandler = new InputHandler(_pacMan, pacManStrategy, _eventManager);
+        _soundHandler = new SoundHandler(this, _eventManager);
 
         _characters = new ArrayList<Character>();
         _characters.addAll(GhostRepository.CreateGhosts(getResources(), _labyrinth));
