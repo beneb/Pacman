@@ -11,13 +11,12 @@ public class InputHandler {
     private PacMan _pacMan;
     private PacManMoveStrategy _pacManStrategy;
 
-    public InputHandler(PacMan pacMan, IMoveStrategy pacManMoveStrategy, EventManager eventManager) {
+    public InputHandler(PacMan pacMan, IMoveStrategy pacManMoveStrategy) {
         _pacMan = pacMan;
         _pacManStrategy = (PacManMoveStrategy) pacManMoveStrategy;
-        eventManager.registerObserver(PacManDirectionRequested.class, _directionChangedListener);
     }
 
-    public EventListener<PacManDirectionRequested> _directionChangedListener = new EventListener<PacManDirectionRequested>() {
+    public EventListener<PacManDirectionRequested> DirectionChangedListener = new EventListener<PacManDirectionRequested>() {
         @Override
         public void onEvent(PacManDirectionRequested event) {
 

@@ -5,6 +5,7 @@ import com.example.pac.pacman.event.DotEatenEvent;
 import com.example.pac.pacman.event.DrawRequestEvent;
 import com.example.pac.pacman.event.EventListener;
 import com.example.pac.pacman.event.EventManager;
+import com.example.pac.pacman.event.IEventManager;
 import com.example.pac.pacman.event.InitEvent;
 import com.example.pac.pacman.event.InvalidateViewEvent;
 
@@ -14,11 +15,11 @@ public class GameLogicHandler {
 
     private CollisionDetection _collisionDetection;
     private PacMan _pacMan;
-    private EventManager _eventManager;
+    private IEventManager _eventManager;
     private List<Character> _characters;
     private Labyrinth _labyrinth;
 
-    public GameLogicHandler(CollisionDetection collisionDetection, PacMan pacMan, EventManager eventManager, List<Character> characters, Labyrinth labyrinth) {
+    public GameLogicHandler(CollisionDetection collisionDetection, PacMan pacMan, IEventManager eventManager, List<Character> characters, Labyrinth labyrinth) {
         _collisionDetection = collisionDetection;
         _labyrinth = labyrinth;
         _pacMan = pacMan;

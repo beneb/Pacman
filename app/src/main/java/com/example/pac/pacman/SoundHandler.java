@@ -9,12 +9,9 @@ import com.example.pac.pacman.event.EventManager;
 
 public class SoundHandler {
 
-    private final EventManager _eventManager;
     private final MediaPlayer _mediaPlayer;
 
-    public SoundHandler (Context context, EventManager eventManager) {
-        _eventManager = eventManager;
-        _eventManager.registerObserver(DotEatenEvent.class, PlaySoundForEatingADot);
+    public SoundHandler(Context context) {
         _mediaPlayer = MediaPlayer.create(context, R.raw.bite_cookie);
     }
 

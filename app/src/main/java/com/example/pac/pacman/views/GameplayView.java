@@ -42,14 +42,14 @@ public class GameplayView extends View {
 
     public void init(IEventManager eventManager) {
         _eventManager = eventManager;
+        _eventManager.registerObserver(InvalidateViewEvent.class,
+                new EventListener<InvalidateViewEvent>() {
+                    @Override
+                    public void onEvent(InvalidateViewEvent event) {
+                        invalidate(event.GetRect());
+                    }
+                });
     }
-
-    public EventListener<InvalidateViewEvent> InvalidateListener = new EventListener<InvalidateViewEvent>() {
-        @Override
-        public void onEvent(InvalidateViewEvent event) {
-            invalidate(event.GetRect());
-        }
-    };
 
     private final DrawRequestEvent _drawEvent = new DrawRequestEvent();
 
