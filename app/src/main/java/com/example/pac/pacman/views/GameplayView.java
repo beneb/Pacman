@@ -3,20 +3,18 @@ package com.example.pac.pacman.views;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.RectF;
+import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.example.pac.pacman.*;
-import com.example.pac.pacman.Character;
-import com.example.pac.pacman.event.DotEatenEvent;
+import com.example.pac.pacman.event.DrawRequestEvent;
+import com.example.pac.pacman.event.DummyEventManager;
 import com.example.pac.pacman.event.EventListener;
-import com.example.pac.pacman.event.EventManager;
-import com.example.pac.pacman.event.InvalidateRectInViewEvent;
+import com.example.pac.pacman.event.IEventManager;
+import com.example.pac.pacman.event.InitEvent;
+import com.example.pac.pacman.event.InvalidateViewEvent;
 import com.example.pac.pacman.event.PacManDirectionRequested;
-
-import java.util.Collection;
 
 /*
 *   TODO: Maybe it should be a SurfaceView
@@ -26,43 +24,40 @@ import java.util.Collection;
 * */
 public class GameplayView extends View {
 
-    public EventListener<InvalidateRectInViewEvent> NewInvalidRectListener = new EventListener<InvalidateRectInViewEvent>() {
+    private static final int MARGIN = 10;
+
+    private RectF getInnerBounds(int w, int h) {
+        return new RectF(MARGIN, MARGIN, w - MARGIN, h - MARGIN);
+    }
+
+    public GameplayView(Context context) {
+        super(context);
+    }
+
+    public GameplayView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    private IEventManager _eventManager = new DummyEventManager();
+
+    public void init(IEventManager eventManager) {
+        _eventManager = eventManager;
+    }
+
+    public EventListener<InvalidateViewEvent> InvalidateListener = new EventListener<InvalidateViewEvent>() {
         @Override
-        public void onEvent(InvalidateRectInViewEvent event) {
+        public void onEvent(InvalidateViewEvent event) {
             invalidate(event.GetRect());
         }
     };
 
-    private final EventManager _eventManager;
-    private final PacMan _pacMan;
-    private final Collection<com.example.pac.pacman.Character> _characters;
-    private final Paint _paintBackground;
-    private Labyrinth _labyrinth;
-
-    public GameplayView(Context context, EventManager eventManager, Labyrinth labyrinth, PacMan pacMan, Collection<Character> characters) {
-        super(context);
-        _eventManager = eventManager;
-        _eventManager.registerObserver(InvalidateRectInViewEvent.class, NewInvalidRectListener);
-        _pacMan = pacMan;
-        _characters = characters;
-        _labyrinth = labyrinth;
-
-        _paintBackground = new Paint(Paint.ANTI_ALIAS_FLAG);
-        _paintBackground.setStyle(Paint.Style.FILL);
-        _paintBackground.setColor(getResources().getColor(R.color.background));
-    }
-
-    
+    private final DrawRequestEvent _drawEvent = new DrawRequestEvent();
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawPaint(_paintBackground);
-        _labyrinth.draw(canvas);
-        for (Character ch : _characters) {
-            ch.draw(canvas);
-        }
-        _pacMan.draw(canvas);
+        _drawEvent.setCanvas(canvas);
+        _eventManager.fire(_drawEvent);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -76,14 +71,9 @@ public class GameplayView extends View {
     }
 
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        final int margin = 10;
-         RectF bounds = new RectF(margin, margin, w-margin, h-margin);
-         _labyrinth.init(bounds);
-         for (Character ch : _characters) {
-             ch.init();
-         }
-         _pacMan.init();
+    protected void onSizeChanged(int w, int h, int _, int __) {
+        RectF bounds = getInnerBounds(w, h);
+        _eventManager.fire(new InitEvent(bounds));
     }
 }
 

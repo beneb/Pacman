@@ -2,10 +2,10 @@ package com.example.pac.pacman.event;
 
 import android.graphics.Rect;
 
-public class InvalidateRectInViewEvent {
+public class InvalidateViewEvent {
     private Rect _rect;
 
-    public InvalidateRectInViewEvent(Rect rect) {
+    public InvalidateViewEvent(Rect rect) {
         _rect = rect;
     }
 

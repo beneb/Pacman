@@ -1,16 +1,15 @@
 package com.example.pac.pacman.event;
 
-import android.annotation.SuppressLint;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 
-public class EventManager {
+public class EventManager implements IEventManager {
     protected Map<Class<?>, Set<EventListener<?>>> registrations = new HashMap<Class<?>, Set<EventListener<?>>>();
 
+    @Override
     public <T> void registerObserver(Class<T> event, EventListener<?> listener) {
         Set<EventListener<?>> observers = registrations.get(event);
         if (observers == null) {
@@ -20,12 +19,14 @@ public class EventManager {
         observers.add(listener);
     }
 
+    @Override
     public <T> void unregisterObserver(Class<T> event, EventListener<T> listener) {
         final Set<EventListener<?>> observers = registrations.get(event);
         if (observers == null) return;
         observers.remove(listener);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public void fire(Object event) {
         final Set<EventListener<?>> observers = registrations.get(event.getClass());
@@ -35,6 +36,7 @@ public class EventManager {
             observer.onEvent(event);
     }
 
+    @Override
     public void unregisterAll() {
         for (Map.Entry<Class<?>, Set<EventListener<?>>> e : registrations.entrySet())
             e.getValue().clear();

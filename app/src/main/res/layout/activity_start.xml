@@ -18,7 +18,7 @@
         android:layout_centerHorizontal="true"
         android:textColor="@color/pacman"
         android:padding="10dp"
-        android:textSize="@dimen/titel_size" />
+        android:textSize="@dimen/title_size" />
 
     <LinearLayout
         android:orientation="vertical"

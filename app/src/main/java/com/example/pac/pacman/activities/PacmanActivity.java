@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.pac.pacman.Character;
@@ -23,8 +22,11 @@ import com.example.pac.pacman.R;
 import com.example.pac.pacman.SoundHandler;
 import com.example.pac.pacman.event.ChangeHitPointsEvent;
 import com.example.pac.pacman.event.DotEatenEvent;
+import com.example.pac.pacman.event.DrawRequestEvent;
 import com.example.pac.pacman.event.EventListener;
 import com.example.pac.pacman.event.EventManager;
+import com.example.pac.pacman.event.InitEvent;
+import com.example.pac.pacman.event.InvalidateViewEvent;
 import com.example.pac.pacman.util.Fonts;
 import com.example.pac.pacman.views.GameplayView;
 
@@ -86,21 +88,23 @@ public class PacmanActivity extends ActionBarActivity {
         _characters = new ArrayList<Character>();
         _characters.addAll(GhostRepository.CreateGhosts(getResources(), _labyrinth));
 
-        _gameLogicHandler = new GameLogicHandler(new CollisionDetection(_labyrinth), _pacMan, _eventManager, _characters);
-
-        _view = new GameplayView(this, _eventManager, _labyrinth, _pacMan, _characters);
+        _gameLogicHandler = new GameLogicHandler(new CollisionDetection(_labyrinth), _pacMan, _eventManager, _characters, _labyrinth);
 
         setContentView(R.layout.activity_pacman);
-        final RelativeLayout frame = (RelativeLayout) findViewById(R.id.frame);
-        frame.addView(_view);
+        _view = (GameplayView) findViewById(R.id.gameplay_view);
+        _view.init(_eventManager);
 
-        Fonts.setRegularFont(this, R.id.scoreTextLabel);
+        Fonts.setRegularFont(this, R.id.score_label);
         Fonts.setRegularFontWithColor(this, R.id.textScore, Color.YELLOW);
         Fonts.setRegularFont(this, R.id.ouchTextView);
 
+        _eventManager.registerObserver(InitEvent.class, _gameLogicHandler.InitGameListener);
+        _eventManager.registerObserver(DrawRequestEvent.class, _gameLogicHandler.DrawRequestListener);
         _eventManager.registerObserver(DotEatenEvent.class, _labyrinth.DotEventListener);
         _eventManager.registerObserver(DotEatenEvent.class, DotEventListener);
         _eventManager.registerObserver(ChangeHitPointsEvent.class, ChangeHitPoints);
+
+        _eventManager.registerObserver(InvalidateViewEvent.class, _view.InvalidateListener);
 
         // Score view
         _score = (TextView) findViewById(R.id.textScore);
@@ -122,12 +126,13 @@ public class PacmanActivity extends ActionBarActivity {
             _gameLogicHandler.MoveAllCharacters();
             _gameLogicHandler.HandleAllCollisions();
 
-            _handler.removeCallbacks(_updateView);
-            _handler.postDelayed(this, 30);
             _score.setText("" + EventDotsScore);
             final TextView ouchTxt = (TextView) findViewById(R.id.ouchTextView);
             ouchTxt.setTextColor(Color.RED);
             ouchTxt.setText(_pacManWasHit ? "OUCH!!!" : "");
+
+            _handler.removeCallbacks(_updateView);
+            _handler.postDelayed(this, 30);
         }
     };
 

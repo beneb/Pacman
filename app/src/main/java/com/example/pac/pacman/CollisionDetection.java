@@ -1,7 +1,5 @@
 package com.example.pac.pacman;
 
-import com.example.pac.pacman.event.InvalidateRectInViewEvent;
-
 import java.util.List;
 
 public class CollisionDetection {
