@@ -28,13 +28,14 @@
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
-        android:id="@+id/textScore"
+        android:id="@+id/score_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/gameplay_view"
         android:layout_toEndOf="@+id/score_label"
         android:layout_toRightOf="@+id/score_label"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/score" />
 </RelativeLayout>
 
 

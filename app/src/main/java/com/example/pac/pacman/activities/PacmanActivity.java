@@ -95,7 +95,7 @@ public class PacmanActivity extends ActionBarActivity {
         _view.init(_eventManager);
 
         Fonts.setRegularFont(this, R.id.score_label);
-        Fonts.setRegularFontWithColor(this, R.id.textScore, Color.YELLOW);
+        Fonts.setRegularFont(this, R.id.score_text);
         Fonts.setRegularFont(this, R.id.ouchTextView);
 
         _eventManager.registerObserver(InitEvent.class, _gameLogicHandler.InitGameListener);
@@ -107,7 +107,7 @@ public class PacmanActivity extends ActionBarActivity {
         _eventManager.registerObserver(InvalidateViewEvent.class, _view.InvalidateListener);
 
         // Score view
-        _score = (TextView) findViewById(R.id.textScore);
+        _score = (TextView) findViewById(R.id.score_text);
 
         _handler.postDelayed(_updateView, 1000);
     }
