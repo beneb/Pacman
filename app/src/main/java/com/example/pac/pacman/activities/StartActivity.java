@@ -30,7 +30,7 @@ public class StartActivity extends ActionBarActivity {
 
     public void buttonResumeClick(View v) {
         Intent resumeIntent = new Intent(this, PacmanActivity.class);
-        resumeIntent.setAction(PacmanActivity.RESUME_ACTION);
+        resumeIntent.setAction(PacmanActivity.State.RESUME_ACTION);
         startActivity(resumeIntent);
     }
 }
