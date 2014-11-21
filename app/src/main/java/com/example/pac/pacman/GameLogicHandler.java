@@ -26,16 +26,18 @@ public class GameLogicHandler {
         _characters = characters;
     }
 
-    public void MoveAllCharacters() {
+    public void UpdateOnFrame() {
         for (Character character : _characters) {
             character.move();
             _eventManager.fire(new InvalidateViewEvent(character.getInvalidateRect()));
         }
         _pacMan.move();
         _eventManager.fire(new InvalidateViewEvent(_pacMan.getInvalidateRect()));
+
+        HandleAllCollisions();
     }
 
-    public void HandleAllCollisions() {
+    private void HandleAllCollisions() {
         // Handle here all possible collisions in the correct order
 
         if (_collisionDetection.PacManCanEatADot(_pacMan)) {

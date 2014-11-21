@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.example.pac.pacman.Character;
 import com.example.pac.pacman.CollisionDetection;
-import com.example.pac.pacman.GameEnv;
 import com.example.pac.pacman.GameLogicHandler;
 import com.example.pac.pacman.GhostRepository;
 import com.example.pac.pacman.IMoveStrategy;
@@ -31,7 +30,6 @@ import com.example.pac.pacman.util.Fonts;
 import com.example.pac.pacman.views.GameplayView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class PacmanActivity extends ActionBarActivity {
     private int EventDotsScore;
@@ -41,6 +39,7 @@ public class PacmanActivity extends ActionBarActivity {
         @Override
         public void onEvent(DotEatenEvent event) {
             EventDotsScore++;
+            _score.setText("" + EventDotsScore);
         }
     };
 
@@ -48,6 +47,9 @@ public class PacmanActivity extends ActionBarActivity {
         @Override
         public void onEvent(ChangeHitPointsEvent event) {
             _pacManWasHit = !event.IncreaseHitPoints();
+            final TextView ouchTxt = (TextView) findViewById(R.id.ouchTextView);
+            ouchTxt.setTextColor(Color.RED);
+            ouchTxt.setText(_pacManWasHit ? "OUCH!!!" : "");
         }
     };
 
@@ -55,18 +57,14 @@ public class PacmanActivity extends ActionBarActivity {
     public static final String SETTINGS = "SETTINGS";
     public static final String LABYRINTH_STATE = "LABYRINTH_STATE";
 
-    private Handler _handler = new Handler();
-    private GameplayView _view;
-    private List<com.example.pac.pacman.Character> _characters;
     private Labyrinth _labyrinth;
-    private int tmp = 0;
     private EventManager _eventManager = new EventManager();
-    private PacMan _pacMan;
     private InputHandler _inputHandler;
     private SoundHandler _soundHandler;
-    private GameLogicHandler _gameLogicHandler;
 
     private TextView _score;
+
+    private FrameLoop _frameLoop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,39 +75,38 @@ public class PacmanActivity extends ActionBarActivity {
         String state = loadLabyrinthState(action);
 
         _labyrinth = new Labyrinth(state, getResources());
-        GameEnv.getInstance().InitOnce(getResources());
-
 
         IMoveStrategy pacManStrategy = new PacManMoveStrategy(_labyrinth);
-        _pacMan = new PacMan(getResources().getColor(R.color.pacman), pacManStrategy, _labyrinth);
-        _inputHandler = new InputHandler(_pacMan, pacManStrategy, _eventManager);
+        PacMan pacMan = new PacMan(getResources().getColor(R.color.pacman), pacManStrategy, _labyrinth);
+        _inputHandler = new InputHandler(pacMan, pacManStrategy, _eventManager);
         _soundHandler = new SoundHandler(this, _eventManager);
 
-        _characters = new ArrayList<Character>();
+        ArrayList<Character> _characters = new ArrayList<Character>();
         _characters.addAll(GhostRepository.CreateGhosts(getResources(), _labyrinth));
 
-        _gameLogicHandler = new GameLogicHandler(new CollisionDetection(_labyrinth), _pacMan, _eventManager, _characters, _labyrinth);
+        GameLogicHandler gameLogic = new GameLogicHandler(new CollisionDetection(_labyrinth), pacMan, _eventManager, _characters, _labyrinth);
 
         setContentView(R.layout.activity_pacman);
-        _view = (GameplayView) findViewById(R.id.gameplay_view);
-        _view.init(_eventManager);
+        GameplayView gameplayView = (GameplayView) findViewById(R.id.gameplay_view);
+        gameplayView.init(_eventManager);
 
         Fonts.setRegularFont(this, R.id.score_label);
         Fonts.setRegularFont(this, R.id.score_text);
         Fonts.setRegularFont(this, R.id.ouchTextView);
 
-        _eventManager.registerObserver(InitEvent.class, _gameLogicHandler.InitGameListener);
-        _eventManager.registerObserver(DrawRequestEvent.class, _gameLogicHandler.DrawRequestListener);
+        _eventManager.registerObserver(InitEvent.class, gameLogic.InitGameListener);
+        _eventManager.registerObserver(DrawRequestEvent.class, gameLogic.DrawRequestListener);
         _eventManager.registerObserver(DotEatenEvent.class, _labyrinth.DotEventListener);
         _eventManager.registerObserver(DotEatenEvent.class, DotEventListener);
         _eventManager.registerObserver(ChangeHitPointsEvent.class, ChangeHitPoints);
 
-        _eventManager.registerObserver(InvalidateViewEvent.class, _view.InvalidateListener);
+        _eventManager.registerObserver(InvalidateViewEvent.class, gameplayView.InvalidateListener);
 
         // Score view
         _score = (TextView) findViewById(R.id.score_text);
 
-        _handler.postDelayed(_updateView, 1000);
+        _frameLoop = new FrameLoop(gameLogic);
+        _frameLoop.Start();
     }
 
     private String loadLabyrinthState(String action) {
@@ -121,28 +118,13 @@ public class PacmanActivity extends ActionBarActivity {
         return state;
     }
 
-    private Runnable _updateView = new Runnable() {
-        public void run() {
-            _gameLogicHandler.MoveAllCharacters();
-            _gameLogicHandler.HandleAllCollisions();
-
-            _score.setText("" + EventDotsScore);
-            final TextView ouchTxt = (TextView) findViewById(R.id.ouchTextView);
-            ouchTxt.setTextColor(Color.RED);
-            ouchTxt.setText(_pacManWasHit ? "OUCH!!!" : "");
-
-            _handler.removeCallbacks(_updateView);
-            _handler.postDelayed(this, 30);
-        }
-    };
-
 
     @Override
     protected void onStop() {
         super.onStop();
         saveLabyrinthState();
 
-        _handler.removeCallbacks(_updateView);
+        _frameLoop.Destroy();
         _eventManager.unregisterAll();
     }
 
