@@ -6,10 +6,6 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.Log;
 
-import com.example.pac.pacman.event.BigDotEatenEvent;
-import com.example.pac.pacman.event.DotEatenEvent;
-import com.example.pac.pacman.event.EventListener;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,23 +38,6 @@ public class Labyrinth {
     private Paint _big_dot;
     private Paint _wallPaint;
     private Paint _debugPaint;
-
-    public EventListener<DotEatenEvent> DotEventListener = new EventListener<DotEatenEvent>() {
-        @Override
-        public void onEvent(DotEatenEvent event) {
-            setCellValue(event.GetCell(), EMPTY);
-        }
-    };
-    public EventListener<BigDotEatenEvent> BigDotEventListener = new EventListener<BigDotEatenEvent>() {
-        @Override
-        public void onEvent(BigDotEatenEvent event) {
-            setCellValue(event.GetCell(), EMPTY);
-
-            // TODO: eating big dot means something more, this event should be received by something more
-            // ghosts should change strategy and color... etc.
-                // Viktor: This should be implemented in GameLogicHandler
-        }
-    };
 
     public Labyrinth(String state, Resources resource) {
         load(state);
@@ -228,17 +207,22 @@ public class Labyrinth {
         return cellValue == EMPTY || cellValue == DOT || cellValue == BIG_DOT;
     }
 
-    public boolean IsOnADot(Character character) {
-        return isOnTheSameCell(character, DOT);
+    public boolean eatDot(PacMan pacMan) {
+        return eat(pacMan, DOT);
     }
 
-    public boolean IsOnBigDot(Character character) {
-        return isOnTheSameCell(character, BIG_DOT);
+    public boolean eatBigDot(PacMan pacMan) {
+        return eat(pacMan, BIG_DOT);
     }
 
-    private boolean isOnTheSameCell(Character character, int cellObject) {
-        int pacMansCell = getCharacterPosition(character);
-        return getCellValue(pacMansCell) == cellObject;
+    private boolean eat(PacMan pacMan, int eatable) {
+        int pacMansCell = getCharacterPosition(pacMan);
+        if (getCellValue(pacMansCell) == eatable) {
+            setCellValue(pacMansCell, EMPTY);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void draw(Canvas canvas) {

@@ -113,11 +113,8 @@ public class PacmanActivity extends ActionBarActivity {
         _eventManager.registerObserver(InitEvent.class, gameLogic.InitGameListener);
         _eventManager.registerObserver(DrawRequestEvent.class, gameLogic.DrawRequestListener);
 
-        _eventManager.registerObserver(DotEatenEvent.class, _labyrinth.DotEventListener);
         _eventManager.registerObserver(DotEatenEvent.class, DotEatenListener);
         _eventManager.registerObserver(BigDotEatenEvent.class, BigDotEatenListener);
-
-        _eventManager.registerObserver(BigDotEatenEvent.class, _labyrinth.BigDotEventListener);
 
         _eventManager.registerObserver(ChangeHitPointsEvent.class, ChangeHitPoints);
         _eventManager.registerObserver(PacManDirectionRequested.class, new InputHandler(pacMan, pacManStrategy).DirectionChangedListener);

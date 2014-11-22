@@ -41,10 +41,10 @@ public class GameLogicHandler {
     private void HandleAllCollisions() {
         // Handle here all possible collisions in the correct order
 
-        if (_labyrinth.IsOnADot(_pacMan)) {
+        if (_labyrinth.eatDot(_pacMan)) {
             _eventManager.fire(new DotEatenEvent(_pacMan.getCell()));
         }
-        if (_labyrinth.IsOnBigDot(_pacMan)) {
+        if (_labyrinth.eatBigDot(_pacMan)) {
             _eventManager.fire(new BigDotEatenEvent(_pacMan.getCell()));
         }
 
