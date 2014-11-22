@@ -60,7 +60,7 @@ public class Labyrinth {
                 if (java.lang.Character.isDigit(cellValue.charAt(0))) {
                     _layout[w][h] = Integer.parseInt(cellValue);
                 } else {
-                    _layout[w][h] = 0;
+                    _layout[w][h] = EMPTY;
                     setCharacterPosition(cellValue.charAt(0), getCell(h, w));
                 }
             }
