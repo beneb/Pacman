@@ -51,7 +51,7 @@ public class GameLogicHandler {
 
         if (_collisionDetection.PacManInteractWithAGhost(_pacMan, _characters)) {
 
-            // TODO detect if pac-man is immortal due to a eaten pill
+            // TODO: detect if pac-man is immortal due to a eaten energizer
             _eventManager.fire(new ChangeHitPointsEvent(false)); // reduce hit points
         }
     }

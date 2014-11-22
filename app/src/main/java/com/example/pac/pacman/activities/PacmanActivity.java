@@ -38,7 +38,17 @@ public class PacmanActivity extends ActionBarActivity {
     public EventListener<DotEatenEvent> DotEatenListener = new EventListener<DotEatenEvent>() {
         @Override
         public void onEvent(DotEatenEvent event) {
-            EventDotsScore++;
+            EventDotsScore += 10;
+            TextView score = (TextView) findViewById(R.id.score_text);
+            score.setText("" + EventDotsScore);
+        }
+    };
+
+
+    public EventListener<BigDotEatenEvent> BigDotEatenListener = new EventListener<BigDotEatenEvent>() {
+        @Override
+        public void onEvent(BigDotEatenEvent event) {
+            EventDotsScore += 50;
             TextView score = (TextView) findViewById(R.id.score_text);
             score.setText("" + EventDotsScore);
         }
@@ -105,6 +115,7 @@ public class PacmanActivity extends ActionBarActivity {
 
         _eventManager.registerObserver(DotEatenEvent.class, _labyrinth.DotEventListener);
         _eventManager.registerObserver(DotEatenEvent.class, DotEatenListener);
+        _eventManager.registerObserver(BigDotEatenEvent.class, BigDotEatenListener);
 
         _eventManager.registerObserver(BigDotEatenEvent.class, _labyrinth.BigDotEventListener);
 

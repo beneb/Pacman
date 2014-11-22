@@ -53,8 +53,10 @@ public class Labyrinth {
         @Override
         public void onEvent(BigDotEatenEvent event) {
             setCellValue(event.GetCell(), EMPTY);
+
             // TODO: eating big dot means something more, this event should be received by something more
             // ghosts should change strategy and color... etc.
+                // Viktor: This should be implemented in GameLogicHandler
         }
     };
 
