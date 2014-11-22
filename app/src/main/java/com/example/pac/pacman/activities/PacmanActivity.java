@@ -122,6 +122,7 @@ public class PacmanActivity extends ActionBarActivity {
         _eventManager.registerObserver(ChangeHitPointsEvent.class, ChangeHitPoints);
         _eventManager.registerObserver(PacManDirectionRequested.class, new InputHandler(pacMan, pacManStrategy).DirectionChangedListener);
         _eventManager.registerObserver(DotEatenEvent.class, new SoundHandler(this).PlaySoundForEatingADot);
+        _eventManager.registerObserver(BigDotEatenEvent.class, new SoundHandler(this).PlaySoundForEatingABigDot);
 
         return gameLogic;
     }
