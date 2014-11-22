@@ -5,7 +5,6 @@ import com.example.pac.pacman.event.ChangeHitPointsEvent;
 import com.example.pac.pacman.event.DotEatenEvent;
 import com.example.pac.pacman.event.DrawRequestEvent;
 import com.example.pac.pacman.event.EventListener;
-import com.example.pac.pacman.event.EventManager;
 import com.example.pac.pacman.event.IEventManager;
 import com.example.pac.pacman.event.InitEvent;
 import com.example.pac.pacman.event.InvalidateViewEvent;
@@ -42,10 +41,10 @@ public class GameLogicHandler {
     private void HandleAllCollisions() {
         // Handle here all possible collisions in the correct order
 
-        if (_collisionDetection.PacManCanEatADot(_pacMan)) {
+        if (_labyrinth.IsOnADot(_pacMan)) {
             _eventManager.fire(new DotEatenEvent(_pacMan.getCell()));
         }
-        if (_collisionDetection.PacManCanEatBigDot(_pacMan)) {
+        if (_labyrinth.IsOnBigDot(_pacMan)) {
             _eventManager.fire(new BigDotEatenEvent(_pacMan.getCell()));
         }
 

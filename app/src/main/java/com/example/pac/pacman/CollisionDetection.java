@@ -10,11 +10,6 @@ public class CollisionDetection {
         _labyrinth = labyrinth;
     }
 
-    public boolean PacManCanEatADot(PacMan pacMan) {
-        int pacMansCell = _labyrinth.getCharacterPosition(pacMan);
-        return _labyrinth.getCellValue(pacMansCell) == _labyrinth.DOT;
-    }
-
     public boolean PacManInteractWithAGhost(PacMan pacMan, List<Character> ghosts) {
         int pacMansCell = _labyrinth.getCharacterPosition(pacMan);
 
@@ -26,10 +21,5 @@ public class CollisionDetection {
         }
 
         return false;
-    }
-
-    public boolean PacManCanEatBigDot(PacMan pacMan) {
-        int pacMansCell = _labyrinth.getCharacterPosition(pacMan);
-        return _labyrinth.getCellValue(pacMansCell) == _labyrinth.BIG_DOT;
     }
 }

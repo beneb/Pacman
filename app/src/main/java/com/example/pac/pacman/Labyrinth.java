@@ -15,10 +15,10 @@ import java.util.Map;
 
 public class Labyrinth {
 
-    public final int DOT = 0;
-    public final int WALL = 1;
-    public final int EMPTY = 2;
-    public final int BIG_DOT = 3;
+    private final int DOT = 0;
+    private final int WALL = 1;
+    private final int EMPTY = 2;
+    private final int BIG_DOT = 3;
 
     private int _layout[][];
     private int _width;
@@ -180,7 +180,7 @@ public class Labyrinth {
         return getCell(row, col);
     }
 
-    public int getCellValue(int cell) {
+    private int getCellValue(int cell) {
         if (_width * _height > cell + 1) {
             int row = cell / _width;
             int col = cell % _width;
@@ -226,6 +226,19 @@ public class Labyrinth {
     private boolean canMoveForCell(int row, int col) {
         int cellValue = getCellValue(row, col);
         return cellValue == EMPTY || cellValue == DOT || cellValue == BIG_DOT;
+    }
+
+    public boolean IsOnADot(Character character) {
+        return isOnTheSameCell(character, DOT);
+    }
+
+    public boolean IsOnBigDot(Character character) {
+        return isOnTheSameCell(character, BIG_DOT);
+    }
+
+    private boolean isOnTheSameCell(Character character, int cellObject) {
+        int pacMansCell = getCharacterPosition(character);
+        return getCellValue(pacMansCell) == cellObject;
     }
 
     public void draw(Canvas canvas) {
