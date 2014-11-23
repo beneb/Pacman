@@ -266,81 +266,101 @@ public class Labyrinth {
         }
     }
 
-    public void draw(Canvas canvas) {
-        for (int col = 0; col < _width; col++) {
-            for (int row = 0; row < _height; row++) {
-                RectF cellBounds = getCellBounds(row, col);
-                if (getCellValue(row, col).isWall()) {
-                    drawWall(row, col, canvas);
-                }
-                if (getCellValue(row, col) == Item.DOT) {
-                    float startX = cellBounds.centerX();
-                    float startY = cellBounds.centerY();
-                    canvas.drawCircle(startX, startY, getDotSize(), _dot);
-                }
-                if (getCellValue(row, col) == Item.BIG_DOT) {
-                    float startX = cellBounds.centerX();
-                    float startY = cellBounds.centerY();
-                    canvas.drawCircle(startX, startY, getBigDotSize(), _big_dot);
-                }
-
-                //--Grid for Debugging
-                //float l = col * _cellSize + _labyrinthBounds.left;
-                //float t = row * _cellSize + _labyrinthBounds.top;
-                //canvas.drawRect(l, t, l + _cellSize, t + _cellSize, _debugPaint);
-            }
-        }
+    private RectF getCellBounds(int row, int col) {
+        return _bounds[row][col];
     }
 
-    private final RectF _drawRect = new RectF();
+    public RectF getCellBounds(int cellNum) {
+        int row = getCellRow(cellNum);
+        int col = getCellCol(cellNum);
+        return getCellBounds(row, col);
+    }
 
-    private void drawWall(int row, int col, Canvas canvas) {
-        RectF cellBounds = getCellBounds(row, col);
-        Item cell = getCellValue(row, col);
-        boolean wallLeft = getCellValue(row, col - 1).isWall();
-        boolean wallLeftTop = getCellValue(row - 1, col - 1).isWall();
-        boolean wallTop = getCellValue(row - 1, col).isWall();
-        boolean wallRightTop = getCellValue(row - 1, col + 1).isWall();
-        boolean wallRight = getCellValue(row, col + 1).isWall();
-        boolean wallRightBottom = getCellValue(row + 1, col + 1).isWall();
-        boolean wallBottom = getCellValue(row + 1, col).isWall();
-        boolean wallLeftBottom = getCellValue(row + 1, col - 1).isWall();
+    private final Presentation _presentation = new Presentation();
+    public Presentation getPresentation() {
+        return _presentation;
+    }
 
-        float smallShift = cellBounds.width() / 4;
-        float bigShift = 3 * smallShift;
+    /*
+     * To decouple the drawing aspect from the labyrinth
+     */
+    public class Presentation {
+        public void draw(Canvas canvas) {
+            for (int col = 0; col < _width; col++) {
+                for (int row = 0; row < _height; row++) {
+                    RectF cellBounds = getCellBounds(row, col);
+                    if (getCellValue(row, col).isWall()) {
+                        drawWall(row, col, canvas);
+                    } else if (getCellValue(row, col) == Item.DOT) {
+                        float startX = cellBounds.centerX();
+                        float startY = cellBounds.centerY();
+                        canvas.drawCircle(startX, startY, getDotSize(), _dot);
+                    } else if (getCellValue(row, col) == Item.BIG_DOT) {
+                        float startX = cellBounds.centerX();
+                        float startY = cellBounds.centerY();
+                        canvas.drawCircle(startX, startY, getBigDotSize(), _big_dot);
+                    }
 
-        if (cell == Item.HORIZONTAL_WALL || wallLeft && wallRight) {
-            float firstLine = cellBounds.top + smallShift;
-            float secondLine = cellBounds.top + bigShift;
-            if (!wallTop) {
-                canvas.drawLine(cellBounds.left, firstLine, cellBounds.right, firstLine, _wallPaint);
-            } else if (!wallLeftTop) {
-                drawRoundCorner(canvas, cellBounds.left, cellBounds.top, smallShift, 0);
-                drawRoundCorner(canvas, cellBounds.right - smallShift, cellBounds.top, smallShift, 90);
+                    //--Grid for Debugging
+                    //float l = col * _cellSize + _labyrinthBounds.left;
+                    //float t = row * _cellSize + _labyrinthBounds.top;
+                    //canvas.drawRect(l, t, l + _cellSize, t + _cellSize, _debugPaint);
+                }
             }
-            if (!wallBottom) {
-                canvas.drawLine(cellBounds.left, secondLine, cellBounds.right, secondLine, _wallPaint);
-            } else if (!wallLeftBottom) {
-                drawRoundCorner(canvas, cellBounds.right - smallShift, cellBounds.bottom - smallShift, smallShift, 180);
-                drawRoundCorner(canvas, cellBounds.left, cellBounds.bottom - smallShift, smallShift, 270);
-            }
-        } else if (wallTop && wallBottom) {
-            float firstLineX = cellBounds.left + smallShift;
-            float secondLineX = cellBounds.left + bigShift;
-            if (!wallLeft) {
-                canvas.drawLine(firstLineX, cellBounds.top, firstLineX, cellBounds.bottom, _wallPaint);
-            } else {
-                drawRoundCorner(canvas, cellBounds.left, cellBounds.top, smallShift, 0);
-                drawRoundCorner(canvas, cellBounds.left, cellBounds.bottom - smallShift, smallShift, 270);
-            }
-            if (!wallRight) {
-                canvas.drawLine(secondLineX, cellBounds.top, secondLineX, cellBounds.bottom, _wallPaint);
-            } else {
-                drawRoundCorner(canvas, cellBounds.right - smallShift, cellBounds.top, smallShift, 90);
-                drawRoundCorner(canvas, cellBounds.right - smallShift, cellBounds.bottom - smallShift, smallShift, 180);
-            }
-        } else {
-            if (wallLeft && wallTop) {
+        }
+
+        private final RectF _drawRect = new RectF();
+
+        private void drawWall(int row, int col, Canvas canvas) {
+            // seems to be very complex and not comprehensible
+            // TODO: will try to introduce custom wall types in layout
+            // this would allow to reduce ifs
+            // but the drawing logic still stays complex
+            RectF cellBounds = getCellBounds(row, col);
+            Item cell = getCellValue(row, col);
+            boolean wallLeft = getCellValue(row, col - 1).isWall();
+            boolean wallLeftTop = getCellValue(row - 1, col - 1).isWall();
+            boolean wallTop = getCellValue(row - 1, col).isWall();
+            boolean wallRightTop = getCellValue(row - 1, col + 1).isWall();
+            boolean wallRight = getCellValue(row, col + 1).isWall();
+            boolean wallRightBottom = getCellValue(row + 1, col + 1).isWall();
+            boolean wallBottom = getCellValue(row + 1, col).isWall();
+            boolean wallLeftBottom = getCellValue(row + 1, col - 1).isWall();
+
+            float smallShift = cellBounds.width() / 4;
+            float bigShift = 3 * smallShift;
+
+            if (cell == Item.HORIZONTAL_WALL || wallLeft && wallRight) {
+                float firstLine = cellBounds.top + smallShift;
+                float secondLine = cellBounds.top + bigShift;
+                if (!wallTop) {
+                    canvas.drawLine(cellBounds.left, firstLine, cellBounds.right, firstLine, _wallPaint);
+                } else if (!wallLeftTop) {
+                    drawRoundCorner(canvas, cellBounds.left, cellBounds.top, smallShift, 0);
+                    drawRoundCorner(canvas, cellBounds.right - smallShift, cellBounds.top, smallShift, 90);
+                }
+                if (!wallBottom) {
+                    canvas.drawLine(cellBounds.left, secondLine, cellBounds.right, secondLine, _wallPaint);
+                } else if (!wallLeftBottom) {
+                    drawRoundCorner(canvas, cellBounds.right - smallShift, cellBounds.bottom - smallShift, smallShift, 180);
+                    drawRoundCorner(canvas, cellBounds.left, cellBounds.bottom - smallShift, smallShift, 270);
+                }
+            } else if (wallTop && wallBottom) {
+                float firstLineX = cellBounds.left + smallShift;
+                float secondLineX = cellBounds.left + bigShift;
+                if (!wallLeft) {
+                    canvas.drawLine(firstLineX, cellBounds.top, firstLineX, cellBounds.bottom, _wallPaint);
+                } else {
+                    drawRoundCorner(canvas, cellBounds.left, cellBounds.top, smallShift, 0);
+                    drawRoundCorner(canvas, cellBounds.left, cellBounds.bottom - smallShift, smallShift, 270);
+                }
+                if (!wallRight) {
+                    canvas.drawLine(secondLineX, cellBounds.top, secondLineX, cellBounds.bottom, _wallPaint);
+                } else {
+                    drawRoundCorner(canvas, cellBounds.right - smallShift, cellBounds.top, smallShift, 90);
+                    drawRoundCorner(canvas, cellBounds.right - smallShift, cellBounds.bottom - smallShift, smallShift, 180);
+                }
+            } else if (wallLeft && wallTop) {
                 drawRoundCorner(canvas, cellBounds.left, cellBounds.top, bigShift, 0);
                 if (!wallLeftTop) {
                     drawRoundCorner(canvas, cellBounds.left, cellBounds.top, smallShift, 0);
@@ -396,54 +416,44 @@ public class Labyrinth {
                 canvas.drawArc(_drawRect, 270, 180, false, _wallPaint);
             }
         }
-    }
 
-    private void drawRoundCorner(Canvas canvas, float left, float top, float width, float angle) {
-        _drawRect.set(left, top, left + width, top + width);
-        canvas.drawArc(_drawRect, angle, 90, false, _wallPaint);
-        float left1 = _drawRect.left;
-        float left2 = _drawRect.left;
-        float top1 = _drawRect.top;
-        float top2 = _drawRect.top;
+        private void drawRoundCorner(Canvas canvas, float left, float top, float width, float angle) {
+            _drawRect.set(left, top, left + width, top + width);
+            canvas.drawArc(_drawRect, angle, 90, false, _wallPaint);
+            float left1 = _drawRect.left;
+            float left2 = _drawRect.left;
+            float top1 = _drawRect.top;
+            float top2 = _drawRect.top;
 
 
-        if (angle == 0) {
-            top1 = _drawRect.bottom;
-            left2 = _drawRect.right;
-        } else if (angle == 90) {
-            top1 = _drawRect.bottom;
-            left1 = _drawRect.left + _drawRect.width() / 2;
-        } else if (angle == 180) {
-            left1 = _drawRect.left + _drawRect.width() / 2;
-            top2 = _drawRect.top + _drawRect.height() / 2;
-        } else {
-            left2 = _drawRect.right;
-            top2 = _drawRect.top + _drawRect.height() / 2;
+            if (angle == 0) {
+                top1 = _drawRect.bottom;
+                left2 = _drawRect.right;
+            } else if (angle == 90) {
+                top1 = _drawRect.bottom;
+                left1 = _drawRect.left + _drawRect.width() / 2;
+            } else if (angle == 180) {
+                left1 = _drawRect.left + _drawRect.width() / 2;
+                top2 = _drawRect.top + _drawRect.height() / 2;
+            } else {
+                left2 = _drawRect.right;
+                top2 = _drawRect.top + _drawRect.height() / 2;
+            }
+            float right1 = left1 + _drawRect.width() / 2;
+            float right2 = left2;
+            float bottom1 = top1;
+            float bottom2 = top2 + _drawRect.height() / 2;
+
+            canvas.drawLine(left1, top1, right1, bottom1, _wallPaint);
+            canvas.drawLine(left2, top2, right2, bottom2, _wallPaint);
         }
-        float right1 = left1 + _drawRect.width() / 2;
-        float right2 = left2;
-        float bottom1 = top1;
-        float bottom2 = top2 + _drawRect.height() / 2;
 
-        canvas.drawLine(left1, top1, right1, bottom1, _wallPaint);
-        canvas.drawLine(left2, top2, right2, bottom2, _wallPaint);
-    }
+        private float getDotSize() {
+            return _cellSize / 14;
+        }
 
-    private float getDotSize() {
-        return _cellSize / 14;
-    }
-
-    private float getBigDotSize() {
-        return _cellSize / 4;
-    }
-
-    private RectF getCellBounds(int row, int col) {
-        return _bounds[row][col];
-    }
-
-    public RectF getCellBounds(int cellNum) {
-        int row = getCellRow(cellNum);
-        int col = getCellCol(cellNum);
-        return getCellBounds(row, col);
+        private float getBigDotSize() {
+            return _cellSize / 4;
+        }
     }
 }

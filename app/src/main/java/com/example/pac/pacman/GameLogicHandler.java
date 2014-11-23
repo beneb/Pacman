@@ -58,7 +58,7 @@ public class GameLogicHandler {
     public EventListener<DrawRequestEvent> DrawRequestListener = new EventListener<DrawRequestEvent>() {
         @Override
         public void onEvent(DrawRequestEvent event) {
-            _labyrinth.draw(event.getCanvas());
+            _labyrinth.getPresentation().draw(event.getCanvas());
             for (Character ch : _characters) {
                 ch.draw(event.getCanvas());
             }
