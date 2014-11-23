@@ -21,15 +21,16 @@ public class Labyrinth {
 
 
         private final int _value;
+
         Item(int value) {
             _value = value;
         }
 
-        public boolean isWall(){
+        public boolean isWall() {
             return this == ORDINAL_WALL || this == HORIZONTAL_WALL;
         }
 
-        public boolean isNotWall(){
+        public boolean isNotWall() {
             return this == EMPTY || this == DOT || this == BIG_DOT;
         }
 
@@ -48,6 +49,7 @@ public class Labyrinth {
     }
 
     private Item _layout[][];
+    private RectF _bounds[][];
     private int _width;
     private int _height;
     private float _cellSize;
@@ -58,10 +60,10 @@ public class Labyrinth {
         return _cellSize;
     }
 
-    private RectF _bounds;
+    private RectF _labyrinthBounds;
 
     public RectF getBounds() {
-        return _bounds;
+        return _labyrinthBounds;
     }
 
 
@@ -84,15 +86,15 @@ public class Labyrinth {
         String[] rows = state.trim().split(" ");
         _width = rows[0].length();
         _height = rows.length;
-        _layout = new Item[_width][_height];
-        for (int w = 0; w < _width; w++) {
-            for (int h = 0; h < _height; h++) {
-                String cellValue = rows[h].substring(w, w + 1);
+        _layout = new Item[_height][_width];
+        for (int row = 0; row < _height; row++) {
+            for (int col = 0; col < _width; col++) {
+                String cellValue = rows[row].substring(col, col + 1);
                 if (java.lang.Character.isDigit(cellValue.charAt(0))) {
-                    _layout[w][h] = Item.parse(Integer.parseInt(cellValue));
+                    _layout[row][col] = Item.parse(Integer.parseInt(cellValue));
                 } else {
-                    _layout[w][h] = Item.EMPTY;
-                    setCharacterPosition(cellValue.charAt(0), getCell(h, w));
+                    _layout[row][col] = Item.EMPTY;
+                    setCharacterPosition(cellValue.charAt(0), getCell(row, col));
                 }
             }
         }
@@ -120,10 +122,19 @@ public class Labyrinth {
         float height = bounds.height() / _height;
         _cellSize = Math.min(width, height);
         Log.i("Labyrinth", "Cell size: " + _cellSize);
-        _bounds = new RectF(bounds.left,
+        _labyrinthBounds = new RectF(bounds.left,
                 bounds.top,
                 bounds.left + _width * _cellSize,
                 bounds.top + _height * _cellSize);
+
+        _bounds = new RectF[_height][_width];
+        for (int row = 0; row < _height; row++) {
+            for (int col = 0; col < _width; col++) {
+                float startX = _cellSize * col + _labyrinthBounds.left;
+                float startY = _cellSize * row + _labyrinthBounds.top;
+                _bounds[row][col] = new RectF(startX, startY, startX + _cellSize, startY + _cellSize);
+            }
+        }
     }
 
     public void setCharacterPosition(Character ch, int cell) {
@@ -154,11 +165,11 @@ public class Labyrinth {
     }
 
     private int getRow(float y) {
-        return (int) ((y - _bounds.top) / _cellSize);
+        return (int) ((y - _labyrinthBounds.top) / _cellSize);
     }
 
     private int getCol(float x) {
-        return (int) ((x - _bounds.left) / _cellSize);
+        return (int) ((x - _labyrinthBounds.left) / _cellSize);
     }
 
     private int getCell(int row, int col) {
@@ -194,7 +205,7 @@ public class Labyrinth {
         if (_width * _height > cell + 1) {
             int row = cell / _width;
             int col = cell % _width;
-            return _layout[col][row];
+            return _layout[row][col];
         }
 
         return Item.EMPTY;
@@ -203,7 +214,7 @@ public class Labyrinth {
     public Item getCellValue(int row, int col) {
         return row < 0 || row >= _height || col < 0 || col >= _width
                 ? Item.EMPTY
-                : _layout[col][row];
+                : _layout[row][col];
     }
 
     private void setCellValue(int cellNum, Item value) {
@@ -211,7 +222,7 @@ public class Labyrinth {
         int row = getCellRow(cellNum);
 
         if (row >= 0 && row < _height && col >= 0 && col < _width) {
-            _layout[col][row] = value;
+            _layout[row][col] = value;
         }
     }
 
@@ -237,7 +248,9 @@ public class Labyrinth {
         return getCellValue(row, col).isNotWall();
     }
 
-    public boolean eatDot(PacMan pacMan) { return eat(pacMan, Item.DOT); }
+    public boolean eatDot(PacMan pacMan) {
+        return eat(pacMan, Item.DOT);
+    }
 
     public boolean eatBigDot(PacMan pacMan) {
         return eat(pacMan, Item.BIG_DOT);
@@ -272,12 +285,14 @@ public class Labyrinth {
                 }
 
                 //--Grid for Debugging
-                //float l = col * _cellSize + _bounds.left;
-                //float t = row * _cellSize + _bounds.top;
+                //float l = col * _cellSize + _labyrinthBounds.left;
+                //float t = row * _cellSize + _labyrinthBounds.top;
                 //canvas.drawRect(l, t, l + _cellSize, t + _cellSize, _debugPaint);
             }
         }
     }
+
+    private final RectF _drawRect = new RectF();
 
     private void drawWall(int row, int col, Canvas canvas) {
         RectF cellBounds = getCellBounds(row, col);
@@ -351,8 +366,8 @@ public class Labyrinth {
                 canvas.drawLine(firstLineX, cellBounds.top, firstLineX, cellBounds.top + cellBounds.height() / 2, _wallPaint);
                 canvas.drawLine(secondLineX, cellBounds.top, secondLineX, cellBounds.top + cellBounds.height() / 2, _wallPaint);
 
-                RectF bounds = new RectF(cellBounds.left + smallShift, cellBounds.top + cellBounds.height() / 2 - smallShift, cellBounds.right - smallShift, cellBounds.top + cellBounds.height() / 2 + smallShift);
-                canvas.drawArc(bounds, 0, 180, false, _wallPaint);
+                _drawRect.set(cellBounds.left + smallShift, cellBounds.top + cellBounds.height() / 2 - smallShift, cellBounds.right - smallShift, cellBounds.top + cellBounds.height() / 2 + smallShift);
+                canvas.drawArc(_drawRect, 0, 180, false, _wallPaint);
             } else if (wallRight) {
                 float firstLine = cellBounds.top + smallShift;
                 float secondLine = cellBounds.top + bigShift;
@@ -360,16 +375,16 @@ public class Labyrinth {
                 canvas.drawLine(cellBounds.left + cellBounds.height() / 2, firstLine, cellBounds.right, firstLine, _wallPaint);
                 canvas.drawLine(cellBounds.left + cellBounds.height() / 2, secondLine, cellBounds.right, secondLine, _wallPaint);
 
-                RectF bounds = new RectF(cellBounds.left + cellBounds.height() / 2 - smallShift, cellBounds.top + smallShift, cellBounds.left + cellBounds.height() / 2 + smallShift, cellBounds.bottom - smallShift);
-                canvas.drawArc(bounds, 90, 180, false, _wallPaint);
+                _drawRect.set(cellBounds.left + cellBounds.height() / 2 - smallShift, cellBounds.top + smallShift, cellBounds.left + cellBounds.height() / 2 + smallShift, cellBounds.bottom - smallShift);
+                canvas.drawArc(_drawRect, 90, 180, false, _wallPaint);
             } else if (wallBottom) {
                 float firstLineX = cellBounds.left + smallShift;
                 float secondLineX = cellBounds.left + bigShift;
                 canvas.drawLine(firstLineX, cellBounds.top + cellBounds.height() / 2, firstLineX, cellBounds.bottom, _wallPaint);
                 canvas.drawLine(secondLineX, cellBounds.top + cellBounds.height() / 2, secondLineX, cellBounds.bottom, _wallPaint);
 
-                RectF bounds = new RectF(cellBounds.left + smallShift, cellBounds.top + cellBounds.height() / 2 - smallShift, cellBounds.right - smallShift, cellBounds.top + cellBounds.height() / 2 + smallShift);
-                canvas.drawArc(bounds, 180, 180, false, _wallPaint);
+                _drawRect.set(cellBounds.left + smallShift, cellBounds.top + cellBounds.height() / 2 - smallShift, cellBounds.right - smallShift, cellBounds.top + cellBounds.height() / 2 + smallShift);
+                canvas.drawArc(_drawRect, 180, 180, false, _wallPaint);
             } else if (wallLeft) {
                 float firstLine = cellBounds.top + smallShift;
                 float secondLine = cellBounds.top + bigShift;
@@ -377,38 +392,38 @@ public class Labyrinth {
                 canvas.drawLine(cellBounds.left, firstLine, cellBounds.left + cellBounds.height() / 2, firstLine, _wallPaint);
                 canvas.drawLine(cellBounds.left, secondLine, cellBounds.left + cellBounds.height() / 2, secondLine, _wallPaint);
 
-                RectF bounds = new RectF(cellBounds.left + cellBounds.height() / 2 - smallShift, cellBounds.top + smallShift, cellBounds.left + cellBounds.height() / 2 + smallShift, cellBounds.bottom - smallShift);
-                canvas.drawArc(bounds, 270, 180, false, _wallPaint);
+                _drawRect.set(cellBounds.left + cellBounds.height() / 2 - smallShift, cellBounds.top + smallShift, cellBounds.left + cellBounds.height() / 2 + smallShift, cellBounds.bottom - smallShift);
+                canvas.drawArc(_drawRect, 270, 180, false, _wallPaint);
             }
         }
     }
 
     private void drawRoundCorner(Canvas canvas, float left, float top, float width, float angle) {
-        RectF bounds = new RectF(left, top, left + width, top + width);
-        canvas.drawArc(bounds, angle, 90, false, _wallPaint);
-        float left1 = bounds.left;
-        float left2 = bounds.left;
-        float top1 = bounds.top;
-        float top2 = bounds.top;
+        _drawRect.set(left, top, left + width, top + width);
+        canvas.drawArc(_drawRect, angle, 90, false, _wallPaint);
+        float left1 = _drawRect.left;
+        float left2 = _drawRect.left;
+        float top1 = _drawRect.top;
+        float top2 = _drawRect.top;
 
 
         if (angle == 0) {
-            top1 = bounds.bottom;
-            left2 = bounds.right;
+            top1 = _drawRect.bottom;
+            left2 = _drawRect.right;
         } else if (angle == 90) {
-            top1 = bounds.bottom;
-            left1 = bounds.left + bounds.width() / 2;
+            top1 = _drawRect.bottom;
+            left1 = _drawRect.left + _drawRect.width() / 2;
         } else if (angle == 180) {
-            left1 = bounds.left + bounds.width() / 2;
-            top2 = bounds.top + bounds.height() / 2;
+            left1 = _drawRect.left + _drawRect.width() / 2;
+            top2 = _drawRect.top + _drawRect.height() / 2;
         } else {
-            left2 = bounds.right;
-            top2 = bounds.top + bounds.height() / 2;
+            left2 = _drawRect.right;
+            top2 = _drawRect.top + _drawRect.height() / 2;
         }
-        float right1 = left1 + bounds.width() / 2;
+        float right1 = left1 + _drawRect.width() / 2;
         float right2 = left2;
         float bottom1 = top1;
-        float bottom2 = top2 + bounds.height() / 2;
+        float bottom2 = top2 + _drawRect.height() / 2;
 
         canvas.drawLine(left1, top1, right1, bottom1, _wallPaint);
         canvas.drawLine(left2, top2, right2, bottom2, _wallPaint);
@@ -423,9 +438,7 @@ public class Labyrinth {
     }
 
     private RectF getCellBounds(int row, int col) {
-        float startX = _cellSize * col + _bounds.left;
-        float startY = _cellSize * row + _bounds.top;
-        return new RectF(startX, startY, startX + _cellSize, startY + _cellSize);
+        return _bounds[row][col];
     }
 
     public RectF getCellBounds(int cellNum) {
