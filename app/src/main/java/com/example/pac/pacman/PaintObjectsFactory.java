@@ -4,10 +4,12 @@ import android.graphics.Paint;
 
 public class PaintObjectsFactory {
     static Paint createWall(int color) {
-        Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
+        // no anti aliasing for this paint
+        // wall drawing is currently not optimized for anti aliased lines
+        Paint p = new Paint();
         p.setStyle(Paint.Style.STROKE);
         p.setColor(color);
-        p.setStrokeWidth(5f);
+        p.setStrokeWidth(4f);
         return p;
     }
 
