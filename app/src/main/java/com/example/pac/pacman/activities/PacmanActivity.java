@@ -33,24 +33,27 @@ import com.example.pac.pacman.views.GameplayView;
 import java.util.ArrayList;
 
 public class PacmanActivity extends ActionBarActivity {
-    private int EventDotsScore;
+    private int _score;
 
     public EventListener<DotEatenEvent> DotEatenListener = new EventListener<DotEatenEvent>() {
         @Override
         public void onEvent(DotEatenEvent event) {
-            EventDotsScore += 10;
-            TextView score = (TextView) findViewById(R.id.score_text);
-            score.setText("" + EventDotsScore);
+            setScore(_score += 10);
         }
+
+
     };
+
+    private void setScore(int score) {
+        TextView v = (TextView) findViewById(R.id.score_text);
+        v.setText("" + score);
+    }
 
 
     public EventListener<BigDotEatenEvent> BigDotEatenListener = new EventListener<BigDotEatenEvent>() {
         @Override
         public void onEvent(BigDotEatenEvent event) {
-            EventDotsScore += 50;
-            TextView score = (TextView) findViewById(R.id.score_text);
-            score.setText("" + EventDotsScore);
+            setScore(_score += 50);
         }
     };
 
@@ -82,12 +85,17 @@ public class PacmanActivity extends ActionBarActivity {
         GameplayView gameplayView = (GameplayView) findViewById(R.id.gameplay_view);
         gameplayView.init(_eventManager);
 
-        _state.load();
+        initState();
 
         GameLogicHandler gameLogic = createGameObjects();
 
         _frameLoop = new FrameLoop(gameLogic);
         _frameLoop.Start();
+    }
+
+    private void initState() {
+        _state.load();
+        _score = _state._score;
     }
 
     @Override
@@ -102,8 +110,7 @@ public class PacmanActivity extends ActionBarActivity {
     private GameLogicHandler createGameObjects() {
         _labyrinth = new Labyrinth(_state.getLabyrinthState(), getResources());
 
-        TextView score = (TextView) findViewById(R.id.score_text);
-        score.setText("" + _state.getScore());
+        setScore(_state.getScore());
 
         IMoveStrategy pacManStrategy = new PacManMoveStrategy(_labyrinth);
         PacMan pacMan = new PacMan(getResources().getColor(R.color.pacman), pacManStrategy, _labyrinth);
