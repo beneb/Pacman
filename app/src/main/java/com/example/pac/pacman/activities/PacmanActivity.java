@@ -102,6 +102,9 @@ public class PacmanActivity extends ActionBarActivity {
     private GameLogicHandler createGameObjects() {
         _labyrinth = new Labyrinth(_state.getLabyrinthState(), getResources());
 
+        TextView score = (TextView) findViewById(R.id.score_text);
+        score.setText("" + _state.getScore());
+
         IMoveStrategy pacManStrategy = new PacManMoveStrategy(_labyrinth);
         PacMan pacMan = new PacMan(getResources().getColor(R.color.pacman), pacManStrategy, _labyrinth);
 
@@ -128,14 +131,19 @@ public class PacmanActivity extends ActionBarActivity {
 
     class State {
         public static final String RESUME_ACTION = "RESUME";
-
         private static final String SETTINGS = "SETTINGS";
         private static final String LABYRINTH_STATE = "LABYRINTH_STATE";
+        private static final String SCORE = "SCORE";
 
         private String _labyrinthState;
+        private int _score;
 
         public String getLabyrinthState() {
             return _labyrinthState;
+        }
+
+        public int getScore() {
+            return _score;
         }
 
         private void load() {
@@ -145,7 +153,7 @@ public class PacmanActivity extends ActionBarActivity {
             if (RESUME_ACTION.equals(action)) {
                 SharedPreferences settings = getSharedPreferences(SETTINGS, 0);
                 _labyrinthState = settings.getString(LABYRINTH_STATE, _labyrinthState);
-                // TODO load score
+                _score = settings.getInt(SCORE, _score);
             }
         }
 
@@ -154,6 +162,9 @@ public class PacmanActivity extends ActionBarActivity {
             SharedPreferences.Editor editor = settings.edit();
             _labyrinthState = labyrinth.getState();
             editor.putString(LABYRINTH_STATE, _labyrinthState);
+            TextView view =  (TextView) findViewById(R.id.score_text);
+            _score = Integer.parseInt(view.getText().toString());
+            editor.putInt(SCORE, _score);
             editor.apply();
         }
     }
