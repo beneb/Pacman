@@ -12,12 +12,42 @@ import java.util.Map;
 
 public class Labyrinth {
 
-    private final int DOT = 0;
-    private final int WALL = 1;
-    private final int EMPTY = 2;
-    private final int BIG_DOT = 3;
+    enum Item {
+        EMPTY(0),
+        ORDINAL_WALL(1),
+        HORIZONTAL_WALL(4),
+        DOT(2),
+        BIG_DOT(3);
 
-    private int _layout[][];
+
+        private final int _value;
+        Item(int value) {
+            _value = value;
+        }
+
+        public boolean isWall(){
+            return this == ORDINAL_WALL || this == HORIZONTAL_WALL;
+        }
+
+        public boolean isNotWall(){
+            return this == EMPTY || this == DOT || this == BIG_DOT;
+        }
+
+        public static Item parse(int val) {
+            for (Item i : values()) {
+                if (i._value == val) {
+                    return i;
+                }
+            }
+            return EMPTY;
+        }
+
+        public int asInt() {
+            return _value;
+        }
+    }
+
+    private Item _layout[][];
     private int _width;
     private int _height;
     private float _cellSize;
@@ -54,14 +84,14 @@ public class Labyrinth {
         String[] rows = state.trim().split(" ");
         _width = rows[0].length();
         _height = rows.length;
-        _layout = new int[_width][_height];
+        _layout = new Item[_width][_height];
         for (int w = 0; w < _width; w++) {
             for (int h = 0; h < _height; h++) {
                 String cellValue = rows[h].substring(w, w + 1);
                 if (java.lang.Character.isDigit(cellValue.charAt(0))) {
-                    _layout[w][h] = Integer.parseInt(cellValue);
+                    _layout[w][h] = Item.parse(Integer.parseInt(cellValue));
                 } else {
-                    _layout[w][h] = EMPTY;
+                    _layout[w][h] = Item.EMPTY;
                     setCharacterPosition(cellValue.charAt(0), getCell(h, w));
                 }
             }
@@ -77,7 +107,7 @@ public class Labyrinth {
                 if (id != null) {
                     sb.append(id);
                 } else {
-                    sb.append(getCellValue(row, col));
+                    sb.append(getCellValue(row, col).asInt());
                 }
             }
             sb.append(" ");
@@ -160,23 +190,23 @@ public class Labyrinth {
         return getCell(row, col);
     }
 
-    private int getCellValue(int cell) {
+    private Item getCellValue(int cell) {
         if (_width * _height > cell + 1) {
             int row = cell / _width;
             int col = cell % _width;
             return _layout[col][row];
         }
 
-        return 0;
+        return Item.EMPTY;
     }
 
-    public int getCellValue(int row, int col) {
+    public Item getCellValue(int row, int col) {
         return row < 0 || row >= _height || col < 0 || col >= _width
-                ? 0
+                ? Item.EMPTY
                 : _layout[col][row];
     }
 
-    private void setCellValue(int cellNum, int value) {
+    private void setCellValue(int cellNum, Item value) {
         int col = getCellCol(cellNum);
         int row = getCellRow(cellNum);
 
@@ -204,22 +234,19 @@ public class Labyrinth {
     }
 
     private boolean canMoveForCell(int row, int col) {
-        int cellValue = getCellValue(row, col);
-        return cellValue == EMPTY || cellValue == DOT || cellValue == BIG_DOT;
+        return getCellValue(row, col).isNotWall();
     }
 
-    public boolean eatDot(PacMan pacMan) {
-        return eat(pacMan, DOT);
-    }
+    public boolean eatDot(PacMan pacMan) { return eat(pacMan, Item.DOT); }
 
     public boolean eatBigDot(PacMan pacMan) {
-        return eat(pacMan, BIG_DOT);
+        return eat(pacMan, Item.BIG_DOT);
     }
 
-    private boolean eat(PacMan pacMan, int eatable) {
+    private boolean eat(PacMan pacMan, Item eatable) {
         int pacMansCell = getCharacterPosition(pacMan);
         if (getCellValue(pacMansCell) == eatable) {
-            setCellValue(pacMansCell, EMPTY);
+            setCellValue(pacMansCell, Item.EMPTY);
             return true;
         } else {
             return false;
@@ -230,15 +257,15 @@ public class Labyrinth {
         for (int col = 0; col < _width; col++) {
             for (int row = 0; row < _height; row++) {
                 RectF cellBounds = getCellBounds(row, col);
-                if (getCellValue(row, col) == WALL) {
+                if (getCellValue(row, col).isWall()) {
                     drawWall(row, col, canvas);
                 }
-                if (getCellValue(row, col) == DOT) {
+                if (getCellValue(row, col) == Item.DOT) {
                     float startX = cellBounds.centerX();
                     float startY = cellBounds.centerY();
                     canvas.drawCircle(startX, startY, getDotSize(), _dot);
                 }
-                if (getCellValue(row, col) == BIG_DOT) {
+                if (getCellValue(row, col) == Item.BIG_DOT) {
                     float startX = cellBounds.centerX();
                     float startY = cellBounds.centerY();
                     canvas.drawCircle(startX, startY, getBigDotSize(), _big_dot);
@@ -254,70 +281,71 @@ public class Labyrinth {
 
     private void drawWall(int row, int col, Canvas canvas) {
         RectF cellBounds = getCellBounds(row, col);
-        int cellLeft = getCellValue(row, col - 1);
-        int cellLeftTop = getCellValue(row - 1, col - 1);
-        int cellTop = getCellValue(row - 1, col);
-        int cellRightTop = getCellValue(row - 1, col + 1);
-        int cellRight = getCellValue(row, col + 1);
-        int cellRightBottom = getCellValue(row + 1, col + 1);
-        int cellBottom = getCellValue(row + 1, col);
-        int cellLeftBottom = getCellValue(row + 1, col - 1);
+        Item cell = getCellValue(row, col);
+        boolean wallLeft = getCellValue(row, col - 1).isWall();
+        boolean wallLeftTop = getCellValue(row - 1, col - 1).isWall();
+        boolean wallTop = getCellValue(row - 1, col).isWall();
+        boolean wallRightTop = getCellValue(row - 1, col + 1).isWall();
+        boolean wallRight = getCellValue(row, col + 1).isWall();
+        boolean wallRightBottom = getCellValue(row + 1, col + 1).isWall();
+        boolean wallBottom = getCellValue(row + 1, col).isWall();
+        boolean wallLeftBottom = getCellValue(row + 1, col - 1).isWall();
 
         float smallShift = cellBounds.width() / 4;
         float bigShift = 3 * smallShift;
 
-        if (cellLeft == WALL && cellRight == WALL) {
+        if (cell == Item.HORIZONTAL_WALL || wallLeft && wallRight) {
             float firstLine = cellBounds.top + smallShift;
             float secondLine = cellBounds.top + bigShift;
-            if (cellTop != WALL) {
+            if (!wallTop) {
                 canvas.drawLine(cellBounds.left, firstLine, cellBounds.right, firstLine, _wallPaint);
-            } else if (cellLeftTop != WALL) {
+            } else if (!wallLeftTop) {
                 drawRoundCorner(canvas, cellBounds.left, cellBounds.top, smallShift, 0);
                 drawRoundCorner(canvas, cellBounds.right - smallShift, cellBounds.top, smallShift, 90);
             }
-            if (cellBottom != WALL) {
+            if (!wallBottom) {
                 canvas.drawLine(cellBounds.left, secondLine, cellBounds.right, secondLine, _wallPaint);
-            } else if (cellLeftBottom != WALL) {
+            } else if (!wallLeftBottom) {
                 drawRoundCorner(canvas, cellBounds.right - smallShift, cellBounds.bottom - smallShift, smallShift, 180);
                 drawRoundCorner(canvas, cellBounds.left, cellBounds.bottom - smallShift, smallShift, 270);
             }
-        } else if (cellTop == WALL && cellBottom == WALL) {
+        } else if (wallTop && wallBottom) {
             float firstLineX = cellBounds.left + smallShift;
             float secondLineX = cellBounds.left + bigShift;
-            if (cellLeft != WALL) {
+            if (!wallLeft) {
                 canvas.drawLine(firstLineX, cellBounds.top, firstLineX, cellBounds.bottom, _wallPaint);
             } else {
                 drawRoundCorner(canvas, cellBounds.left, cellBounds.top, smallShift, 0);
                 drawRoundCorner(canvas, cellBounds.left, cellBounds.bottom - smallShift, smallShift, 270);
             }
-            if (cellRight != WALL) {
+            if (!wallRight) {
                 canvas.drawLine(secondLineX, cellBounds.top, secondLineX, cellBounds.bottom, _wallPaint);
             } else {
                 drawRoundCorner(canvas, cellBounds.right - smallShift, cellBounds.top, smallShift, 90);
                 drawRoundCorner(canvas, cellBounds.right - smallShift, cellBounds.bottom - smallShift, smallShift, 180);
             }
         } else {
-            if (cellLeft == WALL && cellTop == WALL) {
+            if (wallLeft && wallTop) {
                 drawRoundCorner(canvas, cellBounds.left, cellBounds.top, bigShift, 0);
-                if (cellLeftTop != WALL) {
+                if (!wallLeftTop) {
                     drawRoundCorner(canvas, cellBounds.left, cellBounds.top, smallShift, 0);
                 }
-            } else if (cellTop == WALL && cellRight == WALL) {
+            } else if (wallTop && wallRight) {
                 drawRoundCorner(canvas, cellBounds.right - bigShift, cellBounds.top, bigShift, 90);
-                if (cellRightTop != WALL) {
+                if (!wallRightTop) {
                     drawRoundCorner(canvas, cellBounds.right - smallShift, cellBounds.top, smallShift, 90);
                 }
-            } else if (cellRight == WALL && cellBottom == WALL) {
+            } else if (wallRight && wallBottom) {
                 drawRoundCorner(canvas, cellBounds.right - bigShift, cellBounds.bottom - bigShift, bigShift, 180);
-                if (cellRightBottom != WALL) {
+                if (!wallRightBottom) {
                     drawRoundCorner(canvas, cellBounds.right - smallShift, cellBounds.bottom - smallShift, smallShift, 180);
                 }
-            } else if (cellBottom == WALL && cellLeft == WALL) {
+            } else if (wallBottom && wallLeft) {
                 drawRoundCorner(canvas, cellBounds.left, cellBounds.bottom - bigShift, bigShift, 270);
-                if (cellLeftBottom != WALL) {
+                if (!wallLeftBottom) {
                     drawRoundCorner(canvas, cellBounds.left, cellBounds.bottom - smallShift, smallShift, 270);
                 }
-            } else if (cellTop == WALL) {
+            } else if (wallTop) {
                 float firstLineX = cellBounds.left + smallShift;
                 float secondLineX = cellBounds.left + bigShift;
                 canvas.drawLine(firstLineX, cellBounds.top, firstLineX, cellBounds.top + cellBounds.height() / 2, _wallPaint);
@@ -325,7 +353,7 @@ public class Labyrinth {
 
                 RectF bounds = new RectF(cellBounds.left + smallShift, cellBounds.top + cellBounds.height() / 2 - smallShift, cellBounds.right - smallShift, cellBounds.top + cellBounds.height() / 2 + smallShift);
                 canvas.drawArc(bounds, 0, 180, false, _wallPaint);
-            } else if (cellRight == WALL) {
+            } else if (wallRight) {
                 float firstLine = cellBounds.top + smallShift;
                 float secondLine = cellBounds.top + bigShift;
 
@@ -334,7 +362,7 @@ public class Labyrinth {
 
                 RectF bounds = new RectF(cellBounds.left + cellBounds.height() / 2 - smallShift, cellBounds.top + smallShift, cellBounds.left + cellBounds.height() / 2 + smallShift, cellBounds.bottom - smallShift);
                 canvas.drawArc(bounds, 90, 180, false, _wallPaint);
-            } else if (cellBottom == WALL) {
+            } else if (wallBottom) {
                 float firstLineX = cellBounds.left + smallShift;
                 float secondLineX = cellBounds.left + bigShift;
                 canvas.drawLine(firstLineX, cellBounds.top + cellBounds.height() / 2, firstLineX, cellBounds.bottom, _wallPaint);
@@ -342,7 +370,7 @@ public class Labyrinth {
 
                 RectF bounds = new RectF(cellBounds.left + smallShift, cellBounds.top + cellBounds.height() / 2 - smallShift, cellBounds.right - smallShift, cellBounds.top + cellBounds.height() / 2 + smallShift);
                 canvas.drawArc(bounds, 180, 180, false, _wallPaint);
-            } else if (cellLeft == WALL) {
+            } else if (wallLeft) {
                 float firstLine = cellBounds.top + smallShift;
                 float secondLine = cellBounds.top + bigShift;
 
@@ -369,18 +397,18 @@ public class Labyrinth {
             left2 = bounds.right;
         } else if (angle == 90) {
             top1 = bounds.bottom;
-            left1 = bounds.left + bounds.width() / 2 - 1;
+            left1 = bounds.left + bounds.width() / 2;
         } else if (angle == 180) {
-            left1 = bounds.left + bounds.width() / 2 - 1;
-            top2 = bounds.top + bounds.height() / 2 - 1;
+            left1 = bounds.left + bounds.width() / 2;
+            top2 = bounds.top + bounds.height() / 2;
         } else {
             left2 = bounds.right;
-            top2 = bounds.top + bounds.height() / 2 - 1;
+            top2 = bounds.top + bounds.height() / 2;
         }
-        float right1 = left1 + bounds.width() / 2 + 1;
+        float right1 = left1 + bounds.width() / 2;
         float right2 = left2;
         float bottom1 = top1;
-        float bottom2 = top2 + bounds.height() / 2 + 1;
+        float bottom2 = top2 + bounds.height() / 2;
 
         canvas.drawLine(left1, top1, right1, bottom1, _wallPaint);
         canvas.drawLine(left2, top2, right2, bottom2, _wallPaint);
