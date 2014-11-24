@@ -6,5 +6,10 @@
     <string name="title_activity_pacman">PacmanActivity</string>
     <string name="menu_new_game">New Game</string>
     <string name="menu_resume">Resume</string>
+    <string name="menu_highScores">Highscores</string>
     <string name="scoreLabel">Score:</string>
+    <string name="title_activity_high_scores">HighScoresActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="highScores">Highscores</string>
+
 </resources>

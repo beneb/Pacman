@@ -20,6 +20,10 @@
             android:name=".activities.PacmanActivity"
             android:label="@string/title_activity_pacman" >
         </activity>
+        <activity
+            android:name=".activities.HighScoresActivity"
+            android:label="@string/title_activity_high_scores" >
+        </activity>
     </application>
 
 </manifest>

@@ -1,11 +1,9 @@
 package com.example.pac.pacman.activities;
 
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
-import android.widget.TextView;
 
 import com.example.pac.pacman.R;
 import com.example.pac.pacman.util.Fonts;
@@ -21,6 +19,7 @@ public class StartActivity extends ActionBarActivity {
         Fonts.setPacManFont(this, R.id.caption);
         Fonts.setRegularFont(this, R.id.new_game);
         Fonts.setRegularFont(this, R.id.resume);
+        Fonts.setRegularFont(this, R.id.highScores);
     }
 
 
@@ -32,5 +31,9 @@ public class StartActivity extends ActionBarActivity {
         Intent resumeIntent = new Intent(this, PacmanActivity.class);
         resumeIntent.setAction(PacmanActivity.State.RESUME_ACTION);
         startActivity(resumeIntent);
+    }
+    public void buttonHighScoresClick(View v) {
+        Intent highScores = new Intent(this, HighScoresActivity.class);
+        startActivity(highScores);
     }
 }

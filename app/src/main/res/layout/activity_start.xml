@@ -49,6 +49,16 @@
             android:textColor="@color/foreground"
             android:textSize="@dimen/menu_size"
             android:layout_gravity="center_horizontal" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/menu_highScores"
+            android:id="@+id/highScores"
+            android:onClick="buttonHighScoresClick"
+            android:background="@color/background"
+            android:textColor="@color/foreground"
+            android:textSize="@dimen/menu_size"
+            android:layout_gravity="center_horizontal" />
     </LinearLayout>
 
 </RelativeLayout>
