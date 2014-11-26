@@ -40,15 +40,12 @@ public class PacmanActivity extends ActionBarActivity {
         public void onEvent(DotEatenEvent event) {
             setScore(_score += 10);
         }
-
-
     };
 
     private void setScore(int score) {
         TextView v = (TextView) findViewById(R.id.score_text);
         v.setText("" + score);
     }
-
 
     public EventListener<BigDotEatenEvent> BigDotEatenListener = new EventListener<BigDotEatenEvent>() {
         @Override
@@ -119,6 +116,7 @@ public class PacmanActivity extends ActionBarActivity {
         _characters.addAll(GhostRepository.CreateGhosts(getResources(), _labyrinth));
 
         GameLogicHandler gameLogic = new GameLogicHandler(new CollisionDetection(_labyrinth), pacMan, _eventManager, _characters, _labyrinth);
+        SoundHandler soundHandler = new SoundHandler(this);
 
         _eventManager.registerObserver(InitEvent.class, gameLogic.InitGameListener);
         _eventManager.registerObserver(DrawRequestEvent.class, gameLogic.DrawRequestListener);
@@ -128,8 +126,8 @@ public class PacmanActivity extends ActionBarActivity {
 
         _eventManager.registerObserver(ChangeHitPointsEvent.class, ChangeHitPoints);
         _eventManager.registerObserver(PacManDirectionRequested.class, new InputHandler(pacMan, pacManStrategy).DirectionChangedListener);
-        _eventManager.registerObserver(DotEatenEvent.class, new SoundHandler(this).PlaySoundForEatingADot);
-        _eventManager.registerObserver(BigDotEatenEvent.class, new SoundHandler(this).PlaySoundForEatingABigDot);
+        _eventManager.registerObserver(DotEatenEvent.class, soundHandler.PlaySoundForEatingADot);
+        _eventManager.registerObserver(BigDotEatenEvent.class, soundHandler.PlaySoundForEatingABigDot);
 
         return gameLogic;
     }
