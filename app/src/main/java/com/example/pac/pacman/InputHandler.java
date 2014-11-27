@@ -3,8 +3,7 @@ package com.example.pac.pacman;
 import android.graphics.PointF;
 
 import com.example.pac.pacman.event.EventListener;
-import com.example.pac.pacman.event.EventManager;
-import com.example.pac.pacman.event.PacManDirectionRequested;
+import com.example.pac.pacman.event.PacManDirectionRequestEvent;
 
 public class InputHandler {
 
@@ -16,9 +15,9 @@ public class InputHandler {
         _pacManStrategy = (PacManMoveStrategy) pacManMoveStrategy;
     }
 
-    public EventListener<PacManDirectionRequested> DirectionChangedListener = new EventListener<PacManDirectionRequested>() {
+    public EventListener<PacManDirectionRequestEvent> DirectionChangedListener = new EventListener<PacManDirectionRequestEvent>() {
         @Override
-        public void onEvent(PacManDirectionRequested event) {
+        public void onEvent(PacManDirectionRequestEvent event) {
 
             PointF curPos = _pacMan.getPosition();
             if (Math.abs(event.getNewX() - curPos.x) > Math.abs(event.getNewY() - curPos.y)) { // horizontal move

@@ -1,9 +1,9 @@
 package com.example.pac.pacman.event;
 
-public class PacManDirectionRequested {
+public class PacManDirectionRequestEvent {
     private float _x, _y;
 
-    public PacManDirectionRequested(float newX, float newY) {
+    public PacManDirectionRequestEvent(float newX, float newY) {
         _x = newX;
         _y = newY;
     }

@@ -26,7 +26,7 @@ import com.example.pac.pacman.event.EventListener;
 import com.example.pac.pacman.event.EventManager;
 import com.example.pac.pacman.event.IEventManager;
 import com.example.pac.pacman.event.InitEvent;
-import com.example.pac.pacman.event.PacManDirectionRequested;
+import com.example.pac.pacman.event.PacManDirectionRequestEvent;
 import com.example.pac.pacman.util.Fonts;
 import com.example.pac.pacman.views.GameplayView;
 
@@ -125,7 +125,7 @@ public class PacmanActivity extends ActionBarActivity {
         _eventManager.registerObserver(BigDotEatenEvent.class, BigDotEatenListener);
 
         _eventManager.registerObserver(ChangeHitPointsEvent.class, ChangeHitPoints);
-        _eventManager.registerObserver(PacManDirectionRequested.class, new InputHandler(pacMan, pacManStrategy).DirectionChangedListener);
+        _eventManager.registerObserver(PacManDirectionRequestEvent.class, new InputHandler(pacMan, pacManStrategy).DirectionChangedListener);
         _eventManager.registerObserver(DotEatenEvent.class, soundHandler.PlaySoundForEatingADot);
         _eventManager.registerObserver(BigDotEatenEvent.class, soundHandler.PlaySoundForEatingABigDot);
 
