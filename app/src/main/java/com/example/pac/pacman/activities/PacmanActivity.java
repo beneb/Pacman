@@ -22,6 +22,8 @@ import com.example.pac.pacman.event.BigDotEatenEvent;
 import com.example.pac.pacman.event.ChangeHitPointsEvent;
 import com.example.pac.pacman.event.DotEatenEvent;
 import com.example.pac.pacman.event.DrawRequestEvent;
+import com.example.pac.pacman.event.EnergizerEndsEvent;
+import com.example.pac.pacman.event.EnergizerWillBeRunningOutEvent;
 import com.example.pac.pacman.event.EventListener;
 import com.example.pac.pacman.event.EventManager;
 import com.example.pac.pacman.event.IEventManager;
@@ -35,17 +37,36 @@ import java.util.ArrayList;
 public class PacmanActivity extends ActionBarActivity {
     private int _score;
 
+    public EventListener<BigDotEatenEvent> EnergizerStartsListener =
+            new EventListener<BigDotEatenEvent>() {
+                @Override
+                public void onEvent(BigDotEatenEvent event) {
+                    setInfoLabel("Superman!", Color.BLUE);
+                }
+            };
+
+    public EventListener<EnergizerWillBeRunningOutEvent> EnergizerWillBeRunningOutListener =
+            new EventListener<EnergizerWillBeRunningOutEvent>() {
+        @Override
+        public void onEvent(EnergizerWillBeRunningOutEvent event) {
+            setInfoLabel("Hurry up!", Color.YELLOW);
+        }
+    };
+
+    public EventListener<EnergizerEndsEvent> EnergizerEndsListener =
+            new EventListener<EnergizerEndsEvent>() {
+                @Override
+                public void onEvent(EnergizerEndsEvent event) {
+                    setInfoLabel("", Color.BLACK);
+                }
+            };
+
     public EventListener<DotEatenEvent> DotEatenListener = new EventListener<DotEatenEvent>() {
         @Override
         public void onEvent(DotEatenEvent event) {
             setScore(_score += 10);
         }
     };
-
-    private void setScore(int score) {
-        TextView v = (TextView) findViewById(R.id.score_text);
-        v.setText("" + score);
-    }
 
     public EventListener<BigDotEatenEvent> BigDotEatenListener = new EventListener<BigDotEatenEvent>() {
         @Override
@@ -58,11 +79,20 @@ public class PacmanActivity extends ActionBarActivity {
         @Override
         public void onEvent(ChangeHitPointsEvent event) {
             boolean pacManWasHit = !event.IncreaseHitPoints();
-            final TextView ouchTxt = (TextView) findViewById(R.id.ouchTextView);
-            ouchTxt.setTextColor(Color.RED);
-            ouchTxt.setText(pacManWasHit ? "OUCH!!!" : "");
+            setInfoLabel(pacManWasHit ? "OUCH!!!" : "", Color.RED);
         }
     };
+
+    private void setScore(int score) {
+        TextView v = (TextView) findViewById(R.id.score_text);
+        v.setText("" + score);
+    }
+
+    private void setInfoLabel(String text, int color) {
+        final TextView ouchTxt = (TextView) findViewById(R.id.ouchTextView);
+        ouchTxt.setTextColor(color);
+        ouchTxt.setText(text);
+    }
 
     private IEventManager _eventManager = new EventManager();
     private FrameLoop _frameLoop;
@@ -115,7 +145,8 @@ public class PacmanActivity extends ActionBarActivity {
         ArrayList<Character> _characters = new ArrayList<Character>();
         _characters.addAll(GhostRepository.CreateGhosts(getResources(), _labyrinth));
 
-        GameLogicHandler gameLogic = new GameLogicHandler(new CollisionDetection(_labyrinth), pacMan, _eventManager, _characters, _labyrinth);
+        GameLogicHandler gameLogic = new GameLogicHandler(new CollisionDetection(_labyrinth), pacMan,
+                _eventManager, _characters, _labyrinth, getResources());
         SoundHandler soundHandler = new SoundHandler(this);
 
         _eventManager.registerObserver(InitEvent.class, gameLogic.InitGameListener);
@@ -128,6 +159,9 @@ public class PacmanActivity extends ActionBarActivity {
         _eventManager.registerObserver(PacManDirectionRequestEvent.class, new InputHandler(pacMan, pacManStrategy).DirectionChangedListener);
         _eventManager.registerObserver(DotEatenEvent.class, soundHandler.PlaySoundForEatingADot);
         _eventManager.registerObserver(BigDotEatenEvent.class, soundHandler.PlaySoundForEatingABigDot);
+        _eventManager.registerObserver(BigDotEatenEvent.class, EnergizerStartsListener);
+        _eventManager.registerObserver(EnergizerWillBeRunningOutEvent.class, EnergizerWillBeRunningOutListener);
+        _eventManager.registerObserver(EnergizerEndsEvent.class, EnergizerEndsListener);
 
         return gameLogic;
     }

@@ -30,7 +30,7 @@ public class SoundHandler {
 
         // SoundPool constructor is deprecated (since API level 21)
         // ... so we with our good "old ham" smartphones still need this constructor
-        _soundPool = new SoundPool(R.integer.maxSimultaneousStreams, AudioManager.STREAM_MUSIC, 0);
+        _soundPool = new SoundPool(8, AudioManager.STREAM_MUSIC, 0);
         _soundIDForEatingCookie = _soundPool.load(context, R.raw.bite_cookie, 0);
         _soundIDForEatingCookieFast = _soundPool.load(context, R.raw.bite_cookie_fast, 0);
     }

@@ -1,14 +1,20 @@
 package com.example.pac.pacman;
 
+import android.content.res.Resources;
+
 import com.example.pac.pacman.event.BigDotEatenEvent;
 import com.example.pac.pacman.event.ChangeHitPointsEvent;
 import com.example.pac.pacman.event.DotEatenEvent;
 import com.example.pac.pacman.event.DrawRequestEvent;
+import com.example.pac.pacman.event.EnergizerEndsEvent;
+import com.example.pac.pacman.event.EnergizerWillBeRunningOutEvent;
 import com.example.pac.pacman.event.EventListener;
 import com.example.pac.pacman.event.IEventManager;
 import com.example.pac.pacman.event.InitEvent;
 import com.example.pac.pacman.event.InvalidateViewEvent;
+import org.joda.time.DateTime;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameLogicHandler {
@@ -17,14 +23,18 @@ public class GameLogicHandler {
     private PacMan _pacMan;
     private IEventManager _eventManager;
     private List<Character> _characters;
+    private Resources _resources;
+    private ArrayList<ActionAfterTimeOut> _actions = new ArrayList<ActionAfterTimeOut>();
     private Labyrinth _labyrinth;
 
-    public GameLogicHandler(CollisionDetection collisionDetection, PacMan pacMan, IEventManager eventManager, List<Character> characters, Labyrinth labyrinth) {
+    public GameLogicHandler(CollisionDetection collisionDetection, PacMan pacMan, IEventManager eventManager,
+                            List<Character> characters, Labyrinth labyrinth, Resources resources) {
         _collisionDetection = collisionDetection;
         _labyrinth = labyrinth;
         _pacMan = pacMan;
         _eventManager = eventManager;
         _characters = characters;
+        _resources = resources;
     }
 
     public void UpdateOnFrame() {
@@ -36,6 +46,7 @@ public class GameLogicHandler {
         _eventManager.fire(new InvalidateViewEvent(_pacMan.getInvalidateRect()));
 
         HandleAllCollisions();
+        HandleAllPendingActions();
     }
 
     private void HandleAllCollisions() {
@@ -46,6 +57,18 @@ public class GameLogicHandler {
         }
         if (_labyrinth.eatBigDot(_pacMan)) {
             _eventManager.fire(new BigDotEatenEvent(_pacMan.getCell()));
+
+            // TODO: remove all similar actions (another energizer was eaten before)
+
+            int durationUntilEnergizerWillBeRunningOutEvent = _resources.getInteger(R.integer.DurationOfEnergizer) -
+                    _resources.getInteger(R.integer.DurationBeforeEnergizerTimedOut);
+            _actions.add(new ActionAfterTimeOut(DateTime.now().plusSeconds(
+                    durationUntilEnergizerWillBeRunningOutEvent),
+                    new EnergizerWillBeRunningOutEvent(), _eventManager));
+
+            _actions.add(new ActionAfterTimeOut(DateTime.now().plusSeconds(
+                    _resources.getInteger(R.integer.DurationOfEnergizer)),
+                    new EnergizerEndsEvent(), _eventManager));
         }
 
         if (_collisionDetection.PacManInteractWithAGhost(_pacMan, _characters)) {
@@ -53,6 +76,22 @@ public class GameLogicHandler {
             // TODO: detect if pac-man is immortal due to a eaten energizer
             _eventManager.fire(new ChangeHitPointsEvent(false)); // reduce hit points
         }
+    }
+
+    private void HandleAllPendingActions() {
+        if (_actions.isEmpty()) {
+            return;
+        }
+
+        ArrayList<ActionAfterTimeOut> actionsToRemove = new ArrayList<ActionAfterTimeOut>();
+
+        for (ActionAfterTimeOut action : _actions) {
+            if (action.FireAndForget()) {
+                actionsToRemove.add(action);
+            }
+        }
+
+        _actions.removeAll(actionsToRemove);
     }
 
     public EventListener<DrawRequestEvent> DrawRequestListener = new EventListener<DrawRequestEvent>() {

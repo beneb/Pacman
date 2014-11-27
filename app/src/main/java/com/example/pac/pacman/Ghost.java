@@ -17,4 +17,6 @@ public abstract class Ghost extends Character {
         canvas.drawRect(r, _foreground);
         super.draw(canvas);
     }
+
+
 }
