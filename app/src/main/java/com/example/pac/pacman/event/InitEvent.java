@@ -5,6 +5,7 @@ import android.graphics.RectF;
 public class InitEvent {
     private final RectF _bounds;
 
+    public InitEvent() { _bounds = null; }
     public InitEvent(RectF bounds) {
         _bounds = bounds;
     }

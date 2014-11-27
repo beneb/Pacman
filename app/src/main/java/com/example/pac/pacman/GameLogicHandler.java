@@ -12,6 +12,7 @@ import com.example.pac.pacman.event.EventListener;
 import com.example.pac.pacman.event.IEventManager;
 import com.example.pac.pacman.event.InitEvent;
 import com.example.pac.pacman.event.InvalidateViewEvent;
+import com.example.pac.pacman.event.LevelCompleteEvent;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
@@ -71,7 +72,9 @@ public class GameLogicHandler {
                     new EnergizerEndsEvent(), _eventManager));
         }
 
-        if (_collisionDetection.PacManInteractWithAGhost(_pacMan, _characters)) {
+        if (!_labyrinth.haveDots()) {
+            _eventManager.fire(new LevelCompleteEvent());
+        } else if (_collisionDetection.PacManInteractWithAGhost(_pacMan, _characters)) {
 
             // TODO: detect if pac-man is immortal due to a eaten energizer
             _eventManager.fire(new ChangeHitPointsEvent(false)); // reduce hit points
@@ -108,7 +111,9 @@ public class GameLogicHandler {
     public EventListener<InitEvent> InitGameListener = new EventListener<InitEvent>() {
         @Override
         public void onEvent(InitEvent event) {
-            _labyrinth.init(event.getBounds());
+            if (event.getBounds() != null) {
+                _labyrinth.init(event.getBounds());
+            }
             for (Character ch : _characters) {
                 ch.init();
             }

@@ -29,6 +29,9 @@ public class Labyrinth {
         public boolean isWall() {
             return this == ORDINAL_WALL || this == HORIZONTAL_WALL;
         }
+        public boolean isDot() {
+            return this == DOT || this == BIG_DOT;
+        }
 
         public boolean isNotWall() {
             return this == EMPTY || this == DOT || this == BIG_DOT;
@@ -53,6 +56,7 @@ public class Labyrinth {
     private int _width;
     private int _height;
     private float _cellSize;
+    private int _dotsCount;
 
     private Map<java.lang.Character, Integer> _characterPositions = new HashMap<java.lang.Character, Integer>();
 
@@ -82,16 +86,21 @@ public class Labyrinth {
         }
     }
 
-    private void load(String state) {
+    public void load(String state) {
         String[] rows = state.trim().split(" ");
         _width = rows[0].length();
         _height = rows.length;
         _layout = new Item[_height][_width];
+        _dotsCount = 0;
         for (int row = 0; row < _height; row++) {
             for (int col = 0; col < _width; col++) {
                 String cellValue = rows[row].substring(col, col + 1);
                 if (java.lang.Character.isDigit(cellValue.charAt(0))) {
-                    _layout[row][col] = Item.parse(Integer.parseInt(cellValue));
+                    Item item = Item.parse(Integer.parseInt(cellValue));
+                    _layout[row][col] = item;
+                    if (item.isDot()) {
+                        _dotsCount++;
+                    }
                 } else {
                     _layout[row][col] = Item.EMPTY;
                     setCharacterPosition(cellValue.charAt(0), getCell(row, col));
@@ -260,10 +269,17 @@ public class Labyrinth {
         int pacMansCell = getCharacterPosition(pacMan);
         if (getCellValue(pacMansCell) == eatable) {
             setCellValue(pacMansCell, Item.EMPTY);
+            if (eatable.isDot()) {
+                _dotsCount--;
+            }
             return true;
         } else {
             return false;
         }
+    }
+
+    public boolean haveDots() {
+        return _dotsCount > 0;
     }
 
     private RectF getCellBounds(int row, int col) {

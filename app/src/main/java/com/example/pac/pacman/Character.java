@@ -41,8 +41,8 @@ public abstract class Character {
 
     protected final Labyrinth _labyrinth;
 
-    private Direction _newDirection = Direction.Stopped;
-    private Direction _currentDirection = Direction.Stopped;
+    private Direction _newDirection;
+    private Direction _currentDirection;
 
     public Character(IMoveStrategy moveStrategy, Labyrinth labyrinth) {
         _moveStrategy = moveStrategy;
@@ -66,6 +66,9 @@ public abstract class Character {
         RectF cellBounds = _labyrinth.getCellBounds(cellNum);
         _x = cellBounds.centerX();
         _y = cellBounds.centerY();
+
+        _newDirection = Direction.Stopped;
+        _currentDirection = Direction.Stopped;
     }
 
     protected void newInvalidateRect(float newX, float newY) {

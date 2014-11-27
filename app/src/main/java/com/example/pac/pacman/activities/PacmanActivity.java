@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.widget.TextView;
 
@@ -28,6 +29,7 @@ import com.example.pac.pacman.event.EventListener;
 import com.example.pac.pacman.event.EventManager;
 import com.example.pac.pacman.event.IEventManager;
 import com.example.pac.pacman.event.InitEvent;
+import com.example.pac.pacman.event.LevelCompleteEvent;
 import com.example.pac.pacman.event.PacManDirectionRequestEvent;
 import com.example.pac.pacman.util.Fonts;
 import com.example.pac.pacman.views.GameplayView;
@@ -117,7 +119,7 @@ public class PacmanActivity extends ActionBarActivity {
         GameLogicHandler gameLogic = createGameObjects();
 
         _frameLoop = new FrameLoop(gameLogic);
-        _frameLoop.Start();
+        _frameLoop.start();
     }
 
     private void initState() {
@@ -130,7 +132,7 @@ public class PacmanActivity extends ActionBarActivity {
         super.onStop();
         _state.save(_labyrinth);
 
-        _frameLoop.Destroy();
+        _frameLoop.stop();
         _eventManager.unregisterAll();
     }
 
@@ -162,9 +164,28 @@ public class PacmanActivity extends ActionBarActivity {
         _eventManager.registerObserver(BigDotEatenEvent.class, EnergizerStartsListener);
         _eventManager.registerObserver(EnergizerWillBeRunningOutEvent.class, EnergizerWillBeRunningOutListener);
         _eventManager.registerObserver(EnergizerEndsEvent.class, EnergizerEndsListener);
+        _eventManager.registerObserver(LevelCompleteEvent.class, LevelCompleteHandler);
 
         return gameLogic;
     }
+
+
+    public EventListener<LevelCompleteEvent> LevelCompleteHandler = new EventListener<LevelCompleteEvent>() {
+        @Override
+        public void onEvent(LevelCompleteEvent event) {
+            _frameLoop.stop();
+            setInfoLabel("Level Complete!", Color.GREEN);
+            Handler levelCompleteDelayHandler = new Handler();
+            levelCompleteDelayHandler.postDelayed(new Runnable() {
+                public void run() {
+                    setInfoLabel("", Color.RED);
+                    _labyrinth.load(_state.getNewLevel());
+                    _eventManager.fire(new InitEvent());
+                    _frameLoop.start();
+                }
+            }, 3000);
+        }
+    };
 
     State _state = new State();
 
@@ -181,6 +202,10 @@ public class PacmanActivity extends ActionBarActivity {
             return _labyrinthState;
         }
 
+        public String getNewLevel(){
+            return getResources().getString(R.string.level_classic);
+        }
+
         public int getScore() {
             return _score;
         }
@@ -188,7 +213,7 @@ public class PacmanActivity extends ActionBarActivity {
         private void load() {
             Intent intent = getIntent();
             String action = intent.getAction();
-            _labyrinthState = getResources().getString(R.string.level_classic);
+            _labyrinthState = getNewLevel();
             if (RESUME_ACTION.equals(action)) {
                 SharedPreferences settings = getSharedPreferences(SETTINGS, 0);
                 _labyrinthState = settings.getString(LABYRINTH_STATE, _labyrinthState);
