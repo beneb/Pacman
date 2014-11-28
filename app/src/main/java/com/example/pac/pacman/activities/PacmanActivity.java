@@ -21,7 +21,7 @@ import com.example.pac.pacman.PacManMoveStrategy;
 import com.example.pac.pacman.R;
 import com.example.pac.pacman.SoundHandler;
 import com.example.pac.pacman.event.BigDotEatenEvent;
-import com.example.pac.pacman.event.ChangeHitPointsEvent;
+import com.example.pac.pacman.event.ChangeLifesEvent;
 import com.example.pac.pacman.event.DotEatenEvent;
 import com.example.pac.pacman.event.DrawRequestEvent;
 import com.example.pac.pacman.event.EnergizerEndsEvent;
@@ -30,7 +30,6 @@ import com.example.pac.pacman.event.EventListener;
 import com.example.pac.pacman.event.EventManager;
 import com.example.pac.pacman.event.IEventManager;
 import com.example.pac.pacman.event.InitEvent;
-import com.example.pac.pacman.event.InvalidateViewEvent;
 import com.example.pac.pacman.event.LevelCompleteEvent;
 import com.example.pac.pacman.event.PacManDirectionRequestEvent;
 import com.example.pac.pacman.util.Fonts;
@@ -79,10 +78,10 @@ public class PacmanActivity extends ActionBarActivity {
         }
     };
 
-    public EventListener<ChangeHitPointsEvent> ChangeHitPoints = new EventListener<ChangeHitPointsEvent>() {
+    public EventListener<ChangeLifesEvent> ChangeHitPoints = new EventListener<ChangeLifesEvent>() {
         @Override
-        public void onEvent(ChangeHitPointsEvent event) {
-            boolean pacManWasHit = !event.IncreaseHitPoints();
+        public void onEvent(ChangeLifesEvent event) {
+            boolean pacManWasHit = !event.OneUp();
             setInfoLabel(pacManWasHit ? "OUCH!!!" : "", Color.RED);
         }
     };
@@ -159,7 +158,7 @@ public class PacmanActivity extends ActionBarActivity {
         _eventManager.registerObserver(DotEatenEvent.class, DotEatenListener);
         _eventManager.registerObserver(BigDotEatenEvent.class, BigDotEatenListener);
 
-        _eventManager.registerObserver(ChangeHitPointsEvent.class, ChangeHitPoints);
+        _eventManager.registerObserver(ChangeLifesEvent.class, ChangeHitPoints);
         _eventManager.registerObserver(PacManDirectionRequestEvent.class, new InputHandler(pacMan, pacManStrategy).DirectionChangedListener);
         _eventManager.registerObserver(DotEatenEvent.class, soundHandler.PlaySoundForEatingADot);
         _eventManager.registerObserver(BigDotEatenEvent.class, soundHandler.PlaySoundForEatingABigDot);
@@ -172,8 +171,8 @@ public class PacmanActivity extends ActionBarActivity {
         _eventManager.registerObserver(EnergizerEndsEvent.class, pacMan.EnergizerEndsListener);
 
         for (Character character : _characters) {
-            _eventManager.registerObserver(EnergizerEndsEvent.class, ((Ghost)character).EnergizerEndsListener);
-            _eventManager.registerObserver(BigDotEatenEvent.class, ((Ghost)character).EnergizerStartsListener);
+            _eventManager.registerObserver(EnergizerEndsEvent.class, ((Ghost) character).EnergizerEndsListener);
+            _eventManager.registerObserver(BigDotEatenEvent.class, ((Ghost) character).EnergizerStartsListener);
             _eventManager.registerObserver(EnergizerWillBeRunningOutEvent.class, ((Ghost)character).EnergizerWillBeRunningOutListener);
         }
 

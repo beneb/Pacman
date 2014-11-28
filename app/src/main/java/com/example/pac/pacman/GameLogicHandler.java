@@ -3,7 +3,7 @@ package com.example.pac.pacman;
 import android.content.res.Resources;
 
 import com.example.pac.pacman.event.BigDotEatenEvent;
-import com.example.pac.pacman.event.ChangeHitPointsEvent;
+import com.example.pac.pacman.event.ChangeLifesEvent;
 import com.example.pac.pacman.event.DotEatenEvent;
 import com.example.pac.pacman.event.DrawRequestEvent;
 import com.example.pac.pacman.event.EnergizerEndsEvent;
@@ -77,7 +77,7 @@ public class GameLogicHandler {
         } else if (_collisionDetection.PacManInteractWithAGhost(_pacMan, _characters)) {
 
             if (!_pacMan.IsUnbreakable()) {
-                _eventManager.fire(new ChangeHitPointsEvent(false)); // reduce hit points
+                _eventManager.fire(new ChangeLifesEvent(false)); // reduce lifes
             }
         }
     }
