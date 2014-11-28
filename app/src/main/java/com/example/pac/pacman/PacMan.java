@@ -1,9 +1,31 @@
 package com.example.pac.pacman;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.RectF;
 
+import com.example.pac.pacman.event.BigDotEatenEvent;
+import com.example.pac.pacman.event.EnergizerEndsEvent;
+import com.example.pac.pacman.event.EventListener;
+
 public class PacMan extends Character {
+
+    public EventListener<BigDotEatenEvent> EnergizerStartsListener =
+            new EventListener<BigDotEatenEvent>() {
+                @Override
+                public void onEvent(BigDotEatenEvent event) {
+                    _unbreakable = true;
+                }
+            };
+
+    public EventListener<EnergizerEndsEvent> EnergizerEndsListener =
+            new EventListener<EnergizerEndsEvent>() {
+                @Override
+                public void onEvent(EnergizerEndsEvent event) {
+                    _unbreakable = false;
+                }
+            };
+
     private static final int MOUTH_RIGHT = 0;
     private static final int MOUTH_LEFT = 180;
     private static final int MOUTH_UP = 270;
@@ -16,6 +38,7 @@ public class PacMan extends Character {
 
     private int _mouthOpenGrad = MOUTH_OPEN_GRAD;
     private boolean _mouthClosing;
+    private boolean _unbreakable;
 
     @Override
     public String getName() {
@@ -75,5 +98,9 @@ public class PacMan extends Character {
                 _pMouth = MOUTH_DOWN;
                 break;
         }
+    }
+
+    public boolean IsUnbreakable() {
+        return _unbreakable;
     }
 }

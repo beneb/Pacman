@@ -8,7 +8,7 @@ import java.util.Collection;
 public class GhostRepository {
     public static Collection<Ghost> CreateGhosts(Resources resources, Labyrinth labyrinth) {
         return Arrays.asList(
-                new Ghost(resources.getColor(R.color.Blinky), new DummyRandomMoveStrategy(labyrinth), labyrinth) {
+                new Ghost(resources.getColor(R.color.Blinky), new DummyRandomMoveStrategy(labyrinth), labyrinth, resources) {
                     @Override
                     public String getName() {
                         return "Shadow";
@@ -24,7 +24,7 @@ public class GhostRepository {
                         return 'b';
                     }
                 },
-                new Ghost(resources.getColor(R.color.Inky), new DummyRandomMoveStrategy(labyrinth), labyrinth) {
+                new Ghost(resources.getColor(R.color.Inky), new DummyRandomMoveStrategy(labyrinth), labyrinth, resources) {
                     @Override
                     public String getName() {
                         return "Bashful";
@@ -40,7 +40,7 @@ public class GhostRepository {
                         return 'i';
                     }
                 },
-                new Ghost(resources.getColor(R.color.Pinky), new DummyRandomMoveStrategy(labyrinth), labyrinth) {
+                new Ghost(resources.getColor(R.color.Pinky), new DummyRandomMoveStrategy(labyrinth), labyrinth, resources) {
                     @Override
                     public String getName() {
                         return "Speedy";
@@ -56,7 +56,7 @@ public class GhostRepository {
                         return 'p';
                     }
                 },
-                new Ghost(resources.getColor(R.color.Clyde), new DummyRandomMoveStrategy(labyrinth), labyrinth) {
+                new Ghost(resources.getColor(R.color.Clyde), new DummyRandomMoveStrategy(labyrinth), labyrinth, resources) {
                     @Override
                     public String getName() {
                         return "Pokey";

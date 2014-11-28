@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.example.pac.pacman.Character;
 import com.example.pac.pacman.CollisionDetection;
 import com.example.pac.pacman.GameLogicHandler;
+import com.example.pac.pacman.Ghost;
 import com.example.pac.pacman.GhostRepository;
 import com.example.pac.pacman.IMoveStrategy;
 import com.example.pac.pacman.InputHandler;
@@ -29,6 +30,7 @@ import com.example.pac.pacman.event.EventListener;
 import com.example.pac.pacman.event.EventManager;
 import com.example.pac.pacman.event.IEventManager;
 import com.example.pac.pacman.event.InitEvent;
+import com.example.pac.pacman.event.InvalidateViewEvent;
 import com.example.pac.pacman.event.LevelCompleteEvent;
 import com.example.pac.pacman.event.PacManDirectionRequestEvent;
 import com.example.pac.pacman.util.Fonts;
@@ -165,6 +167,15 @@ public class PacmanActivity extends ActionBarActivity {
         _eventManager.registerObserver(EnergizerWillBeRunningOutEvent.class, EnergizerWillBeRunningOutListener);
         _eventManager.registerObserver(EnergizerEndsEvent.class, EnergizerEndsListener);
         _eventManager.registerObserver(LevelCompleteEvent.class, LevelCompleteHandler);
+
+        _eventManager.registerObserver(BigDotEatenEvent.class, pacMan.EnergizerStartsListener);
+        _eventManager.registerObserver(EnergizerEndsEvent.class, pacMan.EnergizerEndsListener);
+
+        for (Character character : _characters) {
+            _eventManager.registerObserver(EnergizerEndsEvent.class, ((Ghost)character).EnergizerEndsListener);
+            _eventManager.registerObserver(BigDotEatenEvent.class, ((Ghost)character).EnergizerStartsListener);
+            _eventManager.registerObserver(EnergizerWillBeRunningOutEvent.class, ((Ghost)character).EnergizerWillBeRunningOutListener);
+        }
 
         return gameLogic;
     }

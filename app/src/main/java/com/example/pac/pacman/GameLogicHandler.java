@@ -76,8 +76,9 @@ public class GameLogicHandler {
             _eventManager.fire(new LevelCompleteEvent());
         } else if (_collisionDetection.PacManInteractWithAGhost(_pacMan, _characters)) {
 
-            // TODO: detect if pac-man is immortal due to a eaten energizer
-            _eventManager.fire(new ChangeHitPointsEvent(false)); // reduce hit points
+            if (!_pacMan.IsUnbreakable()) {
+                _eventManager.fire(new ChangeHitPointsEvent(false)); // reduce hit points
+            }
         }
     }
 
