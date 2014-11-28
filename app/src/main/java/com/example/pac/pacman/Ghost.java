@@ -4,7 +4,7 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.RectF;
 
-import com.example.pac.pacman.event.BigDotEatenEvent;
+import com.example.pac.pacman.event.EnergizerEatenEvent;
 import com.example.pac.pacman.event.EnergizerEndsEvent;
 import com.example.pac.pacman.event.EnergizerWillBeRunningOutEvent;
 import com.example.pac.pacman.event.EventListener;
@@ -19,10 +19,10 @@ public abstract class Ghost extends Character {
         WalkingBack
     }
 
-    public EventListener<BigDotEatenEvent> EnergizerStartsListener =
-            new EventListener<BigDotEatenEvent>() {
+    public EventListener<EnergizerEatenEvent> EnergizerStartsListener =
+            new EventListener<EnergizerEatenEvent>() {
                 @Override
-                public void onEvent(BigDotEatenEvent event) {
+                public void onEvent(EnergizerEatenEvent event) {
                     SetGhostMode(GhostMode.Scared);
                 }
             };

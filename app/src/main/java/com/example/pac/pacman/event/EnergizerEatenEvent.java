@@ -1,9 +1,9 @@
 package com.example.pac.pacman.event;
 
-public class BigDotEatenEvent {
+public class EnergizerEatenEvent {
     private int _cell;
 
-    public BigDotEatenEvent(int cell) {
+    public EnergizerEatenEvent(int cell) {
         _cell = cell;
     }
 

@@ -17,7 +17,7 @@ public class PaintObjectsFactory {
         return createPaint(color);
     }
 
-    static Paint createBigDot(int color) {
+    static Paint createEnergizer(int color) {
         return createPaint(color);
     }
 

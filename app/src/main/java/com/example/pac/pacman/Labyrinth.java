@@ -17,7 +17,7 @@ public class Labyrinth {
         ORDINAL_WALL(1),
         HORIZONTAL_WALL(4),
         DOT(2),
-        BIG_DOT(3);
+        ENERGIZER(3);
 
 
         private final int _value;
@@ -30,11 +30,11 @@ public class Labyrinth {
             return this == ORDINAL_WALL || this == HORIZONTAL_WALL;
         }
         public boolean isDot() {
-            return this == DOT || this == BIG_DOT;
+            return this == DOT || this == ENERGIZER;
         }
 
         public boolean isNotWall() {
-            return this == EMPTY || this == DOT || this == BIG_DOT;
+            return this == EMPTY || this == DOT || this == ENERGIZER;
         }
 
         public static Item parse(int val) {
@@ -72,7 +72,7 @@ public class Labyrinth {
 
 
     private Paint _dot;
-    private Paint _big_dot;
+    private Paint _energizer;
     private Paint _wallPaint;
     private Paint _debugPaint;
 
@@ -80,7 +80,7 @@ public class Labyrinth {
         load(state);
         if (resource != null) {
             _dot = PaintObjectsFactory.createDot(resource.getColor(R.color.dot));
-            _big_dot = PaintObjectsFactory.createBigDot(resource.getColor(R.color.dot));
+            _energizer = PaintObjectsFactory.createEnergizer(resource.getColor(R.color.dot));
             _wallPaint = PaintObjectsFactory.createWall(resource.getColor(R.color.walls));
             _debugPaint = PaintObjectsFactory.createDebugPaint(Color.RED);
         }
@@ -261,8 +261,8 @@ public class Labyrinth {
         return eat(pacMan, Item.DOT);
     }
 
-    public boolean eatBigDot(PacMan pacMan) {
-        return eat(pacMan, Item.BIG_DOT);
+    public boolean eatEnergizer(PacMan pacMan) {
+        return eat(pacMan, Item.ENERGIZER);
     }
 
     private boolean eat(PacMan pacMan, Item eatable) {
@@ -311,10 +311,10 @@ public class Labyrinth {
                         float startX = cellBounds.centerX();
                         float startY = cellBounds.centerY();
                         canvas.drawCircle(startX, startY, getDotSize(), _dot);
-                    } else if (getCellValue(row, col) == Item.BIG_DOT) {
+                    } else if (getCellValue(row, col) == Item.ENERGIZER) {
                         float startX = cellBounds.centerX();
                         float startY = cellBounds.centerY();
-                        canvas.drawCircle(startX, startY, getBigDotSize(), _big_dot);
+                        canvas.drawCircle(startX, startY, getEnergizerSize(), _energizer);
                     }
 
                     //--Grid for Debugging
@@ -468,7 +468,7 @@ public class Labyrinth {
             return _cellSize / 14;
         }
 
-        private float getBigDotSize() {
+        private float getEnergizerSize() {
             return _cellSize / 4;
         }
     }

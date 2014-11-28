@@ -1,19 +1,18 @@
 package com.example.pac.pacman;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.RectF;
 
-import com.example.pac.pacman.event.BigDotEatenEvent;
+import com.example.pac.pacman.event.EnergizerEatenEvent;
 import com.example.pac.pacman.event.EnergizerEndsEvent;
 import com.example.pac.pacman.event.EventListener;
 
 public class PacMan extends Character {
 
-    public EventListener<BigDotEatenEvent> EnergizerStartsListener =
-            new EventListener<BigDotEatenEvent>() {
+    public EventListener<EnergizerEatenEvent> EnergizerStartsListener =
+            new EventListener<EnergizerEatenEvent>() {
                 @Override
-                public void onEvent(BigDotEatenEvent event) {
+                public void onEvent(EnergizerEatenEvent event) {
                     _unbreakable = true;
                 }
             };

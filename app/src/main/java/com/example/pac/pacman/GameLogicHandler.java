@@ -2,7 +2,7 @@ package com.example.pac.pacman;
 
 import android.content.res.Resources;
 
-import com.example.pac.pacman.event.BigDotEatenEvent;
+import com.example.pac.pacman.event.EnergizerEatenEvent;
 import com.example.pac.pacman.event.ChangeLifesEvent;
 import com.example.pac.pacman.event.DotEatenEvent;
 import com.example.pac.pacman.event.DrawRequestEvent;
@@ -56,8 +56,8 @@ public class GameLogicHandler {
         if (_labyrinth.eatDot(_pacMan)) {
             _eventManager.fire(new DotEatenEvent(_pacMan.getCell()));
         }
-        if (_labyrinth.eatBigDot(_pacMan)) {
-            _eventManager.fire(new BigDotEatenEvent(_pacMan.getCell()));
+        if (_labyrinth.eatEnergizer(_pacMan)) {
+            _eventManager.fire(new EnergizerEatenEvent(_pacMan.getCell()));
 
             // TODO: remove all similar actions (another energizer was eaten before)
 

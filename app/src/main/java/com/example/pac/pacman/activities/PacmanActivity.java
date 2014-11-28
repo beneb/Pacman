@@ -20,7 +20,7 @@ import com.example.pac.pacman.PacMan;
 import com.example.pac.pacman.PacManMoveStrategy;
 import com.example.pac.pacman.R;
 import com.example.pac.pacman.SoundHandler;
-import com.example.pac.pacman.event.BigDotEatenEvent;
+import com.example.pac.pacman.event.EnergizerEatenEvent;
 import com.example.pac.pacman.event.ChangeLifesEvent;
 import com.example.pac.pacman.event.DotEatenEvent;
 import com.example.pac.pacman.event.DrawRequestEvent;
@@ -40,10 +40,10 @@ import java.util.ArrayList;
 public class PacmanActivity extends ActionBarActivity {
     private int _score;
 
-    public EventListener<BigDotEatenEvent> EnergizerStartsListener =
-            new EventListener<BigDotEatenEvent>() {
+    public EventListener<EnergizerEatenEvent> EnergizerStartsListener =
+            new EventListener<EnergizerEatenEvent>() {
                 @Override
-                public void onEvent(BigDotEatenEvent event) {
+                public void onEvent(EnergizerEatenEvent event) {
                     setInfoLabel("Superman!", Color.BLUE);
                 }
             };
@@ -71,9 +71,9 @@ public class PacmanActivity extends ActionBarActivity {
         }
     };
 
-    public EventListener<BigDotEatenEvent> BigDotEatenListener = new EventListener<BigDotEatenEvent>() {
+    public EventListener<EnergizerEatenEvent> EnergizerEatenListener = new EventListener<EnergizerEatenEvent>() {
         @Override
-        public void onEvent(BigDotEatenEvent event) {
+        public void onEvent(EnergizerEatenEvent event) {
             setScore(_score += 50);
         }
     };
@@ -156,23 +156,23 @@ public class PacmanActivity extends ActionBarActivity {
         _eventManager.registerObserver(DrawRequestEvent.class, gameLogic.DrawRequestListener);
 
         _eventManager.registerObserver(DotEatenEvent.class, DotEatenListener);
-        _eventManager.registerObserver(BigDotEatenEvent.class, BigDotEatenListener);
+        _eventManager.registerObserver(EnergizerEatenEvent.class, EnergizerEatenListener);
 
         _eventManager.registerObserver(ChangeLifesEvent.class, ChangeHitPoints);
         _eventManager.registerObserver(PacManDirectionRequestEvent.class, new InputHandler(pacMan, pacManStrategy).DirectionChangedListener);
         _eventManager.registerObserver(DotEatenEvent.class, soundHandler.PlaySoundForEatingADot);
-        _eventManager.registerObserver(BigDotEatenEvent.class, soundHandler.PlaySoundForEatingABigDot);
-        _eventManager.registerObserver(BigDotEatenEvent.class, EnergizerStartsListener);
+        _eventManager.registerObserver(EnergizerEatenEvent.class, soundHandler.PlaySoundForEatingAnEnergizer);
+        _eventManager.registerObserver(EnergizerEatenEvent.class, EnergizerStartsListener);
         _eventManager.registerObserver(EnergizerWillBeRunningOutEvent.class, EnergizerWillBeRunningOutListener);
         _eventManager.registerObserver(EnergizerEndsEvent.class, EnergizerEndsListener);
         _eventManager.registerObserver(LevelCompleteEvent.class, LevelCompleteHandler);
 
-        _eventManager.registerObserver(BigDotEatenEvent.class, pacMan.EnergizerStartsListener);
+        _eventManager.registerObserver(EnergizerEatenEvent.class, pacMan.EnergizerStartsListener);
         _eventManager.registerObserver(EnergizerEndsEvent.class, pacMan.EnergizerEndsListener);
 
         for (Character character : _characters) {
             _eventManager.registerObserver(EnergizerEndsEvent.class, ((Ghost) character).EnergizerEndsListener);
-            _eventManager.registerObserver(BigDotEatenEvent.class, ((Ghost) character).EnergizerStartsListener);
+            _eventManager.registerObserver(EnergizerEatenEvent.class, ((Ghost) character).EnergizerStartsListener);
             _eventManager.registerObserver(EnergizerWillBeRunningOutEvent.class, ((Ghost)character).EnergizerWillBeRunningOutListener);
         }
 
