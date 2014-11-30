@@ -1,14 +1,17 @@
 package com.example.pac.pacman;
 
 import android.content.res.Resources;
+import android.support.v4.util.ArrayMap;
 
-import java.util.Arrays;
-import java.util.Collection;
+import com.example.pac.pacman.views.GhostView;
+import com.example.pac.pacman.views.IChildView;
+
+import java.util.Map;
 
 public class GhostRepository {
-    public static Collection<Ghost> CreateGhosts(Resources resources, Labyrinth labyrinth) {
-        return Arrays.asList(
-                new Ghost(resources.getColor(R.color.Blinky), new DummyRandomMoveStrategy(labyrinth), labyrinth, resources) {
+    public static Map<Character, IChildView> CreateGhosts(final Resources resources, Labyrinth labyrinth) {
+        Ghost blinky =
+                new Ghost(new DummyRandomMoveStrategy(labyrinth), labyrinth) {
                     @Override
                     public String getName() {
                         return "Shadow";
@@ -23,8 +26,9 @@ public class GhostRepository {
                     public char getId() {
                         return 'b';
                     }
-                },
-                new Ghost(resources.getColor(R.color.Inky), new DummyRandomMoveStrategy(labyrinth), labyrinth, resources) {
+                };
+        Ghost inky =
+                new Ghost(new DummyRandomMoveStrategy(labyrinth), labyrinth) {
                     @Override
                     public String getName() {
                         return "Bashful";
@@ -39,8 +43,9 @@ public class GhostRepository {
                     public char getId() {
                         return 'i';
                     }
-                },
-                new Ghost(resources.getColor(R.color.Pinky), new DummyRandomMoveStrategy(labyrinth), labyrinth, resources) {
+                };
+        Ghost pinky =
+                new Ghost(new DummyRandomMoveStrategy(labyrinth), labyrinth) {
                     @Override
                     public String getName() {
                         return "Speedy";
@@ -55,8 +60,9 @@ public class GhostRepository {
                     public char getId() {
                         return 'p';
                     }
-                },
-                new Ghost(resources.getColor(R.color.Clyde), new DummyRandomMoveStrategy(labyrinth), labyrinth, resources) {
+                };
+        Ghost clyde =
+                new Ghost(new DummyRandomMoveStrategy(labyrinth), labyrinth) {
                     @Override
                     public String getName() {
                         return "Pokey";
@@ -71,6 +77,30 @@ public class GhostRepository {
                     public char getId() {
                         return 'c';
                     }
-                });
+                };
+
+        Map<Character, IChildView> ghostsMitViews = new ArrayMap<Character, IChildView>();
+        ghostsMitViews.put(blinky, new GhostView(blinky, resources) {
+            {
+                _defaultColor = resources.getColor(R.color.Blinky);
+            }
+        });
+        ghostsMitViews.put(inky, new GhostView(inky, resources) {
+            {
+                _defaultColor = resources.getColor(R.color.Inky);
+            }
+        });
+        ghostsMitViews.put(pinky, new GhostView(pinky, resources) {
+            {
+                _defaultColor = resources.getColor(R.color.Pinky);
+            }
+        });
+        ghostsMitViews.put(clyde, new GhostView(clyde, resources) {
+            {
+                _defaultColor = resources.getColor(R.color.Clyde);
+            }
+        });
+
+        return ghostsMitViews;
     }
 }

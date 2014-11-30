@@ -1,9 +1,9 @@
-package com.example.pac.pacman;
+package com.example.pac.pacman.views;
 
 import android.graphics.Paint;
 
 public class PaintObjectsFactory {
-    static Paint createWall(int color) {
+    public static Paint createWall(int color) {
         // no anti aliasing for this paint
         // wall drawing is currently not optimized for anti aliased lines
         Paint p = new Paint();
@@ -13,11 +13,11 @@ public class PaintObjectsFactory {
         return p;
     }
 
-    static Paint createDot(int color) {
+    public static Paint createDot(int color) {
         return createPaint(color);
     }
 
-    static Paint createEnergizer(int color) {
+    public static Paint createEnergizer(int color) {
         return createPaint(color);
     }
 

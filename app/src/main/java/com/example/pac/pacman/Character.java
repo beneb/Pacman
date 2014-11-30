@@ -1,7 +1,5 @@
 package com.example.pac.pacman;
 
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -11,18 +9,21 @@ import android.util.Log;
 public abstract class Character {
 
     public abstract String getName();
-    public abstract String getNickName();
-    public abstract char getId();
 
-    private final Paint _debugPaint;
+    public abstract String getNickName();
+
+    public abstract char getId();
 
     protected float _maxMoveDelta;
     protected Paint _foreground;
 
     protected IMoveStrategy _moveStrategy;
 
-    protected final PointF _position = new PointF();
     protected float _size;
+
+    public float getSize() { return _size; }
+
+    protected final PointF _position = new PointF();
 
     public PointF getPosition() {
         return _position;
@@ -43,16 +44,14 @@ public abstract class Character {
     private Direction _newDirection;
     private Direction _currentDirection;
 
+    public Direction getDirection() { return _currentDirection; }
+
     public Character(IMoveStrategy moveStrategy, Labyrinth labyrinth) {
         _moveStrategy = moveStrategy;
         _labyrinth = labyrinth;
 
         _foreground = new Paint(Paint.ANTI_ALIAS_FLAG);
         _foreground.setStyle(Paint.Style.FILL);
-
-        _debugPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        _debugPaint.setStyle(Paint.Style.STROKE);
-        _debugPaint.setColor(Color.RED);
     }
 
     public void init() {
@@ -75,13 +74,6 @@ public abstract class Character {
         float r = Math.max(_position.x, newPosition.x) + _size + 1;
         float b = Math.max(_position.y, newPosition.y) + _size + 1;
         _invalidateRect = new Rect((int) l, (int) t, (int) r + 1, (int) b + 1);
-    }
-
-    public void draw(Canvas canvas) {
-        //int cell = _labyrinth.cellAt(_x, _y);
-        //RectF bounds = _labyrinth.getCellBounds(cell);
-        //canvas.drawRect(bounds, _debugPaint);
-        //canvas.drawCircle(_x, _y, 1, _debugPaint);
     }
 
     public Direction move() {

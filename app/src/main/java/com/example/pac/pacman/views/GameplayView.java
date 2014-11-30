@@ -16,6 +16,8 @@ import com.example.pac.pacman.event.InitEvent;
 import com.example.pac.pacman.event.InvalidateViewEvent;
 import com.example.pac.pacman.event.PacManDirectionRequestEvent;
 
+import java.util.Collection;
+
 /*
 *   TODO: Maybe it should be a SurfaceView
 *   see  http://android-journey.blogspot.co.il/2010/02/android-2d-simple-example.html
@@ -25,7 +27,6 @@ import com.example.pac.pacman.event.PacManDirectionRequestEvent;
 public class GameplayView extends View {
 
     private static final int MARGIN = 10;
-
     private RectF getInnerBounds(int w, int h) {
         return new RectF(MARGIN, MARGIN, w - MARGIN, h - MARGIN);
     }
@@ -39,8 +40,9 @@ public class GameplayView extends View {
     }
 
     private IEventManager _eventManager = new DummyEventManager();
+    private Collection<IChildView> _childViews;
 
-    public void init(IEventManager eventManager) {
+    public void init(IEventManager eventManager, Collection<IChildView> childViews) {
         _eventManager = eventManager;
         _eventManager.registerObserver(InvalidateViewEvent.class,
                 new EventListener<InvalidateViewEvent>() {
@@ -49,15 +51,15 @@ public class GameplayView extends View {
                         invalidate(event.GetRect());
                     }
                 });
+        _childViews = childViews;
     }
-
-    private final DrawRequestEvent _drawEvent = new DrawRequestEvent();
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        _drawEvent.setCanvas(canvas);
-        _eventManager.fire(_drawEvent);
+        for (IChildView view : _childViews) {
+            view.draw(canvas);
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")

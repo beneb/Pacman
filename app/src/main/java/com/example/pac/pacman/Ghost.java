@@ -1,22 +1,19 @@
 package com.example.pac.pacman;
 
 import android.content.res.Resources;
-import android.graphics.Canvas;
-import android.graphics.RectF;
 
 import com.example.pac.pacman.event.EnergizerEatenEvent;
 import com.example.pac.pacman.event.EnergizerEndsEvent;
 import com.example.pac.pacman.event.EnergizerWillBeRunningOutEvent;
 import com.example.pac.pacman.event.EventListener;
 
+
 public abstract class Ghost extends Character {
 
-    public enum GhostMode {
-        Default,
-        Scared,
-        ScaredAndFlashing,
-        Dying,
-        WalkingBack
+    private GhostMode _mode = GhostMode.Default;
+
+    public GhostMode getMode() {
+        return _mode;
     }
 
     public EventListener<EnergizerEatenEvent> EnergizerStartsListener =
@@ -42,50 +39,13 @@ public abstract class Ghost extends Character {
                     SetGhostMode(GhostMode.Default);
                 }
             };
-    private Resources _resources;
-    private int _defaultColor;
 
 
-    protected Ghost(int color, IMoveStrategy moveStrategy, Labyrinth labyrinth, Resources resources) {
+    protected Ghost(IMoveStrategy moveStrategy, Labyrinth labyrinth) {
         super(moveStrategy, labyrinth);
-        _resources = resources;
-        _defaultColor = color;
-        _foreground.setColor(color);
-    }
-
-    private final RectF _drawRect = new RectF();
-    @Override
-    public void draw(Canvas canvas) {
-        float radius = _size/2;
-        _drawRect.set(_position.x - radius, _position.y - radius, _position.x + radius, _position.y + radius);
-        canvas.drawRect(_drawRect, _foreground);
-        super.draw(canvas);
     }
 
     private void SetGhostMode(GhostMode mode) {
-        switch (mode) {
-
-            case Default:
-                ResetMode();
-                break;
-            case Scared:
-                _foreground.setColor(_resources.getColor(R.color.ScaredGhost));
-                // TODO: change speed
-                break;
-            case ScaredAndFlashing:
-                // TODO: flashing color
-                break;
-            case Dying:
-                // TODO: dieing ghost animation
-                break;
-            case WalkingBack:
-                // TODO: show only ghost´s eyes
-                break;
-        }
-    }
-
-    private void ResetMode() {
-        _foreground.setColor(_defaultColor);
-        // TODO: default speed
+        _mode = mode;
     }
 }

@@ -15,10 +15,10 @@ public class PacManEnvironment {
     }
 
     PacManEnvironment(String state, float width, float height) {
-        _labyrinth = new Labyrinth(state, null);
+        _labyrinth = new Labyrinth(state);
         _labyrinth.init(new RectF(0, 0, width, height));
         _moveStrategy = new PacManMoveStrategy(_labyrinth);
-        _pacMan = new PacMan(0, _moveStrategy, _labyrinth);
+        _pacMan = new PacMan(_moveStrategy, _labyrinth);
         _pacMan.init();
     }
 
