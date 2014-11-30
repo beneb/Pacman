@@ -53,11 +53,12 @@ public abstract class Ghost extends Character {
         _foreground.setColor(color);
     }
 
+    private final RectF _drawRect = new RectF();
     @Override
     public void draw(Canvas canvas) {
         float radius = _size/2;
-        RectF r = new RectF(_x - radius, _y - radius, _x + radius, _y + radius);
-        canvas.drawRect(r, _foreground);
+        _drawRect.set(_position.x - radius, _position.y - radius, _position.x + radius, _position.y + radius);
+        canvas.drawRect(_drawRect, _foreground);
         super.draw(canvas);
     }
 

@@ -59,11 +59,12 @@ public class PacMan extends Character {
         _foreground.setColor(color);
     }
 
+    private final RectF _drawRect = new RectF();
     @Override
     public void draw(Canvas canvas) {
         float radius = _size / 2;
-        RectF r = new RectF(_x - radius, _y - radius, _x + radius, _y + radius);
-        canvas.drawArc(r, _pMouth + _mouthOpenGrad, 360 - 2 * _mouthOpenGrad, true, _foreground);
+        _drawRect.set(_position.x - radius, _position.y - radius, _position.x + radius, _position.y + radius);
+        canvas.drawArc(_drawRect, _pMouth + _mouthOpenGrad, 360 - 2 * _mouthOpenGrad, true, _foreground);
         super.draw(canvas);
     }
 
