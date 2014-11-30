@@ -10,6 +10,6 @@
     <color name="Inky">#9900FFFF</color>
     <color name="Pinky">#99FF00FF</color>
     <color name="Clyde">#99FFA500</color>
-    <color name="score">#FFFFFF00</color>
+    <color name="score">#FFFFFF</color>
     <color name="ScaredGhost">#0000FF</color>
 </resources>

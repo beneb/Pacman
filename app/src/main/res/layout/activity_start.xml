@@ -52,7 +52,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/menu_highScores"
+            android:text="@string/menu_high_scores"
             android:id="@+id/highScores"
             android:onClick="buttonHighScoresClick"
             android:background="@color/background"

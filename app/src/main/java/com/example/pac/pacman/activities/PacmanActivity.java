@@ -87,7 +87,7 @@ public class PacmanActivity extends ActionBarActivity {
     };
 
     private void setScore(int score) {
-        TextView v = (TextView) findViewById(R.id.score_text);
+        TextView v = (TextView) findViewById(R.id.score_value);
         v.setText("" + score);
     }
 
@@ -108,8 +108,10 @@ public class PacmanActivity extends ActionBarActivity {
 
         setContentView(R.layout.activity_pacman);
 
-        Fonts.setRegularFont(this, R.id.score_label);
-        Fonts.setRegularFont(this, R.id.score_text);
+        // Fonts.setRegularFont(this, R.id.score_label);
+        Fonts.setRegularFont(this, R.id.high_score_label);
+        Fonts.setRegularFont(this, R.id.high_score_value);
+        Fonts.setRegularFont(this, R.id.score_value);
         Fonts.setRegularFont(this, R.id.ouchTextView);
 
         GameplayView gameplayView = (GameplayView) findViewById(R.id.gameplay_view);
@@ -236,7 +238,7 @@ public class PacmanActivity extends ActionBarActivity {
             SharedPreferences.Editor editor = settings.edit();
             _labyrinthState = labyrinth.getState();
             editor.putString(LABYRINTH_STATE, _labyrinthState);
-            TextView view =  (TextView) findViewById(R.id.score_text);
+            TextView view =  (TextView) findViewById(R.id.score_value);
             _score = Integer.parseInt(view.getText().toString());
             editor.putInt(SCORE, _score);
             editor.apply();

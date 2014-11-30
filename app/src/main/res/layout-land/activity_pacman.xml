@@ -5,47 +5,54 @@
     android:paddingRight="16dp"
     android:orientation="vertical" >
 
+    <com.example.pac.pacman.views.GameplayView
+        android:id="@+id/gameplay_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginEnd="250dp"
+        android:layout_marginRight="250dp"/>
+
     <TextView
         android:id="@+id/score_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:hint="_____________"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/score"
-        android:layout_alignBaseline="@+id/high_score_value"/>
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"/>
+
     <TextView
         android:id="@+id/high_score_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/high_score_text"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/score"
-        android:text="@string/high_score_text"
-        android:layout_below="@id/high_score_label"
-        android:layout_centerHorizontal="true" />
-
+        android:layout_below="@+id/score_value"
+        android:layout_alignLeft="@+id/score_value"
+        android:layout_alignStart="@+id/score_value"/>
     <TextView
         android:id="@+id/high_score_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/dummy_score_value"
-        android:layout_below="@id/high_score_label"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/score"
-        android:layout_centerHorizontal="true" />
-
-    <com.example.pac.pacman.views.GameplayView
-        android:id="@+id/gameplay_view"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_above="@+id/ouchTextView"
-        android:layout_below="@id/high_score_value" />
+        android:layout_below="@+id/high_score_label"
+        android:layout_alignLeft="@+id/high_score_label"
+        android:layout_alignStart="@+id/high_score_label"/>
 
     <TextView
         android:id="@+id/ouchTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="false"
-        android:layout_alignParentRight="true"
+        android:layout_below="@id/high_score_value"
+        android:layout_alignStart="@id/high_score_value"
+        android:layout_alignLeft="@id/high_score_value"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </RelativeLayout>
