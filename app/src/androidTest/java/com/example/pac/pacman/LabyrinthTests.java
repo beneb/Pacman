@@ -1,5 +1,6 @@
 package com.example.pac.pacman;
 
+import android.graphics.PointF;
 import android.graphics.RectF;
 
 import junit.framework.TestCase;
@@ -18,8 +19,8 @@ public class LabyrinthTests extends TestCase {
         assertEquals(10f, _labyrinth.getCellSize());
     }
     public void testCellFromCoordinates() {
-        assertEquals(0, _labyrinth.cellAt(1, 1));
-        assertEquals(4, _labyrinth.cellAt(15, 15));
+        assertEquals(0, _labyrinth.cellAt(new PointF(1, 1)));
+        assertEquals(4, _labyrinth.cellAt(new PointF(15, 15)));
     }
 
     public void testGetLabyrinthState() {

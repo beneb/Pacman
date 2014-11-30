@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.Log;
 
@@ -193,9 +194,9 @@ public class Labyrinth {
         return cellNum % _width;
     }
 
-    public int cellAt(float x, float y) {
-        int col = getCol(x);
-        int row = getRow(y);
+    public int cellAt(PointF position) {
+        int col = getCol(position.x);
+        int row = getRow(position.y);
 
         if (col >= _width) {
             col = 0;

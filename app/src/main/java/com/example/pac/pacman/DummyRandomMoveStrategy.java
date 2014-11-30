@@ -1,5 +1,4 @@
 package com.example.pac.pacman;
-
 import java.util.ArrayList;
 
 public class DummyRandomMoveStrategy implements IMoveStrategy {
@@ -13,8 +12,7 @@ public class DummyRandomMoveStrategy implements IMoveStrategy {
     }
 
     @Override
-    public Direction GetCurrentOrNextDirection(float currentX, float currentY) {
-        int currentCell = _labyrinth.cellAt(currentX, currentY);
+    public Direction GetNextDirection(int currentCell) {
         if (_lastCell == -1 ||
             (currentCell != _lastCell && !_labyrinth.canMove(currentCell, _lastDirection))) {
 

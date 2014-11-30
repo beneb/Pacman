@@ -29,7 +29,7 @@ public abstract class Character {
     }
 
     public int getCell() {
-        return _labyrinth.cellAt(_position.x, _position.y);
+        return _labyrinth.cellAt(_position);
     }
 
     private Rect _invalidateRect;
@@ -85,9 +85,9 @@ public abstract class Character {
     }
 
     public Direction move() {
-        _newDirection = _moveStrategy.GetCurrentOrNextDirection(_position.x, _position.y);
+        int cell = _labyrinth.cellAt(_position);
+        _newDirection = _moveStrategy.GetNextDirection(cell);
 
-        int cell = _labyrinth.cellAt(_position.x, _position.y);
         RectF bounds = _labyrinth.getCellBounds(cell);
         float centerX = bounds.centerX();
         float centerY = bounds.centerY();

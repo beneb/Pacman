@@ -1,5 +1,7 @@
 package com.example.pac.pacman;
 
+import android.graphics.PointF;
+
 public class PacManMoveStrategy implements IMoveStrategy {
 
     public PacManMoveStrategy(Labyrinth _labyrinth) {
@@ -16,8 +18,7 @@ public class PacManMoveStrategy implements IMoveStrategy {
     }
 
     @Override
-    public Direction GetCurrentOrNextDirection(float x, float y) {
-        int cell = _labyrinth.cellAt(x, y);
+    public Direction GetNextDirection(int cell) {
         if (_labyrinth.canMove(cell, _wishDirection)) {
             _direction = _wishDirection;
         } else if (!_labyrinth.canMove(cell, _direction)) {

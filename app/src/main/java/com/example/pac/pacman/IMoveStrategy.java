@@ -1,6 +1,8 @@
 package com.example.pac.pacman;
 
+import android.graphics.PointF;
+
 public interface IMoveStrategy {
-    Direction GetCurrentOrNextDirection(float x, float y);
+    Direction GetNextDirection(int currentCell);
 }
 
