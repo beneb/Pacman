@@ -9,6 +9,7 @@
         android:id="@+id/score_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="12dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/score"
         android:layout_alignBaseline="@+id/high_score_value"/>
@@ -16,6 +17,7 @@
         android:id="@+id/high_score_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="12dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/score"
         android:text="@string/high_score_text"
@@ -28,6 +30,7 @@
         android:layout_height="wrap_content"
         android:text="@string/dummy_score_value"
         android:layout_below="@id/high_score_label"
+        android:textSize="12dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/score"
         android:layout_centerHorizontal="true" />

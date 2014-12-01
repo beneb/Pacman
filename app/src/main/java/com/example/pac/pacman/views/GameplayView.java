@@ -16,6 +16,7 @@ import com.example.pac.pacman.event.InitEvent;
 import com.example.pac.pacman.event.InvalidateViewEvent;
 import com.example.pac.pacman.event.PacManDirectionRequestEvent;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /*
@@ -40,7 +41,7 @@ public class GameplayView extends View {
     }
 
     private IEventManager _eventManager = new DummyEventManager();
-    private Collection<IChildView> _childViews;
+    private Collection<IChildView> _childViews = new ArrayList<IChildView>();
 
     public void init(IEventManager eventManager, Collection<IChildView> childViews) {
         _eventManager = eventManager;

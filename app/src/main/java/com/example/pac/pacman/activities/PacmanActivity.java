@@ -2,6 +2,7 @@ package com.example.pac.pacman.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,7 +23,6 @@ import com.example.pac.pacman.SoundHandler;
 import com.example.pac.pacman.event.EnergizerEatenEvent;
 import com.example.pac.pacman.event.ChangeLifesEvent;
 import com.example.pac.pacman.event.DotEatenEvent;
-import com.example.pac.pacman.event.DrawRequestEvent;
 import com.example.pac.pacman.event.EnergizerEndsEvent;
 import com.example.pac.pacman.event.EnergizerWillBeRunningOutEvent;
 import com.example.pac.pacman.event.EventListener;
@@ -71,14 +71,16 @@ public class PacmanActivity extends ActionBarActivity {
     public EventListener<DotEatenEvent> DotEatenListener = new EventListener<DotEatenEvent>() {
         @Override
         public void onEvent(DotEatenEvent event) {
-            setScore(_score += 10);
+            _score += 10;
+            setScoreView();
         }
     };
 
     public EventListener<EnergizerEatenEvent> EnergizerEatenListener = new EventListener<EnergizerEatenEvent>() {
         @Override
         public void onEvent(EnergizerEatenEvent event) {
-            setScore(_score += 50);
+            _score += 50;
+            setScoreView();
         }
     };
 
@@ -89,10 +91,11 @@ public class PacmanActivity extends ActionBarActivity {
             setInfoLabel(pacManWasHit ? "OUCH!!!" : "", Color.RED);
         }
     };
+    private Collection<IChildView> _childViews;
 
-    private void setScore(int score) {
+    private void setScoreView() {
         TextView v = (TextView) findViewById(R.id.score_value);
-        v.setText("" + score);
+        v.setText("" + _score);
     }
 
     private void setInfoLabel(String text, int color) {
@@ -109,18 +112,11 @@ public class PacmanActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_pacman);
 
-        // Fonts.setRegularFont(this, R.id.score_label);
-        Fonts.setRegularFont(this, R.id.high_score_label);
-        Fonts.setRegularFont(this, R.id.high_score_value);
-        Fonts.setRegularFont(this, R.id.score_value);
-        Fonts.setRegularFont(this, R.id.ouchTextView);
-
         initState();
-
         GameLogicHandler gameLogic = createGameObjects();
+        initViews();
 
         _frameLoop = new FrameLoop(gameLogic);
         _frameLoop.start();
@@ -140,10 +136,18 @@ public class PacmanActivity extends ActionBarActivity {
         _eventManager.unregisterAll();
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        setContentView(R.layout.activity_pacman);
+        initViews();
+    }
+
     private GameLogicHandler createGameObjects() {
         _labyrinth = new Labyrinth(_state.getLabyrinthState());
 
-        setScore(_state.getScore());
+        _score = _state.getScore();
+        setScoreView();
 
         IMoveStrategy pacManStrategy = new PacManMoveStrategy(_labyrinth);
         PacMan pacMan = new PacMan(pacManStrategy, _labyrinth);
@@ -176,16 +180,24 @@ public class PacmanActivity extends ActionBarActivity {
             _eventManager.registerObserver(EnergizerWillBeRunningOutEvent.class, ((Ghost)character).EnergizerWillBeRunningOutListener);
         }
 
-        GameplayView gameplayView = (GameplayView) findViewById(R.id.gameplay_view);
 
-        Collection<IChildView> childViews = new ArrayList<IChildView>(ghosts.values());
-        childViews.add(pacManView);
-        childViews.add(new LabyrinthView(_labyrinth, getResources()));
-        gameplayView.init(_eventManager, childViews);
+        _childViews = new ArrayList<IChildView>(ghosts.values());
+        _childViews.add(pacManView);
+        _childViews.add(new LabyrinthView(_labyrinth, getResources()));
 
         return gameLogic;
     }
 
+    private void initViews() {
+        Fonts.setRegularFont(this, R.id.high_score_label);
+        Fonts.setRegularFont(this, R.id.high_score_value);
+        Fonts.setRegularFont(this, R.id.score_value);
+        Fonts.setRegularFont(this, R.id.ouchTextView);
+
+        GameplayView gameplayView = (GameplayView) findViewById(R.id.gameplay_view);
+        gameplayView.init(_eventManager, _childViews);
+        setScoreView();
+    }
 
     public EventListener<LevelCompleteEvent> LevelCompleteHandler = new EventListener<LevelCompleteEvent>() {
         @Override
