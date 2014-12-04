@@ -1,37 +1,34 @@
 package com.example.pac.pacman.activities;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.pac.pacman.R;
-import com.example.pac.pacman.util.Fonts;
+
+import java.util.ArrayList;
 
 public class HighScoresActivity extends ActionBarActivity {
+    private final String HIGHSCORES_PREFERENCES = "HIGHSCORES_PREFERENCES";
+
     ListView listView;
+    private HighScoreRepository _highScoreRepository = new HighScoreRepository();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        ArrayList<String> highScores = _highScoreRepository.getScoresStrings(getSharedPreferences(HIGHSCORES_PREFERENCES, 0));
 
         setContentView(R.layout.activity_high_scores);
         // Get ListView object from xml
         listView = (ListView) findViewById(R.id.listViewHighScores);
-
-        // Defined Array values to show in ListView
-        String[] values = new String[] {
-                "JoJo 12345",
-                "Helmut 12344",
-                "Mikka 1234"
-        };
 
         // Define a new Adapter
         // First parameter - Context
@@ -40,7 +37,7 @@ public class HighScoresActivity extends ActionBarActivity {
         // Forth - the Array of data
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, android.R.id.text1, values);
+                android.R.layout.simple_list_item_1, android.R.id.text1, highScores);
 
 
         // Assign adapter to ListView
@@ -52,17 +49,18 @@ public class HighScoresActivity extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-
                 // ListView Clicked item index
-                int itemPosition     = position;
-
                 // ListView Clicked item value
                 String  itemValue    = (String) listView.getItemAtPosition(position);
-
                 // Show Alert
                 Toast.makeText(getApplicationContext(),
-                        "Position :"+itemPosition+"  ListItem : " +itemValue , Toast.LENGTH_LONG)
+                        "Position :"+ position +"  ListItem : " +itemValue , Toast.LENGTH_LONG)
                         .show();
+
+                // TODO:
+                // Show dialog here
+                // add the new name
+                // after that rebuild gui.
 
             }
 
