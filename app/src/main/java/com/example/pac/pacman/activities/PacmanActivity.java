@@ -208,7 +208,8 @@ public class PacmanActivity extends ActionBarActivity {
             levelCompleteDelayHandler.postDelayed(new Runnable() {
                 public void run() {
                     setInfoLabel("", Color.RED);
-                    _labyrinth.load(_state.getNewLevel());
+                    _labyrinth.load(_state.getNewLabyrinthState());
+                    _state.incrementCurrentLevel();
                     _eventManager.fire(new InitEvent());
                     _frameLoop.start();
                 }
@@ -223,30 +224,35 @@ public class PacmanActivity extends ActionBarActivity {
         private static final String SETTINGS = "SETTINGS";
         private static final String LABYRINTH_STATE = "LABYRINTH_STATE";
         private static final String SCORE = "SCORE";
+        private static final String CURRENT_LEVEL = "CURRENT_LEVEL";
 
         private String _labyrinthState;
         private int _score;
+        private int _currentLevel;
 
         public String getLabyrinthState() {
             return _labyrinthState;
         }
 
-        public String getNewLevel(){
+        public String getNewLabyrinthState(){
             return getResources().getString(R.string.level_classic);
         }
 
         public int getScore() {
             return _score;
         }
+        public int getCurrentLevel() { return _currentLevel; }
+        public int incrementCurrentLevel() { return _currentLevel++; }
 
         private void load() {
             Intent intent = getIntent();
             String action = intent.getAction();
-            _labyrinthState = getNewLevel();
+            _labyrinthState = getNewLabyrinthState();
             if (RESUME_ACTION.equals(action)) {
                 SharedPreferences settings = getSharedPreferences(SETTINGS, 0);
                 _labyrinthState = settings.getString(LABYRINTH_STATE, _labyrinthState);
                 _score = settings.getInt(SCORE, _score);
+                _currentLevel = settings.getInt(CURRENT_LEVEL, 1);
             }
         }
 
@@ -258,6 +264,7 @@ public class PacmanActivity extends ActionBarActivity {
             TextView view =  (TextView) findViewById(R.id.score_value);
             _score = Integer.parseInt(view.getText().toString());
             editor.putInt(SCORE, _score);
+            editor.putInt(CURRENT_LEVEL, _currentLevel);
             editor.apply();
         }
     }
