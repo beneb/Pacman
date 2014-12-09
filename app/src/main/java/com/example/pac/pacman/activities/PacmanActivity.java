@@ -1,5 +1,9 @@
 package com.example.pac.pacman.activities;
 
+import android.animation.ObjectAnimator;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -7,6 +11,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.pac.pacman.Character;
@@ -35,6 +40,7 @@ import com.example.pac.pacman.util.Fonts;
 import com.example.pac.pacman.views.GameplayView;
 import com.example.pac.pacman.views.IChildView;
 import com.example.pac.pacman.views.LabyrinthView;
+import com.example.pac.pacman.views.NextLevelFragment;
 import com.example.pac.pacman.views.PacManView;
 
 import java.util.ArrayList;
@@ -204,9 +210,11 @@ public class PacmanActivity extends ActionBarActivity {
         public void onEvent(LevelCompleteEvent event) {
             _frameLoop.stop();
             setInfoLabel("Level Complete!", Color.GREEN);
+            showNextLevelFragment();
             Handler levelCompleteDelayHandler = new Handler();
             levelCompleteDelayHandler.postDelayed(new Runnable() {
                 public void run() {
+                    hideNextLevelFragment();
                     setInfoLabel("", Color.RED);
                     _labyrinth.load(_state.getNewLabyrinthState());
                     _state.incrementCurrentLevel();
@@ -216,6 +224,21 @@ public class PacmanActivity extends ActionBarActivity {
             }, 3000);
         }
     };
+
+    private void hideNextLevelFragment() {
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        Fragment nextLevelFragment = fragmentManager.findFragmentByTag("NEXT_LEVEL_FRAGMENT");
+        fragmentTransaction.remove(nextLevelFragment);
+        fragmentTransaction.commit();
+    }
+
+    private void showNextLevelFragment() {
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        NextLevelFragment nextLevelFragment = new NextLevelFragment();
+        fragmentTransaction.add(R.id.topmost_layout, nextLevelFragment, "NEXT_LEVEL_FRAGMENT");
+        fragmentTransaction.commit();
+    }
 
     State _state = new State();
 
