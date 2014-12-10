@@ -230,14 +230,14 @@ public class PacmanActivity extends ActionBarActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         Fragment nextLevelFragment = fragmentManager.findFragmentByTag("NEXT_LEVEL_FRAGMENT");
         fragmentTransaction.remove(nextLevelFragment);
-        fragmentTransaction.commit();
+        fragmentTransaction.commitAllowingStateLoss();
     }
 
     private void showNextLevelFragment() {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         NextLevelFragment nextLevelFragment = new NextLevelFragment();
         fragmentTransaction.add(R.id.topmost_layout, nextLevelFragment, "NEXT_LEVEL_FRAGMENT");
-        fragmentTransaction.commit();
+        fragmentTransaction.commitAllowingStateLoss();
     }
 
     State _state = new State();
