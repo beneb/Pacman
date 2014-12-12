@@ -1,6 +1,5 @@
 package com.example.pac.pacman.activities;
 
-import android.animation.ObjectAnimator;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -11,7 +10,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.pac.pacman.Character;
@@ -206,39 +204,42 @@ public class PacmanActivity extends ActionBarActivity {
     }
 
     public EventListener<LevelCompleteEvent> LevelCompleteHandler = new EventListener<LevelCompleteEvent>() {
+        private static final int NEXT_LEVEL_SHOW_DELAY = 4000;
+
         @Override
         public void onEvent(LevelCompleteEvent event) {
             _frameLoop.stop();
-            setInfoLabel("Level Complete!", Color.GREEN);
-            showNextLevelFragment();
+            _state.incrementCurrentLevel();
+            showNextLevelFragment(_state.getCurrentLevel());
             Handler levelCompleteDelayHandler = new Handler();
             levelCompleteDelayHandler.postDelayed(new Runnable() {
                 public void run() {
-                    hideNextLevelFragment();
-                    setInfoLabel("", Color.RED);
-                    _labyrinth.load(_state.getNewLabyrinthState());
-                    _state.incrementCurrentLevel();
-                    _eventManager.fire(new InitEvent());
-                    _frameLoop.start();
+                    if (!isDestroyed()) {
+                        hideNextLevelFragment();
+                        _labyrinth.load(_state.getNewLabyrinthState());
+                        _eventManager.fire(new InitEvent());
+                        _frameLoop.start();
+                    }
                 }
-            }, 3000);
+            }, NEXT_LEVEL_SHOW_DELAY);
+        }
+
+        private void hideNextLevelFragment() {
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            Fragment nextLevelFragment = fragmentManager.findFragmentByTag("NEXT_LEVEL_FRAGMENT");
+            fragmentTransaction.remove(nextLevelFragment);
+            fragmentTransaction.commitAllowingStateLoss();
+        }
+
+        private void showNextLevelFragment(int levelNum) {
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            NextLevelFragment nextLevelFragment = NextLevelFragment.newInstance(levelNum);
+            fragmentTransaction.add(R.id.topmost_layout, nextLevelFragment, "NEXT_LEVEL_FRAGMENT");
+            fragmentTransaction.commitAllowingStateLoss();
         }
     };
 
-    private void hideNextLevelFragment() {
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        Fragment nextLevelFragment = fragmentManager.findFragmentByTag("NEXT_LEVEL_FRAGMENT");
-        fragmentTransaction.remove(nextLevelFragment);
-        fragmentTransaction.commitAllowingStateLoss();
-    }
-
-    private void showNextLevelFragment() {
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        NextLevelFragment nextLevelFragment = new NextLevelFragment();
-        fragmentTransaction.add(R.id.topmost_layout, nextLevelFragment, "NEXT_LEVEL_FRAGMENT");
-        fragmentTransaction.commitAllowingStateLoss();
-    }
 
     State _state = new State();
 
@@ -251,7 +252,7 @@ public class PacmanActivity extends ActionBarActivity {
 
         private String _labyrinthState;
         private int _score;
-        private int _currentLevel;
+        private int _currentLevel = 1;
 
         public String getLabyrinthState() {
             return _labyrinthState;

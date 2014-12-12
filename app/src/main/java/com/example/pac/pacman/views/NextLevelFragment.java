@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.example.pac.pacman.R;
 import com.example.pac.pacman.util.Fonts;
@@ -17,14 +18,35 @@ import com.example.pac.pacman.util.Fonts;
 
 public class NextLevelFragment extends Fragment {
 
-    public NextLevelFragment() {
+    private static final String LEVEL_PARAM = "LEVEL_PARAM";
+
+    private int _levelNum;
+
+    public static NextLevelFragment newInstance(int levelNum) {
+        NextLevelFragment fragment = new NextLevelFragment();
+        Bundle args = new Bundle();
+        args.putInt(LEVEL_PARAM, levelNum);
+        fragment.setArguments(args);
+        return fragment;
+    }
+    public NextLevelFragment() { }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            _levelNum = getArguments().getInt(LEVEL_PARAM);
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_next_level, container, false);
+        View fragmentView = inflater.inflate(R.layout.fragment_next_level, container, false);
+        TextView levelNumberView = (TextView)fragmentView.findViewById(R.id.level_number_view);
+        levelNumberView.setText(String.format("%d", _levelNum));
+        return fragmentView;
     }
 
     private static final int ANIMATION_DURATION = 500;
