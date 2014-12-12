@@ -19,12 +19,6 @@ import com.example.pac.pacman.event.PacManDirectionRequestEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 
-/*
-*   TODO: Maybe it should be a SurfaceView
-*   see  http://android-journey.blogspot.co.il/2010/02/android-2d-simple-example.html
-*   http://pierrchen.blogspot.de/2014/03/anroid-graphics-surfaceview-all-you.html
-*   http://source.android.com/devices/graphics/architecture.html
-* */
 public class GameplayView extends View {
 
     private static final int MARGIN = 10;
