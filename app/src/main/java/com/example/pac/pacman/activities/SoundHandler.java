@@ -1,8 +1,11 @@
 package com.example.pac.pacman.activities;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.os.Build;
 
 import com.example.pac.pacman.R;
 import com.example.pac.pacman.event.EnergizerEatenEvent;
@@ -17,21 +20,21 @@ public class SoundHandler {
     private int _soundIDForEating;
     private int _soundIDForEatingFast;
 
+    @SuppressWarnings("deprecation")
+    @TargetApi(21)
     public SoundHandler(Context context) {
 
-        // required API level 21
-        // AudioAttributes.Builder aab = new AudioAttributes.Builder();
-        // aab.setUsage(AudioAttributes.USAGE_GAME);
-        // aab.setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION);
-        // aab.setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED);
-        // SoundPool.Builder spb = new SoundPool.Builder();
-        // spb.setAudioAttributes(aab.build());
-        // spb.setMaxStreams(R.integer.maxSimultaneousStreams);
-        // _soundPool = spb.build();
-
-        // SoundPool constructor is deprecated (since API level 21)
-        // ... so we with our good "old ham" smartphones still need this constructor
-        _soundPool = new SoundPool(8, AudioManager.STREAM_MUSIC, 0);
+        if (Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP) {
+            _soundPool = new SoundPool(8, AudioManager.STREAM_MUSIC, 0);
+        } else {
+            SoundPool.Builder builder = new SoundPool.Builder();
+            builder.setMaxStreams(8);
+            AudioAttributes.Builder aab = new AudioAttributes.Builder();
+            aab.setUsage(AudioAttributes.USAGE_GAME);
+            aab.setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION);
+            aab.setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED);
+            _soundPool = builder.build();
+        }
         _soundIDForEating = _soundPool.load(context, R.raw.bite_sound, 0);
         _soundIDForEatingFast = _soundPool.load(context, R.raw.bite_sound_fast, 0);
         _soundExtraPac = _soundPool.load(context, R.raw.pacman_extrapac, 0);
