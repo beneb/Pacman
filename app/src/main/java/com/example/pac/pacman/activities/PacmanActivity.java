@@ -171,6 +171,7 @@ public class PacmanActivity extends ActionBarActivity {
         _eventManager.registerObserver(DotEatenEvent.class, soundHandler.PlaySoundForEatingADot);
         _eventManager.registerObserver(EnergizerEatenEvent.class, soundHandler.PlaySoundForEatingAnEnergizer);
         _eventManager.registerObserver(EnergizerEatenEvent.class, EnergizerStartsListener);
+        _eventManager.registerObserver(LevelCompleteEvent.class, soundHandler.LevelCompleteListener);
         _eventManager.registerObserver(EnergizerWillBeRunningOutEvent.class, EnergizerWillBeRunningOutListener);
         _eventManager.registerObserver(EnergizerEndsEvent.class, EnergizerEndsListener);
         _eventManager.registerObserver(LevelCompleteEvent.class, LevelCompleteHandler);
@@ -204,7 +205,7 @@ public class PacmanActivity extends ActionBarActivity {
     }
 
     public EventListener<LevelCompleteEvent> LevelCompleteHandler = new EventListener<LevelCompleteEvent>() {
-        private static final int NEXT_LEVEL_SHOW_DELAY = 4000;
+        private static final int NEXT_LEVEL_SHOW_DELAY = 3000;
 
         @Override
         public void onEvent(LevelCompleteEvent event) {
