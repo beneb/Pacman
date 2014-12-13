@@ -1,9 +1,10 @@
-package com.example.pac.pacman;
+package com.example.pac.pacman.activities;
 
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.SoundPool;
 
+import com.example.pac.pacman.R;
 import com.example.pac.pacman.event.EnergizerEatenEvent;
 import com.example.pac.pacman.event.DotEatenEvent;
 import com.example.pac.pacman.event.EventListener;

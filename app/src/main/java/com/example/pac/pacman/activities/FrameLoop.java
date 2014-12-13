@@ -2,16 +2,14 @@ package com.example.pac.pacman.activities;
 
 import android.os.Handler;
 
-import com.example.pac.pacman.GameLogicHandler;
-
 public class FrameLoop {
     private final static int FPS = 30;
 
     private final Handler _handler = new Handler();
-    private final GameLogicHandler _gameLogic;
+    private final GameLogic _gameLogic;
     private boolean _stopped = false;
 
-    public FrameLoop(GameLogicHandler gameLogic) {
+    public FrameLoop(GameLogic gameLogic) {
         _gameLogic = gameLogic;
     }
 

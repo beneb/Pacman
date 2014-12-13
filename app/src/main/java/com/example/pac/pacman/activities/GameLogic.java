@@ -1,7 +1,9 @@
-package com.example.pac.pacman;
+package com.example.pac.pacman.activities;
 
 import android.content.res.Resources;
 
+import com.example.pac.pacman.*;
+import com.example.pac.pacman.Character;
 import com.example.pac.pacman.event.ChangeLifesEvent;
 import com.example.pac.pacman.event.DotEatenEvent;
 import com.example.pac.pacman.event.EnergizerEatenEvent;
@@ -18,16 +20,16 @@ import org.joda.time.DateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class GameLogicHandler {
+public class GameLogic {
 
     private PacMan _pacMan;
     private IEventManager _eventManager;
-    private Collection<Character> _ghosts;
+    private Collection<com.example.pac.pacman.Character> _ghosts;
     private Resources _resources;
     private ArrayList<ActionAfterTimeOut> _actions = new ArrayList<ActionAfterTimeOut>();
     private Labyrinth _labyrinth;
 
-    public GameLogicHandler(PacMan pacMan, IEventManager eventManager, Collection<Character> ghosts, Labyrinth labyrinth, Resources resources) {
+    public GameLogic(PacMan pacMan, IEventManager eventManager, Collection<Character> ghosts, Labyrinth labyrinth, Resources resources) {
         _labyrinth = labyrinth;
         _pacMan = pacMan;
         _eventManager = eventManager;

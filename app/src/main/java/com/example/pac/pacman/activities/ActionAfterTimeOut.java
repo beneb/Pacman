@@ -1,4 +1,4 @@
-package com.example.pac.pacman;
+package com.example.pac.pacman.activities;
 import com.example.pac.pacman.event.IEventManager;
 
 import org.joda.time.DateTime;

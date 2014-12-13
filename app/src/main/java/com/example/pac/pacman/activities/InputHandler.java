@@ -1,7 +1,11 @@
-package com.example.pac.pacman;
+package com.example.pac.pacman.activities;
 
 import android.graphics.PointF;
 
+import com.example.pac.pacman.Direction;
+import com.example.pac.pacman.IMoveStrategy;
+import com.example.pac.pacman.PacMan;
+import com.example.pac.pacman.PacManMoveStrategy;
 import com.example.pac.pacman.event.EventListener;
 import com.example.pac.pacman.event.PacManDirectionRequestEvent;
 

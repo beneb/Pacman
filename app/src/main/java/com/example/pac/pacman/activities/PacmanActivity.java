@@ -13,16 +13,13 @@ import android.support.v7.app.ActionBarActivity;
 import android.widget.TextView;
 
 import com.example.pac.pacman.Character;
-import com.example.pac.pacman.GameLogicHandler;
 import com.example.pac.pacman.Ghost;
 import com.example.pac.pacman.GhostRepository;
 import com.example.pac.pacman.IMoveStrategy;
-import com.example.pac.pacman.InputHandler;
 import com.example.pac.pacman.Labyrinth;
 import com.example.pac.pacman.PacMan;
 import com.example.pac.pacman.PacManMoveStrategy;
 import com.example.pac.pacman.R;
-import com.example.pac.pacman.SoundHandler;
 import com.example.pac.pacman.event.EnergizerEatenEvent;
 import com.example.pac.pacman.event.ChangeLifesEvent;
 import com.example.pac.pacman.event.DotEatenEvent;
@@ -119,7 +116,7 @@ public class PacmanActivity extends ActionBarActivity {
         setContentView(R.layout.activity_pacman);
 
         initState();
-        GameLogicHandler gameLogic = createGameObjects();
+        GameLogic gameLogic = createGameObjects();
         initViews();
 
         _frameLoop = new FrameLoop(gameLogic);
@@ -147,7 +144,7 @@ public class PacmanActivity extends ActionBarActivity {
         initViews();
     }
 
-    private GameLogicHandler createGameObjects() {
+    private GameLogic createGameObjects() {
         _labyrinth = new Labyrinth(_state.getLabyrinthState());
 
         _score = _state.getScore();
@@ -159,7 +156,7 @@ public class PacmanActivity extends ActionBarActivity {
 
         Map<Character, IChildView> ghosts = GhostRepository.CreateGhosts(getResources(), _labyrinth);
 
-        GameLogicHandler gameLogic = new GameLogicHandler(pacMan,_eventManager, ghosts.keySet(), _labyrinth, getResources());
+        GameLogic gameLogic = new GameLogic(pacMan,_eventManager, ghosts.keySet(), _labyrinth, getResources());
         SoundHandler soundHandler = new SoundHandler(this);
 
         _eventManager.registerObserver(InitEvent.class, gameLogic.InitGameListener);
