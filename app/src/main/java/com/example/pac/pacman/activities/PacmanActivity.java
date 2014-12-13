@@ -218,7 +218,7 @@ public class PacmanActivity extends ActionBarActivity {
                     if (!isDestroyed()) {
                         hideNextLevelFragment();
                         _labyrinth.load(_state.getNewLabyrinthState());
-                        _eventManager.fire(new InitEvent());
+                        _eventManager.fire(new InitEvent(_labyrinth.getBounds()));
                         _frameLoop.start();
                     }
                 }

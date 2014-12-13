@@ -3,6 +3,7 @@ package com.example.pac.pacman.views;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -28,6 +29,7 @@ import java.util.Collection;
 public class GameplayView extends View {
 
     private static final int MARGIN = 10;
+
     private RectF getInnerBounds(int w, int h) {
         return new RectF(MARGIN, MARGIN, w - MARGIN, h - MARGIN);
     }
@@ -50,6 +52,19 @@ public class GameplayView extends View {
                     @Override
                     public void onEvent(InvalidateViewEvent event) {
                         invalidate(event.GetRect());
+                    }
+                });
+        _eventManager.registerObserver(InitEvent.class,
+                new EventListener<InitEvent>() {
+                    @Override
+                    public void onEvent(InitEvent event) {
+                        RectF bounds = event.getBounds();
+                        Rect invalidateRect = new Rect(
+                                (int) bounds.left,
+                                (int) bounds.top,
+                                (int) bounds.right,
+                                (int) bounds.bottom);
+                        invalidate();
                     }
                 });
         _childViews = childViews;
