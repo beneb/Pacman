@@ -9,5 +9,6 @@
     <string name="action_settings">Settings</string>
     <string name="high_score_text">HIGH SCORE</string>
     <string name="dummy_score_value">12345</string>
+    <string name="level">LEVEL</string>
 
 </resources>

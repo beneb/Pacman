@@ -1,5 +1,8 @@
 package com.example.pac.pacman.activities;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -35,6 +38,7 @@ import com.example.pac.pacman.util.Fonts;
 import com.example.pac.pacman.views.GameplayView;
 import com.example.pac.pacman.views.IChildView;
 import com.example.pac.pacman.views.LabyrinthView;
+import com.example.pac.pacman.views.NextLevelFragment;
 import com.example.pac.pacman.views.PacManView;
 
 import java.util.ArrayList;
@@ -167,6 +171,7 @@ public class PacmanActivity extends ActionBarActivity {
         _eventManager.registerObserver(DotEatenEvent.class, soundHandler.PlaySoundForEatingADot);
         _eventManager.registerObserver(EnergizerEatenEvent.class, soundHandler.PlaySoundForEatingAnEnergizer);
         _eventManager.registerObserver(EnergizerEatenEvent.class, EnergizerStartsListener);
+        _eventManager.registerObserver(LevelCompleteEvent.class, soundHandler.LevelCompleteListener);
         _eventManager.registerObserver(EnergizerWillBeRunningOutEvent.class, EnergizerWillBeRunningOutListener);
         _eventManager.registerObserver(EnergizerEndsEvent.class, EnergizerEndsListener);
         _eventManager.registerObserver(LevelCompleteEvent.class, LevelCompleteHandler);
@@ -200,21 +205,42 @@ public class PacmanActivity extends ActionBarActivity {
     }
 
     public EventListener<LevelCompleteEvent> LevelCompleteHandler = new EventListener<LevelCompleteEvent>() {
+        private static final int NEXT_LEVEL_SHOW_DELAY = 3000;
+
         @Override
         public void onEvent(LevelCompleteEvent event) {
             _frameLoop.stop();
-            setInfoLabel("Level Complete!", Color.GREEN);
+            _state.incrementCurrentLevel();
+            showNextLevelFragment(_state.getCurrentLevel());
             Handler levelCompleteDelayHandler = new Handler();
             levelCompleteDelayHandler.postDelayed(new Runnable() {
                 public void run() {
-                    setInfoLabel("", Color.RED);
-                    _labyrinth.load(_state.getNewLevel());
-                    _eventManager.fire(new InitEvent());
-                    _frameLoop.start();
+                    if (!isDestroyed()) {
+                        hideNextLevelFragment();
+                        _labyrinth.load(_state.getNewLabyrinthState());
+                        _eventManager.fire(new InitEvent(_labyrinth.getBounds()));
+                        _frameLoop.start();
+                    }
                 }
-            }, 3000);
+            }, NEXT_LEVEL_SHOW_DELAY);
+        }
+
+        private void hideNextLevelFragment() {
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            Fragment nextLevelFragment = fragmentManager.findFragmentByTag("NEXT_LEVEL_FRAGMENT");
+            fragmentTransaction.remove(nextLevelFragment);
+            fragmentTransaction.commitAllowingStateLoss();
+        }
+
+        private void showNextLevelFragment(int levelNum) {
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            NextLevelFragment nextLevelFragment = NextLevelFragment.newInstance(levelNum);
+            fragmentTransaction.add(R.id.topmost_layout, nextLevelFragment, "NEXT_LEVEL_FRAGMENT");
+            fragmentTransaction.commitAllowingStateLoss();
         }
     };
+
 
     State _state = new State();
 
@@ -223,30 +249,35 @@ public class PacmanActivity extends ActionBarActivity {
         private static final String SETTINGS = "SETTINGS";
         private static final String LABYRINTH_STATE = "LABYRINTH_STATE";
         private static final String SCORE = "SCORE";
+        private static final String CURRENT_LEVEL = "CURRENT_LEVEL";
 
         private String _labyrinthState;
         private int _score;
+        private int _currentLevel = 1;
 
         public String getLabyrinthState() {
             return _labyrinthState;
         }
 
-        public String getNewLevel(){
+        public String getNewLabyrinthState(){
             return getResources().getString(R.string.level_classic);
         }
 
         public int getScore() {
             return _score;
         }
+        public int getCurrentLevel() { return _currentLevel; }
+        public int incrementCurrentLevel() { return _currentLevel++; }
 
         private void load() {
             Intent intent = getIntent();
             String action = intent.getAction();
-            _labyrinthState = getNewLevel();
+            _labyrinthState = getNewLabyrinthState();
             if (RESUME_ACTION.equals(action)) {
                 SharedPreferences settings = getSharedPreferences(SETTINGS, 0);
                 _labyrinthState = settings.getString(LABYRINTH_STATE, _labyrinthState);
                 _score = settings.getInt(SCORE, _score);
+                _currentLevel = settings.getInt(CURRENT_LEVEL, 1);
             }
         }
 
@@ -258,6 +289,7 @@ public class PacmanActivity extends ActionBarActivity {
             TextView view =  (TextView) findViewById(R.id.score_value);
             _score = Integer.parseInt(view.getText().toString());
             editor.putInt(SCORE, _score);
+            editor.putInt(CURRENT_LEVEL, _currentLevel);
             editor.apply();
         }
     }
