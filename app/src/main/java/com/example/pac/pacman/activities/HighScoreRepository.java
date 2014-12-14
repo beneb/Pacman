@@ -28,7 +28,6 @@ public class HighScoreRepository {
                 result.add(hs.name + ": " + hs.score);
             }
         }
-        result.add("Jojo - dummy: 42");
         return result;
     }
 
@@ -51,7 +50,7 @@ public class HighScoreRepository {
         s.name = name;
         highScores.add(s);
 
-        Collections.sort(highScores);
+        Collections.sort(highScores, Collections.reverseOrder());
 
         // cut the list to 10 only
         int k = highScores.size();
@@ -65,7 +64,15 @@ public class HighScoreRepository {
         Gson gson = new Gson();
         String json = gson.toJson(scoreList);
         editor.putString(HIGHSCORES, json);
-        editor.commit();
+        editor.apply();
+    }
+
+    public int getHighScore(SharedPreferences sharedPreferences) {
+        ArrayList<Score> allHighscores = getScores(sharedPreferences);
+        if (allHighscores.isEmpty()){
+            return 0;
+        }
+        return allHighscores.get(0).score;
     }
 
 

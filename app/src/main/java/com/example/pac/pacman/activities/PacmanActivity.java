@@ -9,7 +9,9 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
+import android.view.View;
 import android.widget.TextView;
 
 import com.example.pac.pacman.Character;
@@ -44,6 +46,12 @@ import java.util.Map;
 
 public class PacmanActivity extends ActionBarActivity {
     private int _score;
+
+    public void saveHighScore(View v) {
+        Intent intent = new Intent(this, HighScoresActivity.class);
+        intent.putExtra("high_score_value", _score);
+        startActivity(intent);
+    }
 
     public EventListener<EnergizerEatenEvent> EnergizerStartsListener =
             new EventListener<EnergizerEatenEvent>() {
@@ -200,6 +208,15 @@ public class PacmanActivity extends ActionBarActivity {
         GameplayView gameplayView = (GameplayView) findViewById(R.id.gameplay_view);
         gameplayView.init(_eventManager, _childViews);
         setScoreView();
+        intHighScoreView();
+    }
+
+    private void intHighScoreView() {
+        HighScoreRepository hr = new HighScoreRepository();
+        TextView high_score_value = (TextView) findViewById(R.id.high_score_value);
+        SharedPreferences sharedPreferences =  PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        int hs = hr.getHighScore(sharedPreferences);
+        high_score_value.setText("" + hs);
     }
 
     public EventListener<LevelCompleteEvent> LevelCompleteHandler = new EventListener<LevelCompleteEvent>() {

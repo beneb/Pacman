@@ -23,7 +23,9 @@
         android:textColor="@color/score"
         android:text="@string/high_score_text"
         android:layout_below="@id/high_score_label"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:clickable="false"
+        android:onClick="saveHighScore" />
 
     <TextView
         android:id="@+id/high_score_value"
@@ -31,10 +33,11 @@
         android:layout_height="wrap_content"
         android:text="@string/dummy_score_value"
         android:layout_below="@id/high_score_label"
-        android:textSize="12dp"
+        android:textSize="12sp"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/score"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:onClick="saveHighScore" />
 
     <com.example.pac.pacman.views.GameplayView
         android:id="@+id/gameplay_view"
