@@ -15,6 +15,9 @@ public class CharacterDebuggingView implements IChildView {
     }
 
     @Override
+    public void onSizeChanged() { }
+
+    @Override
     public void draw(Canvas canvas) {
 //        int cell = _labyrinth.cellAt(_x, _y);
 //        RectF bounds = _labyrinth.getCellBounds(cell);

@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 
 public interface IChildView {
+    void onSizeChanged();
     void draw(Canvas canvas);
 }
 

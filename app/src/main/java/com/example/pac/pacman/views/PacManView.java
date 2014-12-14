@@ -23,6 +23,9 @@ public class PacManView implements IChildView {
     RectF _pacManRect = new RectF();
 
     @Override
+    public void onSizeChanged() { }
+
+    @Override
     public void draw(Canvas canvas) {
         float radius = _pacMan.getSize() / 2;
         PointF pos = _pacMan.getPosition();

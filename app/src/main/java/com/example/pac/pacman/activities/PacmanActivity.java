@@ -183,9 +183,10 @@ public class PacmanActivity extends ActionBarActivity {
         }
 
 
-        _childViews = new ArrayList<IChildView>(ghosts.values());
-        _childViews.add(pacManView);
+        _childViews = new ArrayList<>();
         _childViews.add(new LabyrinthView(_labyrinth, getResources()));
+        _childViews.add(pacManView);
+        _childViews.addAll(ghosts.values());
 
         return gameLogic;
     }

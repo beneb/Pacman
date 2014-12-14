@@ -24,6 +24,9 @@ public class LabyrinthView implements IChildView {
         _debugPaint = PaintObjectsFactory.createDebugPaint(Color.RED);
     }
 
+    @Override
+    public void onSizeChanged() { }
+
     public void draw(Canvas canvas) {
         for (int col = 0; col < _labyrinth.getWidth(); col++) {
             for (int row = 0; row < _labyrinth.getHeight(); row++) {

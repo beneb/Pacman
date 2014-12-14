@@ -9,7 +9,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.example.pac.pacman.event.DrawRequestEvent;
 import com.example.pac.pacman.event.DummyEventManager;
 import com.example.pac.pacman.event.EventListener;
 import com.example.pac.pacman.event.IEventManager;
@@ -58,7 +57,7 @@ public class GameplayView extends View {
                                 (int) bounds.top,
                                 (int) bounds.right,
                                 (int) bounds.bottom);
-                        invalidate();
+                        invalidate(invalidateRect);
                     }
                 });
         _childViews = childViews;
@@ -86,6 +85,9 @@ public class GameplayView extends View {
     protected void onSizeChanged(int w, int h, int _, int __) {
         RectF bounds = getInnerBounds(w, h);
         _eventManager.fire(new InitEvent(bounds));
+        for (IChildView childView : _childViews) {
+            childView.onSizeChanged();
+        }
     }
 }
 

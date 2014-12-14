@@ -1,6 +1,9 @@
 package com.example.pac.pacman.views;
 
+import android.content.res.Resources;
 import android.graphics.Paint;
+
+import com.example.pac.pacman.R;
 
 public class PaintObjectsFactory {
     public static Paint createWall(int color) {
@@ -33,6 +36,20 @@ public class PaintObjectsFactory {
         p.setStyle(Paint.Style.FILL_AND_STROKE);
         p.setColor(color);
         p.setStrokeWidth(1.5f);
+        return p;
+    }
+
+    public static Paint createGhostEye(Resources resources) {
+        Paint p = new Paint();
+        p.setStyle(Paint.Style.FILL);
+        p.setColor(resources.getColor(R.color.ghost_eye));
+        return p;
+    }
+
+    public static Paint createGhostMiddleEye(Resources resources) {
+        Paint p = new Paint();
+        p.setStyle(Paint.Style.FILL);
+        p.setColor(resources.getColor(R.color.ghost_middle_eye));
         return p;
     }
 }

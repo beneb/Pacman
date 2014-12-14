@@ -6,10 +6,12 @@
     <color name="walls">#0000FF</color>
     <color name="pacman">#FFFF00</color>
     <color name="dot">#F5DEB3</color>
-    <color name="Blinky">#99FF0000</color>
-    <color name="Inky">#9900FFFF</color>
-    <color name="Pinky">#99FF00FF</color>
-    <color name="Clyde">#99FFA500</color>
+    <color name="Blinky">#FFFF0000</color>
+    <color name="Inky">#FF00FFFF</color>
+    <color name="Pinky">#FFFF00FF</color>
+    <color name="Clyde">#FFA500</color>
     <color name="score">#FFFFFF</color>
     <color name="ScaredGhost">#0000FF</color>
+    <color name="ghost_eye">#FFFFFF</color>
+    <color name="ghost_middle_eye">#000000</color>
 </resources>
