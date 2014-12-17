@@ -45,6 +45,37 @@ public abstract class Ghost extends Character {
         super(moveStrategy, labyrinth);
     }
 
+    @Override
+    protected float getDeltaInternal() {
+        int level = 1;
+        float velocityRate;
+
+        switch (_mode) {
+            default:
+            case Default:
+                if (level == 1) {
+                    velocityRate = 0.75f;
+                } else if (level <= 4) {
+                    velocityRate = 0.85f;
+                } else {
+                    velocityRate = 0.95f;
+                }
+                break;
+            case Scared:
+            case ScaredAndFlashing:
+                velocityRate = 0.50f;
+                break;
+            case Dying:
+                velocityRate = 0f;
+                break;
+            case WalkingBack:
+                velocityRate = 3f;
+                break;
+        }
+
+        return velocityRate * _maxMoveDelta;
+    }
+
     private void SetGhostMode(GhostMode mode) {
         _mode = mode;
     }

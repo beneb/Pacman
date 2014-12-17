@@ -126,8 +126,10 @@ public abstract class Character {
         return _currentDirection;
     }
 
+    protected abstract float getDeltaInternal();
+
     private float getDelta(float centerX, float centerY) {
-        float delta = _maxMoveDelta;
+        float delta = getDeltaInternal();
         if (_position.x != centerX) {
             delta = centerX - _position.x;
         } else if (_position.y != centerY) {

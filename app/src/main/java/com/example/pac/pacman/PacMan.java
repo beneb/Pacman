@@ -1,8 +1,5 @@
 package com.example.pac.pacman;
 
-import android.graphics.Canvas;
-import android.graphics.RectF;
-
 import com.example.pac.pacman.event.EnergizerEatenEvent;
 import com.example.pac.pacman.event.EnergizerEndsEvent;
 import com.example.pac.pacman.event.EventListener;
@@ -60,6 +57,27 @@ public class PacMan extends Character {
             setMouthOpen();
         }
         return direction;
+    }
+
+    @Override
+    protected float getDeltaInternal() {
+        int level = 1; // TODO: implement getLevel() ... maybe within _labyrinth?
+        float velocityRate;
+
+        if (level == 1) {
+            if (_unbreakable) {
+                velocityRate = 0.90f;
+            } else {
+                velocityRate = 0.80f;
+            }
+        } else if (level <= 4 || level > 20){
+            velocityRate = 0.90f;
+        } else{
+            // level 5 bis 20
+            velocityRate = 1f;
+        }
+
+        return velocityRate * _maxMoveDelta;
     }
 
     private void setMouthOpen() {
