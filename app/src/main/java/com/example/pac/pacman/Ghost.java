@@ -1,7 +1,5 @@
 package com.example.pac.pacman;
 
-import android.content.res.Resources;
-
 import com.example.pac.pacman.event.EnergizerEatenEvent;
 import com.example.pac.pacman.event.EnergizerEndsEvent;
 import com.example.pac.pacman.event.EnergizerWillBeRunningOutEvent;
@@ -36,7 +34,11 @@ public abstract class Ghost extends Character {
             new EventListener<EnergizerEndsEvent>() {
                 @Override
                 public void onEvent(EnergizerEndsEvent event) {
-                    SetGhostMode(GhostMode.Default);
+                    //if (_mode != GhostMode.FadeAwayAndShowingScore &&
+                    //    _mode != GhostMode.WalkingBack) {
+
+                        SetGhostMode(GhostMode.Default);
+                    //}
                 }
             };
 
@@ -65,7 +67,7 @@ public abstract class Ghost extends Character {
             case ScaredAndFlashing:
                 velocityRate = 0.50f;
                 break;
-            case Dying:
+            case FadeAwayAndShowingScore:
                 velocityRate = 0f;
                 break;
             case WalkingBack:
@@ -78,5 +80,9 @@ public abstract class Ghost extends Character {
 
     private void SetGhostMode(GhostMode mode) {
         _mode = mode;
+    }
+
+    public void wasEaten(int score) {
+        SetGhostMode(GhostMode.FadeAwayAndShowingScore);
     }
 }

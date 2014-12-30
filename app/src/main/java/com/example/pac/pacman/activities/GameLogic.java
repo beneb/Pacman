@@ -10,6 +10,7 @@ import com.example.pac.pacman.event.EnergizerEatenEvent;
 import com.example.pac.pacman.event.EnergizerEndsEvent;
 import com.example.pac.pacman.event.EnergizerWillBeRunningOutEvent;
 import com.example.pac.pacman.event.EventListener;
+import com.example.pac.pacman.event.GhostEatenEvent;
 import com.example.pac.pacman.event.IEventManager;
 import com.example.pac.pacman.event.InitEvent;
 import com.example.pac.pacman.event.InvalidateViewEvent;
@@ -19,6 +20,7 @@ import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class GameLogic {
 
@@ -26,7 +28,7 @@ public class GameLogic {
     private IEventManager _eventManager;
     private Collection<com.example.pac.pacman.Character> _ghosts;
     private Resources _resources;
-    private ArrayList<ActionAfterTimeOut> _actions = new ArrayList<ActionAfterTimeOut>();
+    private ArrayList<ActionAfterTimeOut> _actions = new ArrayList<>();
     private Labyrinth _labyrinth;
 
     public GameLogic(PacMan pacMan, IEventManager eventManager, Collection<Character> ghosts, Labyrinth labyrinth, Resources resources) {
@@ -62,11 +64,11 @@ public class GameLogic {
             ArrayList<ActionAfterTimeOut> actionsToRemove = new ArrayList<ActionAfterTimeOut>();
 
             for (ActionAfterTimeOut action : _actions) {
-                if (action.TypeOfActionEvent() == EnergizerWillBeRunningOutEvent.class ||
-                    action.TypeOfActionEvent() == EnergizerEndsEvent.class) {
+                //if (action.TypeOfActionEvent() == EnergizerWillBeRunningOutEvent.class ||
+                //    action.TypeOfActionEvent() == EnergizerEndsEvent.class) {
 
                     actionsToRemove.add(action);
-                }
+                //}
             }
 
             _actions.removeAll(actionsToRemove);
@@ -85,25 +87,46 @@ public class GameLogic {
 
         if (!_labyrinth.haveDots()) {
             _eventManager.fire(new LevelCompleteEvent());
-        } else if (PacManInteractWithAGhost()) {
 
-            if (!_pacMan.IsUnbreakable()) {
-                _eventManager.fire(new ChangeLifesEvent(false)); // reduce lifes
+        } else {
+            List<Ghost> interactingGhosts = GetAllGhostsWhoInteractWithPacMan();
+
+            if (!interactingGhosts.isEmpty()) {
+                if (_pacMan.IsUnbreakable()) {
+
+                    for (Ghost ghost : interactingGhosts) {
+                        _pacMan.EatGhost();
+                        int score = (int) Math.pow(2, (double)_pacMan.GetEatenGhostsInARow()) * 100;
+                        score = score > 1600 ? 1600 : score;
+                        _eventManager.fire(new GhostEatenEvent(score));
+                        ghost.wasEaten(score);
+                    }
+                } else {
+                    _eventManager.fire(new ChangeLifesEvent(false)); // reduce lifes
+                }
             }
         }
     }
 
-    public boolean PacManInteractWithAGhost() {
+    private List<Ghost> GetAllGhostsWhoInteractWithPacMan() {
+        List<Ghost> ghosts = new ArrayList<>();
         int pacMansCell = _labyrinth.getCharacterPosition(_pacMan);
 
-        for (Character ghost : _ghosts) {
+        for (Character character : _ghosts) {
+            Ghost ghost = (Ghost) character;
+
+            if (ghost.getMode() == GhostMode.FadeAwayAndShowingScore ||
+                ghost.getMode() == GhostMode.WalkingBack) {
+                continue;
+            }
+
             int ghostsCell = _labyrinth.getCharacterPosition(ghost);
             if (ghostsCell == pacMansCell) {
-                return true;
+                ghosts.add(ghost);
             }
         }
 
-        return false;
+        return ghosts;
     }
 
     private void HandleAllPendingActions() {
@@ -111,7 +134,7 @@ public class GameLogic {
             return;
         }
 
-        ArrayList<ActionAfterTimeOut> actionsToRemove = new ArrayList<ActionAfterTimeOut>();
+        ArrayList<ActionAfterTimeOut> actionsToRemove = new ArrayList<>();
 
         for (ActionAfterTimeOut action : _actions) {
             if (action.FireAndForget()) {

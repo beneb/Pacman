@@ -29,6 +29,7 @@ import com.example.pac.pacman.event.EnergizerEndsEvent;
 import com.example.pac.pacman.event.EnergizerWillBeRunningOutEvent;
 import com.example.pac.pacman.event.EventListener;
 import com.example.pac.pacman.event.EventManager;
+import com.example.pac.pacman.event.GhostEatenEvent;
 import com.example.pac.pacman.event.IEventManager;
 import com.example.pac.pacman.event.InitEvent;
 import com.example.pac.pacman.event.LevelCompleteEvent;
@@ -74,6 +75,16 @@ public class PacmanActivity extends ActionBarActivity {
                 @Override
                 public void onEvent(EnergizerEndsEvent event) {
                     setInfoLabel("", Color.BLACK);
+                }
+            };
+
+    public EventListener<GhostEatenEvent> GhostEatenEventListener =
+            new EventListener<GhostEatenEvent>() {
+                @Override
+                public void onEvent(GhostEatenEvent event) {
+                    setInfoLabel("Yeah!", Color.RED);
+                    _score += event.GetScore();
+                    setScoreView();
                 }
             };
 
@@ -178,6 +189,7 @@ public class PacmanActivity extends ActionBarActivity {
         _eventManager.registerObserver(EnergizerEatenEvent.class, EnergizerStartsListener);
         _eventManager.registerObserver(LevelCompleteEvent.class, soundHandler.LevelCompleteListener);
         _eventManager.registerObserver(EnergizerWillBeRunningOutEvent.class, EnergizerWillBeRunningOutListener);
+        _eventManager.registerObserver(GhostEatenEvent.class, GhostEatenEventListener);
         _eventManager.registerObserver(EnergizerEndsEvent.class, EnergizerEndsListener);
         _eventManager.registerObserver(LevelCompleteEvent.class, LevelCompleteHandler);
 

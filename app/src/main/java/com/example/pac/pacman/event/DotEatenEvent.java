@@ -1,4 +1,5 @@
 package com.example.pac.pacman.event;
+
 public class DotEatenEvent {
     private int _cell;
 

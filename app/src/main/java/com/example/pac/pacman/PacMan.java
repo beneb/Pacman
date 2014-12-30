@@ -3,6 +3,7 @@ package com.example.pac.pacman;
 import com.example.pac.pacman.event.EnergizerEatenEvent;
 import com.example.pac.pacman.event.EnergizerEndsEvent;
 import com.example.pac.pacman.event.EventListener;
+import com.example.pac.pacman.event.GhostEatenEvent;
 
 public class PacMan extends Character {
 
@@ -19,6 +20,7 @@ public class PacMan extends Character {
                 @Override
                 public void onEvent(EnergizerEndsEvent event) {
                     _unbreakable = false;
+                    _eatenGhostsInARow = 0;
                 }
             };
 
@@ -30,6 +32,7 @@ public class PacMan extends Character {
     public int getMouthOpenAngle() { return _mouthOpenGrad; }
 
     private boolean _unbreakable;
+    private int _eatenGhostsInARow;
 
     @Override
     public String getName() {
@@ -90,7 +93,11 @@ public class PacMan extends Character {
 
     }
 
-    public boolean IsUnbreakable() {
-        return _unbreakable;
+    public boolean IsUnbreakable() { return _unbreakable; }
+
+    public void EatGhost() { _eatenGhostsInARow++; }
+
+    public int GetEatenGhostsInARow() {
+        return _eatenGhostsInARow;
     }
 }
