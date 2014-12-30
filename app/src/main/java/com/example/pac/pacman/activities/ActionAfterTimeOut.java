@@ -3,6 +3,8 @@ import com.example.pac.pacman.event.IEventManager;
 
 import org.joda.time.DateTime;
 
+import java.lang.reflect.Type;
+
 public class ActionAfterTimeOut {
 
     private DateTime _timeToFireEvent;
@@ -22,5 +24,9 @@ public class ActionAfterTimeOut {
         } else {
             return false;
         }
+    }
+
+    public Type TypeOfActionEvent() {
+        return _eventToFire.getClass();
     }
 }

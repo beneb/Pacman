@@ -58,7 +58,19 @@ public class GameLogic {
         if (_labyrinth.eatEnergizer(_pacMan)) {
             _eventManager.fire(new EnergizerEatenEvent(_pacMan.getCell()));
 
-            // TODO: remove all similar actions (another energizer was eaten before)
+            // Remove all similar actions (e.g. another energizer was eaten before)
+            ArrayList<ActionAfterTimeOut> actionsToRemove = new ArrayList<ActionAfterTimeOut>();
+
+            for (ActionAfterTimeOut action : _actions) {
+                if (action.TypeOfActionEvent() == EnergizerWillBeRunningOutEvent.class ||
+                    action.TypeOfActionEvent() == EnergizerEndsEvent.class) {
+
+                    actionsToRemove.add(action);
+                }
+            }
+
+            _actions.removeAll(actionsToRemove);
+
 
             int durationUntilEnergizerWillBeRunningOutEvent = _resources.getInteger(R.integer.DurationOfEnergizer) -
                     _resources.getInteger(R.integer.DurationBeforeEnergizerTimedOut);
