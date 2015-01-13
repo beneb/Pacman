@@ -57,7 +57,7 @@ public class Labyrinth {
     private float _cellSize;
     private int _dotsCount;
 
-    private Map<java.lang.Character, Integer> _characterPositions = new HashMap<java.lang.Character, Integer>();
+    private Map<java.lang.Character, Integer> _characterPositions = new HashMap<>();
 
     public float getCellSize() {
         return _cellSize;
@@ -245,15 +245,15 @@ public class Labyrinth {
         return getCellValue(row, col).isNotWall();
     }
 
-    public boolean eatDot(PacMan pacMan) {
-        return eat(pacMan, Item.DOT);
+    public boolean tryEatDot(PacMan pacMan) {
+        return tryEat(pacMan, Item.DOT);
     }
 
-    public boolean eatEnergizer(PacMan pacMan) {
-        return eat(pacMan, Item.ENERGIZER);
+    public boolean tryEatEnergizer(PacMan pacMan) {
+        return tryEat(pacMan, Item.ENERGIZER);
     }
 
-    private boolean eat(PacMan pacMan, Item eatable) {
+    private boolean tryEat(PacMan pacMan, Item eatable) {
         int pacMansCell = getCharacterPosition(pacMan);
         if (getCellValue(pacMansCell) == eatable) {
             setCellValue(pacMansCell, Item.EMPTY);
@@ -266,7 +266,7 @@ public class Labyrinth {
         }
     }
 
-    public boolean haveDots() {
+    public boolean hasDots() {
         return _dotsCount > 0;
     }
 

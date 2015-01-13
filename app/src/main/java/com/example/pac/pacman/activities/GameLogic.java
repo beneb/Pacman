@@ -54,14 +54,14 @@ public class GameLogic {
     private void HandleAllCollisions() {
         // Handle here all possible collisions in the correct order
 
-        if (_labyrinth.eatDot(_pacMan)) {
+        if (_labyrinth.tryEatDot(_pacMan)) {
             _eventManager.fire(new DotEatenEvent(_pacMan.getCell()));
         }
-        if (_labyrinth.eatEnergizer(_pacMan)) {
+        if (_labyrinth.tryEatEnergizer(_pacMan)) {
             _eventManager.fire(new EnergizerEatenEvent(_pacMan.getCell()));
 
             // Remove all similar actions (e.g. another energizer was eaten before)
-            ArrayList<ActionAfterTimeOut> actionsToRemove = new ArrayList<ActionAfterTimeOut>();
+            ArrayList<ActionAfterTimeOut> actionsToRemove = new ArrayList<>();
 
             for (ActionAfterTimeOut action : _actions) {
                 //if (action.TypeOfActionEvent() == EnergizerWillBeRunningOutEvent.class ||
@@ -85,9 +85,8 @@ public class GameLogic {
                     new EnergizerEndsEvent(), _eventManager));
         }
 
-        if (!_labyrinth.haveDots()) {
+        if (!_labyrinth.hasDots()) {
             _eventManager.fire(new LevelCompleteEvent());
-
         } else {
             List<Ghost> interactingGhosts = GetAllGhostsWhoInteractWithPacMan();
 

@@ -15,18 +15,17 @@ public class FrameLoop {
 
     public void start() {
         _stopped = false;
-        _handler.postDelayed(FrameLoop, 500);
+        _handler.postDelayed(_runnable, 500);
     }
 
     public void stop() {
         _stopped = true;
     }
 
-    private Runnable FrameLoop = new Runnable() {
+    private Runnable _runnable = new Runnable() {
         public void run() {
             _gameLogic.UpdateOnFrame();
-
-            _handler.removeCallbacks(FrameLoop);
+            _handler.removeCallbacks(_runnable);
             if (!_stopped) {
                 _handler.postDelayed(this, 1000 / FPS);
             }
