@@ -56,7 +56,7 @@ public class GameLogic {
             _eventManager.fire(new DotEatenEvent(_pacMan.getCell()));
         }
         if (_labyrinth.tryEatEnergizer(_pacMan)) {
-            _eventManager.fire(new EnergizerEatenEvent(_pacMan.getCell()));
+            _eventManager.fire(new EnergizerEatenEvent());
             _eventManager.fire(new EnergizerWillBeRunningOutEvent(), ENERGIZER_RUNNING_OUT_DURATION);
             _eventManager.fire(new EnergizerEndsEvent(), ENERGIZER_DURATION);
         }
