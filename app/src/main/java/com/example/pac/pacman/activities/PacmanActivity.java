@@ -22,9 +22,9 @@ import com.example.pac.pacman.Labyrinth;
 import com.example.pac.pacman.PacMan;
 import com.example.pac.pacman.PacManMoveStrategy;
 import com.example.pac.pacman.R;
-import com.example.pac.pacman.event.EnergizerEatenEvent;
 import com.example.pac.pacman.event.ChangeLifesEvent;
 import com.example.pac.pacman.event.DotEatenEvent;
+import com.example.pac.pacman.event.EnergizerEatenEvent;
 import com.example.pac.pacman.event.EnergizerEndsEvent;
 import com.example.pac.pacman.event.EnergizerWillBeRunningOutEvent;
 import com.example.pac.pacman.event.EventListener;
@@ -173,12 +173,16 @@ public class PacmanActivity extends ActionBarActivity {
         PacMan pacMan = new PacMan(pacManStrategy, _labyrinth);
         PacManView pacManView = new PacManView(pacMan, getResources());
 
-        Map<Character, IChildView> ghosts = GhostRepository.CreateGhosts(getResources(), _labyrinth);
+        Map<Ghost, IChildView> ghosts = GhostRepository.CreateGhosts(getResources(), _labyrinth);
 
-        GameLogic gameLogic = new GameLogic(pacMan,_eventManager, ghosts.keySet(), _labyrinth, getResources());
+        GameLogic gameLogic = new GameLogic(pacMan,_eventManager, ghosts.keySet(), _labyrinth);
         SoundHandler soundHandler = new SoundHandler(this);
 
         _eventManager.registerObserver(InitEvent.class, gameLogic.InitGameListener);
+        _eventManager.registerObserver(EnergizerEndsEvent.class, gameLogic.EnergizerEndsListener);
+        _eventManager.registerObserver(EnergizerEatenEvent.class, gameLogic.EnergizerStartsListener);
+        _eventManager.registerObserver(EnergizerWillBeRunningOutEvent.class, gameLogic.EnergizerWillBeRunningOutListener);
+
         _eventManager.registerObserver(DotEatenEvent.class, DotEatenListener);
         _eventManager.registerObserver(EnergizerEatenEvent.class, EnergizerEatenListener);
 
@@ -192,16 +196,6 @@ public class PacmanActivity extends ActionBarActivity {
         _eventManager.registerObserver(GhostEatenEvent.class, GhostEatenEventListener);
         _eventManager.registerObserver(EnergizerEndsEvent.class, EnergizerEndsListener);
         _eventManager.registerObserver(LevelCompleteEvent.class, LevelCompleteHandler);
-
-        _eventManager.registerObserver(EnergizerEatenEvent.class, pacMan.EnergizerStartsListener);
-        _eventManager.registerObserver(EnergizerEndsEvent.class, pacMan.EnergizerEndsListener);
-
-        for (Character character : ghosts.keySet()) {
-            _eventManager.registerObserver(EnergizerEndsEvent.class, ((Ghost) character).EnergizerEndsListener);
-            _eventManager.registerObserver(EnergizerEatenEvent.class, ((Ghost) character).EnergizerStartsListener);
-            _eventManager.registerObserver(EnergizerWillBeRunningOutEvent.class, ((Ghost)character).EnergizerWillBeRunningOutListener);
-        }
-
 
         _childViews = new ArrayList<>();
         _childViews.add(new LabyrinthView(_labyrinth, getResources()));

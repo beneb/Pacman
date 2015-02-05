@@ -1,5 +1,7 @@
 package com.example.pac.pacman.event;
 
+import android.os.Handler;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -7,13 +9,13 @@ import java.util.Set;
 
 
 public class EventManager implements IEventManager {
-    protected Map<Class<?>, Set<EventListener<?>>> registrations = new HashMap<Class<?>, Set<EventListener<?>>>();
+    protected Map<Class<?>, Set<EventListener<?>>> registrations = new HashMap<>();
 
     @Override
     public <T> void registerObserver(Class<T> event, EventListener<?> listener) {
         Set<EventListener<?>> observers = registrations.get(event);
         if (observers == null) {
-            observers = new HashSet<EventListener<?>>();
+            observers = new HashSet<>();
             registrations.put(event, observers);
         }
         observers.add(listener);
@@ -34,6 +36,18 @@ public class EventManager implements IEventManager {
 
         for (EventListener observer : observers)
             observer.onEvent(event);
+    }
+
+    private final Handler _handler = new Handler();
+
+    @Override
+    public void fire(final Object event, long delay) {
+        _handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                fire(event);
+            }
+        }, delay);
     }
 
     @Override

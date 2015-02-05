@@ -14,6 +14,10 @@ public class DummyEventManager implements IEventManager {
     }
 
     @Override
+    public void fire(Object event, long delay) {
+    }
+
+    @Override
     public void unregisterAll() {
     }
 }

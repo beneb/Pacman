@@ -1,9 +1,10 @@
 package com.example.pac.pacman.activities;
 
-import android.content.res.Resources;
-
-import com.example.pac.pacman.*;
 import com.example.pac.pacman.Character;
+import com.example.pac.pacman.Ghost;
+import com.example.pac.pacman.GhostMode;
+import com.example.pac.pacman.Labyrinth;
+import com.example.pac.pacman.PacMan;
 import com.example.pac.pacman.event.ChangeLifesEvent;
 import com.example.pac.pacman.event.DotEatenEvent;
 import com.example.pac.pacman.event.EnergizerEatenEvent;
@@ -16,8 +17,6 @@ import com.example.pac.pacman.event.InitEvent;
 import com.example.pac.pacman.event.InvalidateViewEvent;
 import com.example.pac.pacman.event.LevelCompleteEvent;
 
-import org.joda.time.DateTime;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -26,17 +25,17 @@ public class GameLogic {
 
     private PacMan _pacMan;
     private IEventManager _eventManager;
-    private Collection<com.example.pac.pacman.Character> _ghosts;
-    private Resources _resources;
-    private ArrayList<ActionAfterTimeOut> _actions = new ArrayList<>();
+    private Collection<Ghost> _ghosts;
     private Labyrinth _labyrinth;
 
-    public GameLogic(PacMan pacMan, IEventManager eventManager, Collection<Character> ghosts, Labyrinth labyrinth, Resources resources) {
+    public final int ENERGIZER_RUNNING_OUT_DURATION = 7000;
+    public final int ENERGIZER_DURATION = 10000;
+
+    public GameLogic(PacMan pacMan, IEventManager eventManager, Collection<Ghost> ghosts, Labyrinth labyrinth) {
         _labyrinth = labyrinth;
         _pacMan = pacMan;
         _eventManager = eventManager;
         _ghosts = ghosts;
-        _resources = resources;
     }
 
     public void UpdateOnFrame() {
@@ -48,7 +47,6 @@ public class GameLogic {
         _eventManager.fire(new InvalidateViewEvent(_pacMan.getInvalidateRect()));
 
         HandleAllCollisions();
-        HandleAllPendingActions();
     }
 
     private void HandleAllCollisions() {
@@ -59,30 +57,8 @@ public class GameLogic {
         }
         if (_labyrinth.tryEatEnergizer(_pacMan)) {
             _eventManager.fire(new EnergizerEatenEvent(_pacMan.getCell()));
-
-            // Remove all similar actions (e.g. another energizer was eaten before)
-            ArrayList<ActionAfterTimeOut> actionsToRemove = new ArrayList<>();
-
-            for (ActionAfterTimeOut action : _actions) {
-                //if (action.TypeOfActionEvent() == EnergizerWillBeRunningOutEvent.class ||
-                //    action.TypeOfActionEvent() == EnergizerEndsEvent.class) {
-
-                    actionsToRemove.add(action);
-                //}
-            }
-
-            _actions.removeAll(actionsToRemove);
-
-
-            int durationUntilEnergizerWillBeRunningOutEvent = _resources.getInteger(R.integer.DurationOfEnergizer) -
-                    _resources.getInteger(R.integer.DurationBeforeEnergizerTimedOut);
-            _actions.add(new ActionAfterTimeOut(DateTime.now().plusSeconds(
-                    durationUntilEnergizerWillBeRunningOutEvent),
-                    new EnergizerWillBeRunningOutEvent(), _eventManager));
-
-            _actions.add(new ActionAfterTimeOut(DateTime.now().plusSeconds(
-                    _resources.getInteger(R.integer.DurationOfEnergizer)),
-                    new EnergizerEndsEvent(), _eventManager));
+            _eventManager.fire(new EnergizerWillBeRunningOutEvent(), ENERGIZER_RUNNING_OUT_DURATION);
+            _eventManager.fire(new EnergizerEndsEvent(), ENERGIZER_DURATION);
         }
 
         if (!_labyrinth.hasDots()) {
@@ -91,7 +67,7 @@ public class GameLogic {
             List<Ghost> interactingGhosts = GetAllGhostsWhoInteractWithPacMan();
 
             if (!interactingGhosts.isEmpty()) {
-                if (_pacMan.IsUnbreakable()) {
+                if (_pacMan.isUnbreakable()) {
 
                     for (Ghost ghost : interactingGhosts) {
                         _pacMan.EatGhost();
@@ -111,11 +87,9 @@ public class GameLogic {
         List<Ghost> ghosts = new ArrayList<>();
         int pacMansCell = _labyrinth.getCharacterPosition(_pacMan);
 
-        for (Character character : _ghosts) {
-            Ghost ghost = (Ghost) character;
-
+        for (Ghost ghost : _ghosts) {
             if (ghost.getMode() == GhostMode.FadeAwayAndShowingScore ||
-                ghost.getMode() == GhostMode.WalkingBack) {
+                    ghost.getMode() == GhostMode.WalkingBack) {
                 continue;
             }
 
@@ -126,22 +100,6 @@ public class GameLogic {
         }
 
         return ghosts;
-    }
-
-    private void HandleAllPendingActions() {
-        if (_actions.isEmpty()) {
-            return;
-        }
-
-        ArrayList<ActionAfterTimeOut> actionsToRemove = new ArrayList<>();
-
-        for (ActionAfterTimeOut action : _actions) {
-            if (action.FireAndForget()) {
-                actionsToRemove.add(action);
-            }
-        }
-
-        _actions.removeAll(actionsToRemove);
     }
 
     public EventListener<InitEvent> InitGameListener = new EventListener<InitEvent>() {
@@ -156,5 +114,38 @@ public class GameLogic {
             _pacMan.init();
         }
     };
+
+    public EventListener<EnergizerEatenEvent> EnergizerStartsListener =
+            new EventListener<EnergizerEatenEvent>() {
+                @Override
+                public void onEvent(EnergizerEatenEvent event) {
+                    _pacMan.setUnbreakable(true);
+                    for (Ghost g : _ghosts) {
+                        g.setMode(GhostMode.Scared);
+                    }
+                }
+            };
+
+    public EventListener<EnergizerWillBeRunningOutEvent> EnergizerWillBeRunningOutListener =
+            new EventListener<EnergizerWillBeRunningOutEvent>() {
+                @Override
+                public void onEvent(EnergizerWillBeRunningOutEvent event) {
+                    for (Ghost g : _ghosts) {
+                        g.setMode(GhostMode.ScaredAndFlashing);
+                    }
+                }
+            };
+
+    public EventListener<EnergizerEndsEvent> EnergizerEndsListener =
+            new EventListener<EnergizerEndsEvent>() {
+                @Override
+                public void onEvent(EnergizerEndsEvent event) {
+                    _pacMan.setUnbreakable(false);
+                    for (Ghost g : _ghosts) {
+                        g.setMode(GhostMode.Default);
+                    }
+                }
+            };
+
 }
 

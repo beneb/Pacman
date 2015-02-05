@@ -7,6 +7,7 @@ public interface IEventManager {
 
     @SuppressWarnings("unchecked")
     void fire(Object event);
+    void fire(Object event, long delay);
 
     void unregisterAll();
 }

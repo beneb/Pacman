@@ -9,7 +9,7 @@ import com.example.pac.pacman.views.IChildView;
 import java.util.Map;
 
 public class GhostRepository {
-    public static Map<Character, IChildView> CreateGhosts(final Resources resources, Labyrinth labyrinth) {
+    public static Map<Ghost, IChildView> CreateGhosts(final Resources resources, Labyrinth labyrinth) {
         Ghost blinky =
                 new Ghost(new DummyRandomMoveStrategy(labyrinth), labyrinth) {
                     @Override
@@ -79,7 +79,7 @@ public class GhostRepository {
                     }
                 };
 
-        Map<Character, IChildView> ghostsMitViews = new ArrayMap<Character, IChildView>();
+        Map<Ghost, IChildView> ghostsMitViews = new ArrayMap<Ghost, IChildView>();
         ghostsMitViews.put(blinky, new GhostView(blinky, resources) {
             {
                 _defaultColor = resources.getColor(R.color.Blinky);

@@ -1,10 +1,5 @@
 package com.example.pac.pacman;
 
-import com.example.pac.pacman.event.EnergizerEatenEvent;
-import com.example.pac.pacman.event.EnergizerEndsEvent;
-import com.example.pac.pacman.event.EnergizerWillBeRunningOutEvent;
-import com.example.pac.pacman.event.EventListener;
-
 
 public abstract class Ghost extends Character {
 
@@ -13,35 +8,9 @@ public abstract class Ghost extends Character {
     public GhostMode getMode() {
         return _mode;
     }
-
-    public EventListener<EnergizerEatenEvent> EnergizerStartsListener =
-            new EventListener<EnergizerEatenEvent>() {
-                @Override
-                public void onEvent(EnergizerEatenEvent event) {
-                    SetGhostMode(GhostMode.Scared);
-                }
-            };
-
-    public EventListener<EnergizerWillBeRunningOutEvent> EnergizerWillBeRunningOutListener =
-            new EventListener<EnergizerWillBeRunningOutEvent>() {
-                @Override
-                public void onEvent(EnergizerWillBeRunningOutEvent event) {
-                    SetGhostMode(GhostMode.ScaredAndFlashing);
-                }
-            };
-
-    public EventListener<EnergizerEndsEvent> EnergizerEndsListener =
-            new EventListener<EnergizerEndsEvent>() {
-                @Override
-                public void onEvent(EnergizerEndsEvent event) {
-                    //if (_mode != GhostMode.FadeAwayAndShowingScore &&
-                    //    _mode != GhostMode.WalkingBack) {
-
-                        SetGhostMode(GhostMode.Default);
-                    //}
-                }
-            };
-
+    public void setMode(GhostMode mode) {
+        _mode = mode;
+    }
 
     protected Ghost(IMoveStrategy moveStrategy, Labyrinth labyrinth) {
         super(moveStrategy, labyrinth);
@@ -78,11 +47,7 @@ public abstract class Ghost extends Character {
         return velocityRate * _maxMoveDelta;
     }
 
-    private void SetGhostMode(GhostMode mode) {
-        _mode = mode;
-    }
-
     public void wasEaten(int score) {
-        SetGhostMode(GhostMode.FadeAwayAndShowingScore);
+        setMode(GhostMode.FadeAwayAndShowingScore);
     }
 }

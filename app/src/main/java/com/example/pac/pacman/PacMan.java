@@ -1,29 +1,6 @@
 package com.example.pac.pacman;
 
-import com.example.pac.pacman.event.EnergizerEatenEvent;
-import com.example.pac.pacman.event.EnergizerEndsEvent;
-import com.example.pac.pacman.event.EventListener;
-import com.example.pac.pacman.event.GhostEatenEvent;
-
 public class PacMan extends Character {
-
-    public EventListener<EnergizerEatenEvent> EnergizerStartsListener =
-            new EventListener<EnergizerEatenEvent>() {
-                @Override
-                public void onEvent(EnergizerEatenEvent event) {
-                    _unbreakable = true;
-                }
-            };
-
-    public EventListener<EnergizerEndsEvent> EnergizerEndsListener =
-            new EventListener<EnergizerEndsEvent>() {
-                @Override
-                public void onEvent(EnergizerEndsEvent event) {
-                    _unbreakable = false;
-                    _eatenGhostsInARow = 0;
-                }
-            };
-
     private static final int MOUTH_OPEN_GRAD = 30;
     private static final int MOUTH_CLOSED_GRAD = 0;
 
@@ -93,7 +70,13 @@ public class PacMan extends Character {
 
     }
 
-    public boolean IsUnbreakable() { return _unbreakable; }
+    public boolean isUnbreakable() { return _unbreakable; }
+    public void setUnbreakable(boolean unbreakable) {
+        _unbreakable = true;
+        if (!unbreakable) {
+            _eatenGhostsInARow = 0;
+        }
+    }
 
     public void EatGhost() { _eatenGhostsInARow++; }
 
