@@ -6,6 +6,7 @@ import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Build;
+import android.util.Log;
 
 import com.example.pac.pacman.R;
 import com.example.pac.pacman.event.EnergizerEatenEvent;
@@ -17,54 +18,70 @@ public class SoundHandler {
 
     private final SoundPool _soundPool;
     private final int _soundExtraPac;
-    private int _soundIDForEating;
-    private int _soundIDForEatingFast;
+    private int _soundEating;
+    private int _soundEatingFast;
+
+    public SoundHandler(Context context) {
+
+        _soundPool = initSoundPool();
+
+        _soundEating = loadSound(context, R.raw.bite_sound);
+        _soundEatingFast = loadSound(context, R.raw.bite_sound_fast);
+        _soundExtraPac = loadSound(context, R.raw.pacman_extrapac);
+    }
+
+    private int loadSound(Context context, int soundId) {
+        int streamId = _soundPool.load(context, soundId, 1);
+        if (streamId == 0) {
+            Log.e("SoundHandler", String.format("Sound ID '%d' could not be loaded", soundId));
+        }
+        return streamId;
+    }
+
+    private static final int MAX_STREAMS = 1; // no mixing
 
     @SuppressWarnings("deprecation")
     @TargetApi(21)
-    public SoundHandler(Context context) {
+    private static SoundPool initSoundPool() {
 
-        if (Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP) {
-            _soundPool = new SoundPool(8, AudioManager.STREAM_MUSIC, 0);
+        SoundPool soundPool;
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            soundPool = new SoundPool(MAX_STREAMS, AudioManager.STREAM_NOTIFICATION, 0);
         } else {
             SoundPool.Builder builder = new SoundPool.Builder();
-            builder.setMaxStreams(8);
+            builder.setMaxStreams(MAX_STREAMS);
             AudioAttributes.Builder aab = new AudioAttributes.Builder();
             aab.setUsage(AudioAttributes.USAGE_GAME);
             aab.setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION);
             aab.setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED);
-            _soundPool = builder.build();
+            soundPool = builder.build();
         }
-        _soundIDForEating = _soundPool.load(context, R.raw.bite_sound, 0);
-        _soundIDForEatingFast = _soundPool.load(context, R.raw.bite_sound_fast, 0);
-        _soundExtraPac = _soundPool.load(context, R.raw.pacman_extrapac, 0);
+        return soundPool;
+    }
+
+    private void playSound(int soundID) {
+        _soundPool.play(soundID, 1.0f, 1.0f, 0, 0, 1.0f);
     }
 
     public EventListener<DotEatenEvent> PlaySoundForEatingADot = new EventListener<DotEatenEvent>() {
         @Override
         public void onEvent(DotEatenEvent event) {
-            if (_soundIDForEatingFast != 0) {
-                _soundPool.play(_soundIDForEatingFast, 1.0f, 1.0f, 0, 0, 1.0f);
-            }
+                playSound(_soundEatingFast);
         }
     };
 
     public EventListener<EnergizerEatenEvent> PlaySoundForEatingAnEnergizer = new EventListener<EnergizerEatenEvent>() {
         @Override
         public void onEvent(EnergizerEatenEvent event) {
-            if (_soundIDForEating != 0) {
-                _soundPool.play(_soundIDForEating, 1.0f, 1.0f, 0, 0, 1.0f);
-            }
+                playSound(_soundEating);
         }
     };
-
 
     public EventListener<LevelCompleteEvent> LevelCompleteListener = new EventListener<LevelCompleteEvent>() {
         @Override
         public void onEvent(LevelCompleteEvent event) {
-            if (_soundExtraPac != 0) {
-                _soundPool.play(_soundExtraPac, 1.0f, 1.0f, 0, 0, 1.0f);
-            }
+            playSound(_soundExtraPac);
         }
     };
 }
