@@ -5,6 +5,7 @@ import com.example.pac.pacman.Ghost;
 import com.example.pac.pacman.GhostMode;
 import com.example.pac.pacman.Labyrinth;
 import com.example.pac.pacman.PacMan;
+import com.example.pac.pacman.StopMoveStrategy;
 import com.example.pac.pacman.event.ChangeLifesEvent;
 import com.example.pac.pacman.event.DotEatenEvent;
 import com.example.pac.pacman.event.EnergizerEatenEvent;
@@ -77,6 +78,10 @@ public class GameLogic {
                         ghost.wasEaten(score);
                     }
                 } else {
+                    for (Ghost g : _ghosts) {
+                        g.setMoveStrategy(new StopMoveStrategy());
+                    }
+                    _pacMan.setMoveStrategy(new StopMoveStrategy());
                     _eventManager.fire(new ChangeLifesEvent(false)); // reduce lifes
                 }
             }

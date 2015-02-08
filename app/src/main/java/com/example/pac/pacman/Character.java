@@ -47,11 +47,16 @@ public abstract class Character {
     public Direction getDirection() { return _currentDirection; }
 
     public Character(IMoveStrategy moveStrategy, Labyrinth labyrinth) {
-        _moveStrategy = moveStrategy;
         _labyrinth = labyrinth;
 
+        setMoveStrategy(moveStrategy);
         _foreground = new Paint(Paint.ANTI_ALIAS_FLAG);
         _foreground.setStyle(Paint.Style.FILL);
+    }
+
+
+    public void setMoveStrategy(IMoveStrategy moveStrategy) {
+        _moveStrategy = moveStrategy;
     }
 
     public void init() {
