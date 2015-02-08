@@ -11,7 +11,7 @@ import java.util.Map;
 public class GhostRepository {
     public static Map<Ghost, IChildView> CreateGhosts(final Resources resources, Labyrinth labyrinth) {
         Ghost blinky =
-                new Ghost(new DummyRandomMoveStrategy(labyrinth), labyrinth) {
+                new Ghost(new RandomMoveStrategy(labyrinth), labyrinth) {
                     @Override
                     public String getName() {
                         return "Shadow";
@@ -28,7 +28,7 @@ public class GhostRepository {
                     }
                 };
         Ghost inky =
-                new Ghost(new DummyRandomMoveStrategy(labyrinth), labyrinth) {
+                new Ghost(new RandomMoveStrategy(labyrinth), labyrinth) {
                     @Override
                     public String getName() {
                         return "Bashful";
@@ -45,7 +45,7 @@ public class GhostRepository {
                     }
                 };
         Ghost pinky =
-                new Ghost(new DummyRandomMoveStrategy(labyrinth), labyrinth) {
+                new Ghost(new RandomMoveStrategy(labyrinth), labyrinth) {
                     @Override
                     public String getName() {
                         return "Speedy";
@@ -62,7 +62,7 @@ public class GhostRepository {
                     }
                 };
         Ghost clyde =
-                new Ghost(new DummyRandomMoveStrategy(labyrinth), labyrinth) {
+                new Ghost(new RandomMoveStrategy(labyrinth), labyrinth) {
                     @Override
                     public String getName() {
                         return "Pokey";

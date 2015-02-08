@@ -78,7 +78,7 @@ public abstract class Character {
 
     public Direction move() {
         int cell = _labyrinth.cellAt(_position);
-        _newDirection = _moveStrategy.GetNextDirection(cell);
+        _newDirection = _moveStrategy.getNextDirection(cell);
 
         RectF bounds = _labyrinth.getCellBounds(cell);
         float centerX = bounds.centerX();

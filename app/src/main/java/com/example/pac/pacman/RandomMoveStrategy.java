@@ -1,18 +1,18 @@
 package com.example.pac.pacman;
 import java.util.ArrayList;
 
-public class DummyRandomMoveStrategy implements IMoveStrategy {
+public class RandomMoveStrategy implements IMoveStrategy {
 
     private int _lastCell = -1;
     private Direction _lastDirection;
     private Labyrinth _labyrinth;
 
-    public DummyRandomMoveStrategy(Labyrinth labyrinth) {
+    public RandomMoveStrategy(Labyrinth labyrinth) {
         _labyrinth = labyrinth;
     }
 
     @Override
-    public Direction GetNextDirection(int currentCell) {
+    public Direction getNextDirection(int currentCell) {
         if (_lastCell == -1 ||
             (currentCell != _lastCell && !_labyrinth.canMove(currentCell, _lastDirection))) {
 

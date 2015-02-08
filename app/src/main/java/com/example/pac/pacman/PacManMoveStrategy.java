@@ -18,7 +18,7 @@ public class PacManMoveStrategy implements IMoveStrategy {
     }
 
     @Override
-    public Direction GetNextDirection(int cell) {
+    public Direction getNextDirection(int cell) {
         if (_labyrinth.canMove(cell, _wishDirection)) {
             _direction = _wishDirection;
         } else if (!_labyrinth.canMove(cell, _direction)) {
