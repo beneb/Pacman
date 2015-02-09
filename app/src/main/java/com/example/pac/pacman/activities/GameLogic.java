@@ -82,6 +82,7 @@ public class GameLogic {
                         g.setMoveStrategy(new StopMoveStrategy());
                     }
                     _pacMan.setMoveStrategy(new StopMoveStrategy());
+                    _pacMan.setDead();
                     _eventManager.fire(new ChangeLifesEvent(false)); // reduce lifes
                 }
             }

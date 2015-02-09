@@ -11,6 +11,12 @@ public class PacMan extends Character {
     private boolean _unbreakable;
     private int _eatenGhostsInARow;
 
+    private boolean _dead;
+
+    public void setDead() {
+        _dead = true;
+    }
+
     @Override
     public String getName() {
         return "Pac-Man";
@@ -33,9 +39,7 @@ public class PacMan extends Character {
     @Override
     public Direction move() {
         Direction direction = super.move();
-        if (!direction.equals(Direction.Stopped)) {
-            setMouthOpen();
-        }
+        setMouthOpen(direction.equals(Direction.Stopped));
         return direction;
     }
 
@@ -60,14 +64,18 @@ public class PacMan extends Character {
         return velocityRate * _maxMoveDelta;
     }
 
-    private void setMouthOpen() {
-        if (_mouthOpenGrad == MOUTH_OPEN_GRAD) {
-            _mouthClosing = true;
-        } else if (_mouthOpenGrad == MOUTH_CLOSED_GRAD) {
-            _mouthClosing = false;
+    private void setMouthOpen(boolean stopped) {
+        if (!stopped) {
+            if (_mouthOpenGrad == MOUTH_OPEN_GRAD) {
+                _mouthClosing = true;
+            } else if (_mouthOpenGrad == MOUTH_CLOSED_GRAD) {
+                _mouthClosing = false;
+            }
+            _mouthOpenGrad += _mouthClosing ? -5 : 5;
         }
-        _mouthOpenGrad += _mouthClosing ? -5 : 5;
-
+        if (_dead && _mouthOpenGrad < 180){
+            _mouthOpenGrad += 5;
+        }
     }
 
     public boolean isUnbreakable() { return _unbreakable; }
