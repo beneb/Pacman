@@ -1,6 +1,7 @@
 package com.example.pac.pacman.event;
 
 import android.os.Handler;
+import android.util.Log;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -39,13 +40,30 @@ public class EventManager implements IEventManager {
     }
 
     private final Handler _handler = new Handler();
+    private Map<Class<?>, Integer> delayedEventsCounter = new HashMap<>();
+
+    private <T> void incrementDelayedEvent(Class<T> event) {
+        Integer counter = delayedEventsCounter.get(event);
+        counter = counter == null ? 1 : counter + 1;
+        delayedEventsCounter.put(event, counter);
+    }
+    private <T> Integer decrementDelayedEvent(Class<T> event) {
+        Integer counter = delayedEventsCounter.get(event);
+        counter = counter == null || counter == 0 ? 0 : counter-1;
+        delayedEventsCounter.put(event, counter);
+        return counter;
+    }
 
     @Override
     public void fire(final Object event, long delay) {
+        incrementDelayedEvent(event.getClass());
         _handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                fire(event);
+                Integer counter = decrementDelayedEvent(event.getClass());
+                if (counter == 0) {
+                    fire(event);
+                }
             }
         }, delay);
     }
