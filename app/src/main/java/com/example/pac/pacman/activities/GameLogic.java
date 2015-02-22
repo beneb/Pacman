@@ -80,6 +80,7 @@ public class GameLogic {
                 } else {
                     for (Ghost g : _ghosts) {
                         g.setMoveStrategy(new StopMoveStrategy());
+                        g.setMode(GhostMode.Hidden);
                     }
                     _pacMan.setMoveStrategy(new StopMoveStrategy());
                     _pacMan.setDead();
