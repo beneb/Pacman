@@ -5,5 +5,6 @@ public enum GhostMode {
     Scared,
     ScaredAndFlashing,
     FadeAwayAndShowingScore,
-    WalkingBack
+    WalkingBack,
+    Hidden
 }

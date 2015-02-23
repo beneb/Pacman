@@ -73,6 +73,8 @@ public class GhostView implements IChildView {
             case Scared:
                 _foreground.setColor(_resources.getColor(R.color.ScaredGhost));
                 break;
+            case Hidden:
+                return;
         }
 
         PointF position = _ghost.getPosition();
