@@ -1,10 +1,13 @@
 package com.example.pac.pacman.activities;
 
+import android.util.Log;
+
 import com.example.pac.pacman.Character;
 import com.example.pac.pacman.Ghost;
 import com.example.pac.pacman.GhostMode;
 import com.example.pac.pacman.Labyrinth;
 import com.example.pac.pacman.PacMan;
+import com.example.pac.pacman.RandomMoveStrategy;
 import com.example.pac.pacman.StopMoveStrategy;
 import com.example.pac.pacman.event.ChangeLifesEvent;
 import com.example.pac.pacman.event.DotEatenEvent;
@@ -40,9 +43,10 @@ public class GameLogic {
     }
 
     public void UpdateOnFrame() {
-        for (Character character : _ghosts) {
-            character.move();
-            _eventManager.fire(new InvalidateViewEvent(character.getInvalidateRect()));
+        for (Character g : _ghosts) {
+            g.move();
+
+            _eventManager.fire(new InvalidateViewEvent(g.getInvalidateRect()));
         }
         _pacMan.move();
         _eventManager.fire(new InvalidateViewEvent(_pacMan.getInvalidateRect()));
@@ -69,13 +73,12 @@ public class GameLogic {
 
             if (!interactingGhosts.isEmpty()) {
                 if (_pacMan.isUnbreakable()) {
-
-                    for (Ghost ghost : interactingGhosts) {
+                    for (Ghost g : interactingGhosts) {
                         _pacMan.EatGhost();
                         int score = (int) Math.pow(2, (double)_pacMan.GetEatenGhostsInARow()) * 100;
                         score = score > 1600 ? 1600 : score;
                         _eventManager.fire(new GhostEatenEvent(score));
-                        ghost.wasEaten(score);
+                        g.wasEaten();
                     }
                 } else {
                     for (Ghost g : _ghosts) {
@@ -114,8 +117,8 @@ public class GameLogic {
             if (event.getBounds() != null) {
                 _labyrinth.init(event.getBounds());
             }
-            for (Character ch : _ghosts) {
-                ch.init();
+            for (Character g : _ghosts) {
+                g.init();
             }
             _pacMan.init();
         }
@@ -149,6 +152,7 @@ public class GameLogic {
                     _pacMan.setUnbreakable(false);
                     for (Ghost g : _ghosts) {
                         g.setMode(GhostMode.Default);
+                        g.setMoveStrategy(new RandomMoveStrategy(_labyrinth));
                     }
                 }
             };

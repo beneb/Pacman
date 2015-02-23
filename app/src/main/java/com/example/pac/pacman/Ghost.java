@@ -47,7 +47,7 @@ public abstract class Ghost extends Character {
         return velocityRate * _maxMoveDelta;
     }
 
-    public void wasEaten(int score) {
+    public void wasEaten() {
         setMode(GhostMode.FadeAwayAndShowingScore);
     }
 }

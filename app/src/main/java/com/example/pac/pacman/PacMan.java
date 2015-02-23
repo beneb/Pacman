@@ -80,7 +80,7 @@ public class PacMan extends Character {
 
     public boolean isUnbreakable() { return _unbreakable; }
     public void setUnbreakable(boolean unbreakable) {
-        _unbreakable = true;
+        _unbreakable = unbreakable;
         if (!unbreakable) {
             _eatenGhostsInARow = 0;
         }
