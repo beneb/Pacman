@@ -5,6 +5,7 @@
     <color name="empty_dot">#000000</color>
     <color name="walls">#0000FF</color>
     <color name="pacman">#FFFF00</color>
+    <color name="pacman_transparent">#090900</color>
     <color name="dot">#F5DEB3</color>
     <color name="Blinky">#FFFF0000</color>
     <color name="Inky">#FF00FFFF</color>
