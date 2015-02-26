@@ -13,11 +13,13 @@ import com.example.pac.pacman.event.EnergizerEatenEvent;
 import com.example.pac.pacman.event.DotEatenEvent;
 import com.example.pac.pacman.event.EventListener;
 import com.example.pac.pacman.event.LevelCompleteEvent;
+import com.example.pac.pacman.event.PacManDeadEvent;
 
 public class SoundHandler {
 
     private final SoundPool _soundPool;
     private final int _soundExtraPac;
+    private final int _soundDeath;
     private int _soundEating;
     private int _soundEatingFast;
 
@@ -28,6 +30,7 @@ public class SoundHandler {
         _soundEating = loadSound(context, R.raw.bite_sound);
         _soundEatingFast = loadSound(context, R.raw.bite_sound_fast);
         _soundExtraPac = loadSound(context, R.raw.pacman_extrapac);
+        _soundDeath = loadSound(context, R.raw.pacman_death);
     }
 
     private int loadSound(Context context, int soundId) {
@@ -74,7 +77,7 @@ public class SoundHandler {
     public EventListener<EnergizerEatenEvent> PlaySoundForEatingAnEnergizer = new EventListener<EnergizerEatenEvent>() {
         @Override
         public void onEvent(EnergizerEatenEvent event) {
-                playSound(_soundEating);
+            playSound(_soundEating);
         }
     };
 
@@ -82,6 +85,13 @@ public class SoundHandler {
         @Override
         public void onEvent(LevelCompleteEvent event) {
             playSound(_soundExtraPac);
+        }
+    };
+
+    public EventListener<PacManDeadEvent> PacManDeadListener = new EventListener<PacManDeadEvent>() {
+        @Override
+        public void onEvent(PacManDeadEvent event) {
+            playSound(_soundDeath);
         }
     };
 }

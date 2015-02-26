@@ -59,7 +59,7 @@ public class PacManView implements IChildView {
 
     private void paintDeadlyCircle(Canvas canvas, PointF pos, float radius) {
         if (_deadlyGradientRadius < radius && _deadlyCircleRepetition < 2) {
-            _deadlyGradientRadius += radius / 10;
+            _deadlyGradientRadius += radius / 8;
         } else {
             _deadlyGradientRadius = 0;
             _deadlyCircleRepetition++;

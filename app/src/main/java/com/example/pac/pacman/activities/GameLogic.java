@@ -1,7 +1,5 @@
 package com.example.pac.pacman.activities;
 
-import android.util.Log;
-
 import com.example.pac.pacman.Character;
 import com.example.pac.pacman.Ghost;
 import com.example.pac.pacman.GhostMode;
@@ -9,7 +7,7 @@ import com.example.pac.pacman.Labyrinth;
 import com.example.pac.pacman.PacMan;
 import com.example.pac.pacman.RandomMoveStrategy;
 import com.example.pac.pacman.StopMoveStrategy;
-import com.example.pac.pacman.event.ChangeLifesEvent;
+import com.example.pac.pacman.event.PacManDeadEvent;
 import com.example.pac.pacman.event.DotEatenEvent;
 import com.example.pac.pacman.event.EnergizerEatenEvent;
 import com.example.pac.pacman.event.EnergizerEndsEvent;
@@ -80,14 +78,14 @@ public class GameLogic {
                         _eventManager.fire(new GhostEatenEvent(score));
                         g.wasEaten();
                     }
-                } else {
+                } else if (!_pacMan.isDead()){
                     for (Ghost g : _ghosts) {
                         g.setMoveStrategy(new StopMoveStrategy());
                         g.setMode(GhostMode.Hidden);
                     }
                     _pacMan.setMoveStrategy(new StopMoveStrategy());
                     _pacMan.setDead();
-                    _eventManager.fire(new ChangeLifesEvent(false)); // reduce lifes
+                    _eventManager.fire(new PacManDeadEvent());
                 }
             }
         }

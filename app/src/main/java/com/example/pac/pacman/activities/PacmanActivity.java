@@ -8,13 +8,11 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.pac.pacman.Character;
 import com.example.pac.pacman.Ghost;
 import com.example.pac.pacman.GhostRepository;
 import com.example.pac.pacman.IMoveStrategy;
@@ -22,7 +20,7 @@ import com.example.pac.pacman.Labyrinth;
 import com.example.pac.pacman.PacMan;
 import com.example.pac.pacman.PacManMoveStrategy;
 import com.example.pac.pacman.R;
-import com.example.pac.pacman.event.ChangeLifesEvent;
+import com.example.pac.pacman.event.PacManDeadEvent;
 import com.example.pac.pacman.event.DotEatenEvent;
 import com.example.pac.pacman.event.EnergizerEatenEvent;
 import com.example.pac.pacman.event.EnergizerEndsEvent;
@@ -104,13 +102,6 @@ public class PacmanActivity extends ActionBarActivity {
         }
     };
 
-    public EventListener<ChangeLifesEvent> ChangeHitPoints = new EventListener<ChangeLifesEvent>() {
-        @Override
-        public void onEvent(ChangeLifesEvent event) {
-            boolean pacManWasHit = !event.OneUp();
-            setInfoLabel(pacManWasHit ? "OUCH!!!" : "", Color.RED);
-        }
-    };
     private Collection<IChildView> _childViews;
 
     private void setScoreView() {
@@ -186,12 +177,13 @@ public class PacmanActivity extends ActionBarActivity {
         _eventManager.registerObserver(DotEatenEvent.class, DotEatenListener);
         _eventManager.registerObserver(EnergizerEatenEvent.class, EnergizerEatenListener);
 
-        _eventManager.registerObserver(ChangeLifesEvent.class, ChangeHitPoints);
+        _eventManager.registerObserver(PacManDeadEvent.class, PacManDeadListener);
         _eventManager.registerObserver(PacManDirectionRequestEvent.class, new InputHandler(pacMan, pacManStrategy).DirectionChangedListener);
         _eventManager.registerObserver(DotEatenEvent.class, soundHandler.PlaySoundForEatingADot);
         _eventManager.registerObserver(EnergizerEatenEvent.class, soundHandler.PlaySoundForEatingAnEnergizer);
         _eventManager.registerObserver(EnergizerEatenEvent.class, EnergizerStartsListener);
         _eventManager.registerObserver(LevelCompleteEvent.class, soundHandler.LevelCompleteListener);
+        _eventManager.registerObserver(PacManDeadEvent.class, soundHandler.PacManDeadListener);
         _eventManager.registerObserver(EnergizerWillBeRunningOutEvent.class, EnergizerWillBeRunningOutListener);
         _eventManager.registerObserver(GhostEatenEvent.class, GhostEatenEventListener);
         _eventManager.registerObserver(EnergizerEndsEvent.class, EnergizerEndsListener);
@@ -225,25 +217,33 @@ public class PacmanActivity extends ActionBarActivity {
         high_score_value.setText("" + hs);
     }
 
-    public EventListener<LevelCompleteEvent> LevelCompleteHandler = new EventListener<LevelCompleteEvent>() {
-        private static final int NEXT_LEVEL_SHOW_DELAY = 3000;
+    public EventListener<PacManDeadEvent> PacManDeadListener = new LevelChangeEventListener<PacManDeadEvent>(this){
+        @Override
+        public void onEvent(PacManDeadEvent event) {
+            setInfoLabel("OUCH!!!", Color.RED);
+            changeLevelDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    setInfoLabel("", Color.RED);
+                }
+            });
+        }
+    };
 
+    public EventListener<LevelCompleteEvent> LevelCompleteHandler = new LevelChangeEventListener<LevelCompleteEvent>(this) {
         @Override
         public void onEvent(LevelCompleteEvent event) {
             _frameLoop.stop();
             _state.incrementCurrentLevel();
             showNextLevelFragment(_state.getCurrentLevel());
-            Handler levelCompleteDelayHandler = new Handler();
-            levelCompleteDelayHandler.postDelayed(new Runnable() {
+            changeLevelDelayed(new Runnable() {
                 public void run() {
-                    if (!isDestroyed()) {
-                        hideNextLevelFragment();
-                        _labyrinth.load(_state.getNewLabyrinthState());
-                        _eventManager.fire(new InitEvent(_labyrinth.getBounds()));
-                        _frameLoop.start();
-                    }
+                    hideNextLevelFragment();
+                    _labyrinth.load(_state.getNewLabyrinthState());
+                    _eventManager.fire(new InitEvent(_labyrinth.getBounds()));
+                    _frameLoop.start();
                 }
-            }, NEXT_LEVEL_SHOW_DELAY);
+            });
         }
 
         private void hideNextLevelFragment() {
@@ -315,7 +315,3 @@ public class PacmanActivity extends ActionBarActivity {
         }
     }
 }
-
-
-
-

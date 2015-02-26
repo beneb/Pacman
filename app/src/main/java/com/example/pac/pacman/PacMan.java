@@ -17,6 +17,10 @@ public class PacMan extends Character {
         _dead = true;
     }
 
+    public boolean isDead() {
+        return _dead;
+    }
+
     @Override
     public String getName() {
         return "Pac-Man";
@@ -74,7 +78,7 @@ public class PacMan extends Character {
             _mouthOpenGrad += _mouthClosing ? -5 : 5;
         }
         if (_dead && _mouthOpenGrad < 180){
-            _mouthOpenGrad += 5;
+            _mouthOpenGrad += 7;
         }
     }
 
