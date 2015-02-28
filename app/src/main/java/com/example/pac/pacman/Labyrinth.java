@@ -57,6 +57,7 @@ public class Labyrinth {
     private float _cellSize;
     private int _dotsCount;
 
+    private Map<java.lang.Character, Integer> _initialCharacterPositions = new HashMap<>();
     private Map<java.lang.Character, Integer> _characterPositions = new HashMap<>();
 
     public float getCellSize() {
@@ -83,7 +84,8 @@ public class Labyrinth {
         for (int row = 0; row < _height; row++) {
             for (int col = 0; col < _width; col++) {
                 String cellValue = rows[row].substring(col, col + 1);
-                if (java.lang.Character.isDigit(cellValue.charAt(0))) {
+                char id = cellValue.charAt(0);
+                if (java.lang.Character.isDigit(id)) {
                     Item item = Item.parse(Integer.parseInt(cellValue));
                     _layout[row][col] = item;
                     if (item.isDot()) {
@@ -91,7 +93,9 @@ public class Labyrinth {
                     }
                 } else {
                     _layout[row][col] = Item.EMPTY;
-                    setCharacterPosition(cellValue.charAt(0), getCell(row, col));
+                    int cell = getCell(row, col);
+                    _initialCharacterPositions.put(id, cell);
+                    setCharacterPosition(id, cell);
                 }
             }
         }
@@ -141,6 +145,11 @@ public class Labyrinth {
         }
     }
 
+    public void resetAllCharacters() {
+        for (Map.Entry<java.lang.Character, Integer> entry : _initialCharacterPositions.entrySet()) {
+            setCharacterPosition(entry.getKey(), entry.getValue());
+        }
+    }
     private void setCharacterPosition(char id, int cell) {
         // Set here the labyrinth layout to empty, pacman is eating dots here.
         _characterPositions.put(id, cell);

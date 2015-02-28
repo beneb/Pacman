@@ -63,11 +63,11 @@ public abstract class Character {
         _size = _labyrinth.getCellSize() - 2;
         _maxMoveDelta = _size / 6;
         Log.i("Character", "MOVE DELTA = " + _maxMoveDelta);
-        newInvalidateRect(_position);
 
         int cellNum = _labyrinth.getCharacterPosition(this);
         RectF cellBounds = _labyrinth.getCellBounds(cellNum);
         _position.set(cellBounds.centerX(), cellBounds.centerY());
+        newInvalidateRect(_position);
 
         _newDirection = Direction.Stopped;
         _currentDirection = Direction.Stopped;

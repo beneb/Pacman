@@ -17,6 +17,12 @@ public abstract class Ghost extends Character {
     }
 
     @Override
+    public void init() {
+        super.init();
+        setMode(GhostMode.Default);
+    }
+
+    @Override
     protected float getDeltaInternal() {
         int level = 1;
         float velocityRate;

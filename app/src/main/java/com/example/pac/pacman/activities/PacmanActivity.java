@@ -14,12 +14,14 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.pac.pacman.Ghost;
+import com.example.pac.pacman.GhostMode;
 import com.example.pac.pacman.GhostRepository;
 import com.example.pac.pacman.IMoveStrategy;
 import com.example.pac.pacman.Labyrinth;
 import com.example.pac.pacman.PacMan;
 import com.example.pac.pacman.PacManMoveStrategy;
 import com.example.pac.pacman.R;
+import com.example.pac.pacman.RandomMoveStrategy;
 import com.example.pac.pacman.event.PacManDeadEvent;
 import com.example.pac.pacman.event.DotEatenEvent;
 import com.example.pac.pacman.event.EnergizerEatenEvent;
@@ -42,9 +44,12 @@ import com.example.pac.pacman.views.PacManView;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 public class PacmanActivity extends ActionBarActivity {
     private int _score;
+    private Set<Ghost> _ghosts;
+    private PacMan _pacMan;
 
     public void saveHighScore(View v) {
         Intent intent = new Intent(this, HighScoresActivity.class);
@@ -161,12 +166,13 @@ public class PacmanActivity extends ActionBarActivity {
         setScoreView();
 
         IMoveStrategy pacManStrategy = new PacManMoveStrategy(_labyrinth);
-        PacMan pacMan = new PacMan(pacManStrategy, _labyrinth);
-        PacManView pacManView = new PacManView(pacMan, getResources());
+        _pacMan = new PacMan(pacManStrategy, _labyrinth);
+        PacManView pacManView = new PacManView(_pacMan, getResources());
 
         Map<Ghost, IChildView> ghosts = GhostRepository.CreateGhosts(getResources(), _labyrinth);
 
-        GameLogic gameLogic = new GameLogic(pacMan,_eventManager, ghosts.keySet(), _labyrinth);
+        _ghosts = ghosts.keySet();
+        GameLogic gameLogic = new GameLogic(_pacMan,_eventManager, ghosts.keySet(), _labyrinth);
         SoundHandler soundHandler = new SoundHandler(this);
 
         _eventManager.registerObserver(InitEvent.class, gameLogic.InitGameListener);
@@ -178,7 +184,7 @@ public class PacmanActivity extends ActionBarActivity {
         _eventManager.registerObserver(EnergizerEatenEvent.class, EnergizerEatenListener);
 
         _eventManager.registerObserver(PacManDeadEvent.class, PacManDeadListener);
-        _eventManager.registerObserver(PacManDirectionRequestEvent.class, new InputHandler(pacMan, pacManStrategy).DirectionChangedListener);
+        _eventManager.registerObserver(PacManDirectionRequestEvent.class, new InputHandler(_pacMan).DirectionChangedListener);
         _eventManager.registerObserver(DotEatenEvent.class, soundHandler.PlaySoundForEatingADot);
         _eventManager.registerObserver(EnergizerEatenEvent.class, soundHandler.PlaySoundForEatingAnEnergizer);
         _eventManager.registerObserver(EnergizerEatenEvent.class, EnergizerStartsListener);
@@ -220,11 +226,20 @@ public class PacmanActivity extends ActionBarActivity {
     public EventListener<PacManDeadEvent> PacManDeadListener = new LevelChangeEventListener<PacManDeadEvent>(this){
         @Override
         public void onEvent(PacManDeadEvent event) {
-            setInfoLabel("OUCH!!!", Color.RED);
+            _state.decrementLives();
+            setInfoLabel(String.format("Lives: %s", _state.getLives()), Color.RED);
             changeLevelDelayed(new Runnable() {
                 @Override
                 public void run() {
                     setInfoLabel("", Color.RED);
+                    _labyrinth.resetAllCharacters();
+                    // TODO move to the GameLogic
+                    for (Ghost g : _ghosts) {
+                        g.init();
+                        g.setMoveStrategy(new RandomMoveStrategy(_labyrinth));
+                    }
+                    _pacMan.init();
+                    _pacMan.setMoveStrategy(new PacManMoveStrategy(_labyrinth));
                 }
             });
         }
@@ -271,10 +286,12 @@ public class PacmanActivity extends ActionBarActivity {
         private static final String LABYRINTH_STATE = "LABYRINTH_STATE";
         private static final String SCORE = "SCORE";
         private static final String CURRENT_LEVEL = "CURRENT_LEVEL";
+        private static final String LIVES = "LIVES";
 
         private String _labyrinthState;
         private int _score;
         private int _currentLevel = 1;
+        private int _lives = 3;
 
         public String getLabyrinthState() {
             return _labyrinthState;
@@ -288,7 +305,9 @@ public class PacmanActivity extends ActionBarActivity {
             return _score;
         }
         public int getCurrentLevel() { return _currentLevel; }
-        public int incrementCurrentLevel() { return _currentLevel++; }
+        public int getLives() { return _lives; }
+        public void incrementCurrentLevel() { _currentLevel++; }
+        public void decrementLives() { _lives--; }
 
         private void load() {
             Intent intent = getIntent();
@@ -299,6 +318,7 @@ public class PacmanActivity extends ActionBarActivity {
                 _labyrinthState = settings.getString(LABYRINTH_STATE, _labyrinthState);
                 _score = settings.getInt(SCORE, _score);
                 _currentLevel = settings.getInt(CURRENT_LEVEL, 1);
+                _lives = settings.getInt(LIVES, _lives);
             }
         }
 
@@ -311,6 +331,7 @@ public class PacmanActivity extends ActionBarActivity {
             _score = Integer.parseInt(view.getText().toString());
             editor.putInt(SCORE, _score);
             editor.putInt(CURRENT_LEVEL, _currentLevel);
+            editor.putInt(LIVES, _lives);
             editor.apply();
         }
     }

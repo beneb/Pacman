@@ -41,6 +41,13 @@ public class PacMan extends Character {
     }
 
     @Override
+    public void init() {
+        _dead = false;
+        _mouthOpenGrad = MOUTH_OPEN_GRAD;
+        super.init();
+    }
+
+    @Override
     public Direction move() {
         Direction direction = super.move();
         setMouthOpen(direction.equals(Direction.Stopped));
@@ -94,5 +101,9 @@ public class PacMan extends Character {
 
     public int GetEatenGhostsInARow() {
         return _eatenGhostsInARow;
+    }
+
+    public IMoveStrategy getMoveStrategy() {
+        return _moveStrategy;
     }
 }
