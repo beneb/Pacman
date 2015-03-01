@@ -5,7 +5,6 @@ import com.example.pac.pacman.Ghost;
 import com.example.pac.pacman.GhostMode;
 import com.example.pac.pacman.Labyrinth;
 import com.example.pac.pacman.PacMan;
-import com.example.pac.pacman.RandomMoveStrategy;
 import com.example.pac.pacman.StopMoveStrategy;
 import com.example.pac.pacman.event.PacManDeadEvent;
 import com.example.pac.pacman.event.DotEatenEvent;
@@ -72,16 +71,17 @@ public class GameLogic {
             if (!interactingGhosts.isEmpty()) {
                 if (_pacMan.isUnbreakable()) {
                     for (Ghost g : interactingGhosts) {
-                        _pacMan.EatGhost();
-                        int score = (int) Math.pow(2, (double)_pacMan.GetEatenGhostsInARow()) * 100;
-                        score = score > 1600 ? 1600 : score;
-                        _eventManager.fire(new GhostEatenEvent(score));
-                        g.wasEaten();
+
+                        if (g.TryToEatThisGhost()) {
+                            _pacMan.EatGhost();
+                            int score = (int) Math.pow(2, (double)_pacMan.GetEatenGhostsInARow()) * 100;
+                            score = score > 1600 ? 1600 : score;
+                            _eventManager.fire(new GhostEatenEvent(score));
+                        }
                     }
                 } else if (!_pacMan.isDead()){
                     for (Ghost g : _ghosts) {
-                        g.setMoveStrategy(new StopMoveStrategy());
-                        g.setMode(GhostMode.Hidden);
+                        g.Hide();
                     }
                     _pacMan.setMoveStrategy(new StopMoveStrategy());
                     _pacMan.setDead();
@@ -129,7 +129,7 @@ public class GameLogic {
                 public void onEvent(EnergizerEatenEvent event) {
                     _pacMan.setUnbreakable(true);
                     for (Ghost g : _ghosts) {
-                        g.setMode(GhostMode.Scared);
+                        g.TryToScare();
                     }
                 }
             };
@@ -139,7 +139,7 @@ public class GameLogic {
                 @Override
                 public void onEvent(EnergizerWillBeRunningOutEvent event) {
                     for (Ghost g : _ghosts) {
-                        g.setMode(GhostMode.ScaredAndFlashing);
+                        g.TryToFlash();
                     }
                 }
             };
@@ -150,8 +150,8 @@ public class GameLogic {
                 public void onEvent(EnergizerEndsEvent event) {
                     _pacMan.setUnbreakable(false);
                     for (Ghost g : _ghosts) {
-                        g.setMode(GhostMode.Default);
-                        g.setMoveStrategy(new RandomMoveStrategy(_labyrinth));
+                        g.TryToCalmDown();
+
                     }
                 }
             };

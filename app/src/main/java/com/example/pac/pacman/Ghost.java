@@ -8,7 +8,7 @@ public abstract class Ghost extends Character {
     public GhostMode getMode() {
         return _mode;
     }
-    public void setMode(GhostMode mode) {
+    private void setMode(GhostMode mode) {
         _mode = mode;
     }
 
@@ -53,7 +53,39 @@ public abstract class Ghost extends Character {
         return velocityRate * _maxMoveDelta;
     }
 
-    public void wasEaten() {
-        setMode(GhostMode.FadeAwayAndShowingScore);
+    public boolean TryToEatThisGhost() {
+        if (_mode == GhostMode.Scared ||
+            _mode == GhostMode.ScaredAndFlashing) {
+            setMode(GhostMode.FadeAwayAndShowingScore);
+            return true;
+
+        } else {
+            return false;
+        }
+    }
+
+    public void TryToScare() {
+        if (_mode == GhostMode.Default) {
+            _mode = GhostMode.Scared;
+        }
+    }
+
+    public void TryToFlash() {
+        if (_mode == GhostMode.Scared) {
+            _mode = GhostMode.ScaredAndFlashing;
+        }
+    }
+
+    public void TryToCalmDown() {
+        if (_mode == GhostMode.Scared ||
+            _mode == GhostMode.ScaredAndFlashing) {
+            _mode = GhostMode.Default;
+            setMoveStrategy(new RandomMoveStrategy(_labyrinth));
+        }
+    }
+
+    public void Hide() {
+        _mode = GhostMode.Hidden;
+        setMoveStrategy(new StopMoveStrategy());
     }
 }
