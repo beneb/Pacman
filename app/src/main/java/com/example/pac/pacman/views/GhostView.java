@@ -30,6 +30,7 @@ public class GhostView implements IChildView {
         _resources = resources;
         _foreground = new Paint(Paint.ANTI_ALIAS_FLAG);
         _foreground.setStyle(Paint.Style.FILL);
+        _foreground.setTextSize(18);
 
         _eyePaint = PaintObjectsFactory.createGhostEye(resources);
         _middleEyePaint = PaintObjectsFactory.createGhostMiddleEye(resources);

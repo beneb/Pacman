@@ -74,7 +74,7 @@ public class GameLogic {
 
                         if (g.TryToEatThisGhost()) {
                             int score = _pacMan.EatGhost(g);
-                            _eventManager.fire(new GhostEatenEvent(score));
+                            _eventManager.fire(new GhostEatenEvent(g, score));
                         }
                     }
                 } else if (!_pacMan.isDead()){

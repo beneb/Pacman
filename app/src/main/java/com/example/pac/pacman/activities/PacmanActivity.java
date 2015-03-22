@@ -81,15 +81,22 @@ public class PacmanActivity extends ActionBarActivity {
                 }
             };
 
-    public EventListener<GhostEatenEvent> GhostEatenEventListener =
-            new EventListener<GhostEatenEvent>() {
+    public EventListener<GhostEatenEvent> GhostEatenEventListener = new GhostEatenEventListener<GhostEatenEvent>(this) {
+        @Override
+        public void onEvent(final GhostEatenEvent event) {
+            setInfoLabel("Yeah!", Color.RED);
+            _score += event.GetScore();
+            setScoreView();
+            // TODO _pacMan.Hide();
+
+            walkBackDelayed(new Runnable() {
                 @Override
-                public void onEvent(GhostEatenEvent event) {
-                    setInfoLabel("Yeah!", Color.RED);
-                    _score += event.GetScore();
-                    setScoreView();
+                public void run() {
+                    event.GetGhostWasEaten().TryToWalkBack();
                 }
-            };
+            });
+        }
+    };
 
     public EventListener<DotEatenEvent> DotEatenListener = new EventListener<DotEatenEvent>() {
         @Override

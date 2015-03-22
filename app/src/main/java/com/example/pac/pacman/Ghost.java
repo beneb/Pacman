@@ -89,6 +89,13 @@ public abstract class Ghost extends Character {
         }
     }
 
+    public void TryToWalkBack() {
+        if (_mode == GhostMode.FadeAwayAndShowingScore) {
+            setMode(GhostMode.WalkingBack);
+            setMoveStrategy(new ReturnToBaseMoveStrategy(_labyrinth));
+        }
+    }
+
     public void Hide() {
         setMode(GhostMode.Hidden);
         setMoveStrategy(new StopMoveStrategy());
@@ -103,4 +110,6 @@ public abstract class Ghost extends Character {
     public String GetScoreText() {
         return String.valueOf(_scoreTextToShow);
     }
+
+
 }
