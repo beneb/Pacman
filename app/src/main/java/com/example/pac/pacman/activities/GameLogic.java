@@ -95,7 +95,7 @@ public class GameLogic {
 
         for (Ghost ghost : _ghosts) {
             if (ghost.getMode() == GhostMode.FadeAwayAndShowingScore ||
-                    ghost.getMode() == GhostMode.WalkingBack) {
+                ghost.getMode() == GhostMode.WalkingBack) {
                 continue;
             }
 

@@ -22,6 +22,7 @@ import com.example.pac.pacman.PacMan;
 import com.example.pac.pacman.PacManMoveStrategy;
 import com.example.pac.pacman.R;
 import com.example.pac.pacman.RandomMoveStrategy;
+import com.example.pac.pacman.StopMoveStrategy;
 import com.example.pac.pacman.event.PacManDeadEvent;
 import com.example.pac.pacman.event.DotEatenEvent;
 import com.example.pac.pacman.event.EnergizerEatenEvent;
@@ -87,12 +88,17 @@ public class PacmanActivity extends ActionBarActivity {
             setInfoLabel("Yeah!", Color.RED);
             _score += event.GetScore();
             setScoreView();
-            // TODO _pacMan.Hide();
+            // _pacMan.setHidden(true);
+            // TODO: Stop PacMan
+            // TODO: Stop all other ghosts
 
             walkBackDelayed(new Runnable() {
                 @Override
                 public void run() {
                     event.GetGhostWasEaten().TryToWalkBack();
+                    // _pacMan.setHidden(false);
+                    // TODO: Let PacMan move again
+                    // TODO: Let all other ghosts move again
                 }
             });
         }

@@ -34,6 +34,10 @@ public class PacManView implements IChildView {
 
     @Override
     public void draw(Canvas canvas) {
+        if (_pacMan.isHidden()) {
+            return;
+        }
+
         float radius = _pacMan.getSize() / 2;
         PointF pos = _pacMan.getPosition();
 

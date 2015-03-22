@@ -12,6 +12,7 @@ public class PacMan extends Character {
     private int _eatenGhostsInARow;
 
     private boolean _dead;
+    private boolean _hidden;
 
     public void setDead() {
         _dead = true;
@@ -19,6 +20,14 @@ public class PacMan extends Character {
 
     public boolean isDead() {
         return _dead;
+    }
+
+    public void setHidden(boolean hidden) {
+        _hidden = hidden;
+    }
+
+    public boolean isHidden() {
+        return _hidden;
     }
 
     @Override
@@ -107,4 +116,6 @@ public class PacMan extends Character {
     public IMoveStrategy getMoveStrategy() {
         return _moveStrategy;
     }
+
+
 }

@@ -8,7 +8,7 @@ import android.os.Handler;
 import com.example.pac.pacman.event.EventListener;
 
 public abstract class GhostEatenEventListener<T> implements EventListener<T> {
-    private static final int GHOST_SCORE_SHOW_DELAY = 1500;
+    private static final int GHOST_SCORE_SHOW_DELAY = 2000;
 
     private final Activity _activity;
 
