@@ -2,12 +2,14 @@ package com.example.pac.pacman.views;
 
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.RectF;
 
 import com.example.pac.pacman.Ghost;
+import com.example.pac.pacman.GhostMode;
 import com.example.pac.pacman.R;
 
 public class GhostView implements IChildView {
@@ -73,19 +75,31 @@ public class GhostView implements IChildView {
             case Scared:
                 _foreground.setColor(_resources.getColor(R.color.ScaredGhost));
                 break;
+            case WalkingBack:
+                break;
+            case FadeAwayAndShowingScore:
+                _foreground.setColor(Color.WHITE);
+                break;
             case Hidden:
                 return;
         }
 
         PointF position = _ghost.getPosition();
 
-        if (_waveShift = !_waveShift) {
-            _samplePath1.offset(position.x, position.y, _ghostPath);
-        } else {
-            _samplePath2.offset(position.x, position.y, _ghostPath);
+        if (_ghost.getMode() == GhostMode.FadeAwayAndShowingScore) {
+            canvas.drawText(_ghost.GetScoreText(), position.x, position.y, _foreground);
+            return;
         }
 
-        canvas.drawPath(_ghostPath, _foreground);
+        if (_ghost.getMode() != GhostMode.WalkingBack) {
+            if (_waveShift = !_waveShift) {
+                _samplePath1.offset(position.x, position.y, _ghostPath);
+            } else {
+                _samplePath2.offset(position.x, position.y, _ghostPath);
+            }
+
+            canvas.drawPath(_ghostPath, _foreground);
+        }
 
         float eyeDistance = _ghost.getSize() / 5;
         float eyeSize = _ghost.getSize() / 7;

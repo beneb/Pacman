@@ -73,9 +73,7 @@ public class GameLogic {
                     for (Ghost g : interactingGhosts) {
 
                         if (g.TryToEatThisGhost()) {
-                            _pacMan.EatGhost();
-                            int score = (int) Math.pow(2, (double)_pacMan.GetEatenGhostsInARow()) * 100;
-                            score = score > 1600 ? 1600 : score;
+                            int score = _pacMan.EatGhost(g);
                             _eventManager.fire(new GhostEatenEvent(score));
                         }
                     }

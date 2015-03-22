@@ -97,10 +97,11 @@ public class PacMan extends Character {
         }
     }
 
-    public void EatGhost() { _eatenGhostsInARow++; }
-
-    public int GetEatenGhostsInARow() {
-        return _eatenGhostsInARow;
+    public int EatGhost(Ghost g) {
+        int score = (int) Math.pow(2, (double) ++_eatenGhostsInARow) * 100;
+        score = score > 1600 ? 1600 : score;
+        g.SetScoreText(score);
+        return score;
     }
 
     public IMoveStrategy getMoveStrategy() {

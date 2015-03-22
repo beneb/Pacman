@@ -4,12 +4,16 @@ package com.example.pac.pacman;
 public abstract class Ghost extends Character {
 
     private GhostMode _mode = GhostMode.Default;
+    private int _scoreTextToShow;
 
     public GhostMode getMode() {
         return _mode;
     }
     private void setMode(GhostMode mode) {
         _mode = mode;
+        if (mode != GhostMode.FadeAwayAndShowingScore) {
+            _scoreTextToShow = 0;
+        }
     }
 
     protected Ghost(IMoveStrategy moveStrategy, Labyrinth labyrinth) {
@@ -56,6 +60,7 @@ public abstract class Ghost extends Character {
     public boolean TryToEatThisGhost() {
         if (_mode == GhostMode.Scared ||
             _mode == GhostMode.ScaredAndFlashing) {
+
             setMode(GhostMode.FadeAwayAndShowingScore);
             return true;
 
@@ -66,26 +71,36 @@ public abstract class Ghost extends Character {
 
     public void TryToScare() {
         if (_mode == GhostMode.Default) {
-            _mode = GhostMode.Scared;
+            setMode(GhostMode.Scared);
         }
     }
 
     public void TryToFlash() {
         if (_mode == GhostMode.Scared) {
-            _mode = GhostMode.ScaredAndFlashing;
+            setMode(GhostMode.ScaredAndFlashing);
         }
     }
 
     public void TryToCalmDown() {
         if (_mode == GhostMode.Scared ||
             _mode == GhostMode.ScaredAndFlashing) {
-            _mode = GhostMode.Default;
+            setMode(GhostMode.Default);
             setMoveStrategy(new RandomMoveStrategy(_labyrinth));
         }
     }
 
     public void Hide() {
-        _mode = GhostMode.Hidden;
+        setMode(GhostMode.Hidden);
         setMoveStrategy(new StopMoveStrategy());
+    }
+
+    public void SetScoreText(int score) {
+        if (_mode == GhostMode.FadeAwayAndShowingScore) {
+            _scoreTextToShow = score;
+        }
+    }
+
+    public String GetScoreText() {
+        return String.valueOf(_scoreTextToShow);
     }
 }
