@@ -3,6 +3,8 @@ package com.example.pac.pacman.views;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
@@ -22,6 +24,8 @@ import java.util.Collection;
 public class GameplayView extends View {
 
     private static final int MARGIN = 10;
+    private boolean _gameIsOver;
+    private int _width;
 
     private RectF getInnerBounds(int w, int h) {
         return new RectF(MARGIN, MARGIN, w - MARGIN, h - MARGIN);
@@ -66,8 +70,16 @@ public class GameplayView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        LabyrinthView labyrinthView = null;
         for (IChildView view : _childViews) {
             view.draw(canvas);
+            if (view.getClass() == LabyrinthView.class){
+                labyrinthView = (LabyrinthView)view;
+            }
+        }
+        if (_gameIsOver){
+            assert labyrinthView != null;
+            labyrinthView.writeGameOver(canvas, _width);
         }
     }
 
@@ -88,6 +100,11 @@ public class GameplayView extends View {
         for (IChildView childView : _childViews) {
             childView.onSizeChanged();
         }
+        _width = w;
+    }
+
+    public void setGameIsOver() {
+        _gameIsOver = true;
     }
 }
 

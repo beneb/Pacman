@@ -52,4 +52,8 @@ public class PaintObjectsFactory {
         p.setColor(resources.getColor(R.color.ghost_middle_eye));
         return p;
     }
+
+    public static Paint createPaintForGameOver(int color) {
+        return createPaint(color);
+    }
 }

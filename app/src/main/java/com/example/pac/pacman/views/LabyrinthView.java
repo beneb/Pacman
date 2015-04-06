@@ -14,22 +14,26 @@ public class LabyrinthView implements IChildView {
     private Paint _dot;
     private Paint _energizer;
     private Paint _wallPaint;
-    private Paint _debugPaint;
+    // private Paint _debugPaint;
 
     public LabyrinthView(Labyrinth labyrinth, Resources resource) {
         _labyrinth = labyrinth;
         _dot = PaintObjectsFactory.createDot(resource.getColor(R.color.dot));
         _energizer = PaintObjectsFactory.createEnergizer(resource.getColor(R.color.dot));
         _wallPaint = PaintObjectsFactory.createWall(resource.getColor(R.color.walls));
-        _debugPaint = PaintObjectsFactory.createDebugPaint(Color.RED);
+        // _debugPaint = PaintObjectsFactory.createDebugPaint(Color.RED);
     }
 
     @Override
     public void onSizeChanged() { }
 
     public void draw(Canvas canvas) {
-        for (int col = 0; col < _labyrinth.getWidth(); col++) {
-            for (int row = 0; row < _labyrinth.getHeight(); row++) {
+
+        int width = _labyrinth.getWidth();
+        int height = _labyrinth.getHeight();
+
+        for (int col = 0; col < width; col++) {
+            for (int row = 0; row < height; row++) {
                 RectF cellBounds = _labyrinth.getCellBounds(row, col);
                 Labyrinth.Item cellValue = _labyrinth.getCellValue(row, col);
                 if (cellValue.isWall()) {
@@ -45,9 +49,9 @@ public class LabyrinthView implements IChildView {
                 }
 
                 //--Grid for Debugging
-                //float l = col * _cellSize + _labyrinthBounds.left;
-                //float t = row * _cellSize + _labyrinthBounds.top;
-                //canvas.drawRect(l, t, l + _cellSize, t + _cellSize, _debugPaint);
+                // float l = col * _labyrinth.getCellSize() + _labyrinth.getBounds().left;
+                // float t = row * _labyrinth.getCellSize() + _labyrinth.getBounds().top;
+                // canvas.drawRect(l, t, l + _labyrinth.getCellSize(), t + _labyrinth.getCellSize(), _debugPaint);
             }
         }
     }
@@ -197,5 +201,17 @@ public class LabyrinthView implements IChildView {
 
     private float getEnergizerSize() {
         return _labyrinth.getCellSize() / 4;
+    }
+
+    public void writeGameOver(Canvas canvas, int width) {
+        Paint p = PaintObjectsFactory.createPaintForGameOver(Color.RED);
+        p.setTextAlign(Paint.Align.CENTER);
+        p.setTextSize(60);
+
+        RectF xy = _labyrinth.getCellBounds(12, 8);
+        int x = width /2;
+        int y = (int)xy.bottom;
+
+        canvas.drawText("Game Over", x, y, p);
     }
 }

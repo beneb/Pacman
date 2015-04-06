@@ -14,7 +14,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.pac.pacman.Ghost;
-import com.example.pac.pacman.GhostMode;
 import com.example.pac.pacman.GhostRepository;
 import com.example.pac.pacman.IMoveStrategy;
 import com.example.pac.pacman.Labyrinth;
@@ -22,7 +21,6 @@ import com.example.pac.pacman.PacMan;
 import com.example.pac.pacman.PacManMoveStrategy;
 import com.example.pac.pacman.R;
 import com.example.pac.pacman.RandomMoveStrategy;
-import com.example.pac.pacman.StopMoveStrategy;
 import com.example.pac.pacman.event.PacManDeadEvent;
 import com.example.pac.pacman.event.DotEatenEvent;
 import com.example.pac.pacman.event.EnergizerEatenEvent;
@@ -255,6 +253,24 @@ public class PacmanActivity extends ActionBarActivity {
                     _pacMan.setMoveStrategy(new PacManMoveStrategy(_labyrinth));
                 }
             });
+            if (_state.getLives() == 0){
+                handleGameOver();
+                _frameLoop.stop();
+                _state.resetCurrentLevel();
+            }
+
+        }
+
+        private void handleGameOver() {
+            GameplayView gameplayView = (GameplayView) findViewById(R.id.gameplay_view);
+            gameplayView.setGameIsOver();
+            // TODO: reset score
+            // if high score is reached give the user the possibility to save the name
+            // on the high score list.
+            // _state.resetCurrentLevel();
+            // _score = 0;
+
+            gameplayView.invalidate();
         }
     };
 
@@ -289,7 +305,6 @@ public class PacmanActivity extends ActionBarActivity {
             fragmentTransaction.commitAllowingStateLoss();
         }
     };
-
 
     State _state = new State();
 
@@ -346,6 +361,12 @@ public class PacmanActivity extends ActionBarActivity {
             editor.putInt(CURRENT_LEVEL, _currentLevel);
             editor.putInt(LIVES, _lives);
             editor.apply();
+        }
+
+        public void resetCurrentLevel() {
+            _currentLevel = 1;
+            _score = 0;
+            _lives = 3;
         }
     }
 }
